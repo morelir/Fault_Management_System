@@ -51,14 +51,14 @@ const EditFaultModel = (props) => {
   };
 
   const generateFaultNumber = () => {
-    Axios.get(`faultManagement/E/newNumber`).then((response) => {
-      setFault((prevState) => {
-        return {
-          ...prevState,
-          number: response.data,
-        };
-      });
-    });
+    // Axios.get(`faultManagement/E/newNumber`).then((response) => {
+    //   setFault((prevState) => {
+    //     return {
+    //       ...prevState,
+    //       number: response.data,
+    //     };
+    //   });
+    // });
   };
 
   useEffect(() => {
@@ -84,29 +84,29 @@ const EditFaultModel = (props) => {
 
   const clientIdHandler = (e) => {
     let value = e.target.value;
-    setClient((prevState) => {
-      return { ...prevState, id: value };
-    });
-    if (value.length === 9) {
-      //need to add if in the id is match
-      Axios.put(`faultManagement/E/clientID`, {
-        id: parseInt(value),
-      }).then((response) => {
-        if (response.data) {
-          setClient((prevState) => {
-            return {
-              ...prevState,
-              name: response.data.name,
-              surname: response.data.surname,
-            };
-          });
-          setClient((prevState) => {
-            return { ...prevState, idIsValid: true };
-          });
-          return;
-        }
-      });
-    }
+    // setClient((prevState) => {
+    //   return { ...prevState, id: value };
+    // });
+    // if (value.length === 9) {
+    //   //need to add if in the id is match
+    //   Axios.put(`faultManagement/Edit/clientID`, {
+    //     id: parseInt(value),
+    //   }).then((response) => {
+    //     if (response.data) {
+    //       setClient((prevState) => {
+    //         return {
+    //           ...prevState,
+    //           name: response.data.name,
+    //           surname: response.data.surname,
+    //         };
+    //       });
+    //       setClient((prevState) => {
+    //         return { ...prevState, idIsValid: true };
+    //       });
+    //       return;
+    //     }
+    //   });
+    // }
     setClient((prevState) => {
       return { ...prevState, idIsValid: false };
     });

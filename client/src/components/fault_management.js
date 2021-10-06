@@ -24,8 +24,13 @@ const FaultManagement = (props) => {
   useEffect(() => {
     Axios.get("/faultManagement").then((response) => {
       setFaults(response.data);
+      console.log(response.data)
       //new Date
+    }).catch((err)=>{
+      console.log(err)
+     
     });
+    
   }, []);
 
   const updateFaults = (faults) => {

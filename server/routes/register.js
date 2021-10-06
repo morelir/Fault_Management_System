@@ -10,10 +10,12 @@ router.get("/",(req,res)=>{
 })
 
 router.post("/", async(req,res) => {
-    let validBody = validUser(req.body);
-    if(validBody.error){
-        return res.status(400).json(validBody.error.details);
-    }
+    console.log(req.body.id)
+    // let validBody = validUser(req.body);
+    // if(validBody.error){
+    //     return res.status(400).json(validBody.error.details);
+    // }
+    
     try{
         let user = new UserModel(req.body);
         user.pass = await bcrypt.hash(user.pass,10);

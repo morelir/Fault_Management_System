@@ -63,6 +63,7 @@ const NewFaultModel = (props) => {
       description: fault.description,
     })
       .then((response) => {
+        console.log(response.data)
         props.updateFaults(response.data);
       })
       .catch((err) => {
@@ -74,10 +75,21 @@ const NewFaultModel = (props) => {
 
   const generateFaultNumber = () => {
     Axios.get(`faultManagement/NewFaultModel/newNumber`).then((response) => {
+      console.log(response.data)
+      if(response.data){
+        setFault((prevState) => {
+          return {
+            ...prevState,
+            number: response.data,
+          };
+        });
+      }  
+    }).catch((err)=>{
+      console.log(err)
       setFault((prevState) => {
         return {
           ...prevState,
-          number: response.data,
+          number: 100000000,
         };
       });
     });

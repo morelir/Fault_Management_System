@@ -31,13 +31,12 @@ router.put("/NewFaultModel/clientID", async (req, res) => {
 });
 
 router.post("/NewFaultModel", async (req, res) => {
-  let validBody = validNewFault(req.body);
+  let validBody =  validNewFault(req.body);
   console.log(req.body);
   // if (validBody.error) {
   //   console.log("blat")
   //   return res.status(400).json(validBody.error.details);
   // }
-  console.log("bla");
   try {
     let fault = new FaultModel(req.body);
     console.log(fault);
