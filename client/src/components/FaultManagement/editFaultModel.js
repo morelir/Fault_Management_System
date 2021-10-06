@@ -7,17 +7,17 @@ import Axios from "axios";
 
 const EditFaultModel = (props) => {
   const [fault, setFault] = useState({
-    number: "",
-    status: "New",
-    team: "",
-    description: "",
+    number: props.fault.number,
+    status: props.fault.status,
+    team: props.fault.team,
+    description: props.fault.description,
     formIsValid: false,
   });
 
   const [client, setClient] = useState({
-    id: "",
-    name: "",
-    surname: "",
+    id: props.fault.clientID,
+    name: props.fault.name,
+    surname: props.fault.surname,
     idIsValid: false,
   });
 
@@ -30,11 +30,6 @@ const EditFaultModel = (props) => {
   const handleOpen = () => {
     setShow(true);
   };
-
-
-  
-
- 
 
   const submitSaveFault = (e) => {
     e.preventDefault();
@@ -53,7 +48,6 @@ const EditFaultModel = (props) => {
         console.log(err);
       });
     handleClose();
-    
   };
 
   const generateFaultNumber = () => {
@@ -194,25 +188,21 @@ const EditFaultModel = (props) => {
                     />
                   </td>
                 </tr>
-                {client.idIsValid && (
-                  <>
-                    <tr>
-                      <td>
-                        <Form.Label>
-                          <strong>Client Name</strong>
-                        </Form.Label>
-                      </td>
-                      <td>
-                        <Form.Control
-                          type="text"
-                          className={styles["form-control"]}
-                          value={`${client.name}, ${client.surname}`}
-                          readOnly
-                        />
-                      </td>
-                    </tr>
-                  </>
-                )}
+                <tr>
+                  <td>
+                    <Form.Label>
+                      <strong>Client Name</strong>
+                    </Form.Label>
+                  </td>
+                  <td>
+                    <Form.Control
+                      type="text"
+                      className={styles["form-control"]}
+                      value={`${client.name}, ${client.surname}`}
+                      readOnly
+                    />
+                  </td>
+                </tr>
                 <tr>
                   <td>
                     <Form.Label>

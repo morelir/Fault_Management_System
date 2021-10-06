@@ -105,7 +105,7 @@ const FaultManagement = (props) => {
                         <td>{fault.handling_duration}</td>
                         <td>
                           <EditFaultModel
-
+                            fault={fault}
                           />
                           {/* <a
                             href="#editEmployeeModal"
