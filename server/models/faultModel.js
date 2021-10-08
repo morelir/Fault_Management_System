@@ -11,7 +11,7 @@ const faultSchema = new mongoose.Schema({
   handling_duration: Number,
   date_created: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
 });
 

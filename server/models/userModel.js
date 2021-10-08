@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   pass: String,
   date_created: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
   role: {
     type: String,

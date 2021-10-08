@@ -3,10 +3,16 @@ const bcrypt = require("bcrypt");
 const router = express.Router();
 const { FaultModel, validNewFault } = require("../models/faultModel");
 const { UserModel } = require("../models/UserModel");
+
 router.get("/", async (req, res) => {
-  let faults = await FaultModel.find({}).lean();
-  let data = await mergeFaultsAndUsers(faults);
-  res.json(data);
+  try{
+    let faults = await FaultModel.find({}).lean();
+    let data = await mergeFaultsAndUsers(faults);
+    res.json(data);
+  }
+  catch(err){
+    console.log(err)
+  }
 });
 
 router.get("/NewFaultModel/newNumber", async (req, res) => {
@@ -25,7 +31,7 @@ router.get("/NewFaultModel/newNumber", async (req, res) => {
 //     person.occupation);
 // });
 
-router.put("/NewFaultModel/clientID", async (req, res) => {
+router.put("/clientID", async (req, res) => {
   let data = await UserModel.findOne({ id: req.body.id }, "-_id name surname");
   res.json(data);
 });
@@ -39,17 +45,45 @@ router.post("/NewFaultModel", async (req, res) => {
   // }
   try {
     let fault = new FaultModel(req.body);
-    console.log(fault);
-    fault.save(); //שומר את המידע ב db
+    await fault.save(); //שומר את המידע ב db
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);
-    console.log(data);
     res.json(data);
   } catch (err) {
     console.log(err);
     res.status(401).json({ msg: "Error" });
   }
 });
+
+router.post("/EditFaultModel", async (req, res) => {
+  let validBody =  validNewFault(req.body);
+  console.log(req.body);
+  // if (validBody.error) {
+  //   console.log("blat")
+  //   return res.status(400).json(validBody.error.details);
+  // }
+  try {
+    fault = await FaultModel.findOne({ id: req.body.id });
+    // fault.team="Logisti" //שומר את המידע ב db
+    fault=updateFault(fault,req.body);
+    await fault.save();
+    let faults = await FaultModel.find({}).lean();
+    data = await mergeFaultsAndUsers(faults);
+    res.json(data);
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({ msg: "Error" });
+  }
+});
+
+const updateFault=(fault,updateFault)=>{
+  fault.number=updateFault.number;
+  fault.status=updateFault.status;
+  fault.clientID=updateFault.clientID;
+  fault.team=updateFault.team;
+  fault.description=updateFault.description;
+  return fault;
+}
 
 const mergeFaultsAndUsers = async (faults) => {
   try {

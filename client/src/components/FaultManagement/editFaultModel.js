@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import Spinner from "react-bootstrap/Spinner";
 import styles from "./faultModel.module.css";
 import Axios from "axios";
 
@@ -11,16 +12,17 @@ const EditFaultModel = (props) => {
     status: props.fault.status,
     team: props.fault.team,
     description: props.fault.description,
-    formIsValid: false,
+    formIsValid: true,
   });
+  const [savingForm, setSavingForm] = useState(false);
 
   const [client, setClient] = useState({
     id: props.fault.clientID,
     name: props.fault.name,
     surname: props.fault.surname,
-    idIsValid: false,
+    idIsValid: true,
   });
-
+  
   const [show, setShow] = useState(false);
 
   const handleClose = () => {
@@ -31,10 +33,26 @@ const EditFaultModel = (props) => {
     setShow(true);
   };
 
+  const resetStates = () => {
+    setFault((prevState) => {
+      return {
+        ...prevState,
+        formIsValid: true,
+      };
+    });
+    setClient((prevState) => {
+      return { 
+        ...prevState,
+        idIsValid: true,
+      };
+    });
+    setSavingForm(false);
+  };
+
   const submitSaveFault = (e) => {
     e.preventDefault();
-    console.log("hi");
-    Axios.post(`faultManagement/E`, {
+    setSavingForm(true);
+    Axios.post(`faultManagement/EditFaultModel`, {
       number: parseInt(fault.number),
       status: fault.status,
       clientID: parseInt(client.id),
@@ -43,27 +61,14 @@ const EditFaultModel = (props) => {
     })
       .then((response) => {
         props.updateFaults(response.data);
+        handleClose();
+        resetStates();
       })
       .catch((err) => {
         console.log(err);
       });
-    handleClose();
+    
   };
-
-  const generateFaultNumber = () => {
-    // Axios.get(`faultManagement/E/newNumber`).then((response) => {
-    //   setFault((prevState) => {
-    //     return {
-    //       ...prevState,
-    //       number: response.data,
-    //     };
-    //   });
-    // });
-  };
-
-  useEffect(() => {
-    generateFaultNumber();
-  }, []);
 
   useEffect(() => {
     const identifier = setTimeout(() => {
@@ -84,29 +89,29 @@ const EditFaultModel = (props) => {
 
   const clientIdHandler = (e) => {
     let value = e.target.value;
-    // setClient((prevState) => {
-    //   return { ...prevState, id: value };
-    // });
-    // if (value.length === 9) {
-    //   //need to add if in the id is match
-    //   Axios.put(`faultManagement/Edit/clientID`, {
-    //     id: parseInt(value),
-    //   }).then((response) => {
-    //     if (response.data) {
-    //       setClient((prevState) => {
-    //         return {
-    //           ...prevState,
-    //           name: response.data.name,
-    //           surname: response.data.surname,
-    //         };
-    //       });
-    //       setClient((prevState) => {
-    //         return { ...prevState, idIsValid: true };
-    //       });
-    //       return;
-    //     }
-    //   });
-    // }
+    setClient((prevState) => {
+      return { ...prevState, id: value };
+    });
+    if (value.length === 9) {
+      //need to add if in the id is match
+      Axios.put(`faultManagement/clientID`, {
+        id: parseInt(value),
+      }).then((response) => {
+        if (response.data) {
+          setClient((prevState) => {
+            return {
+              ...prevState,
+              name: response.data.name,
+              surname: response.data.surname,
+            };
+          });
+          setClient((prevState) => {
+            return { ...prevState, idIsValid: true };
+          });
+          return;
+        }
+      });
+    }
     setClient((prevState) => {
       return { ...prevState, idIsValid: false };
     });
@@ -188,21 +193,23 @@ const EditFaultModel = (props) => {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td>
-                    <Form.Label>
-                      <strong>Client Name</strong>
-                    </Form.Label>
-                  </td>
-                  <td>
-                    <Form.Control
-                      type="text"
-                      className={styles["form-control"]}
-                      value={`${client.name}, ${client.surname}`}
-                      readOnly
-                    />
-                  </td>
-                </tr>
+                {client.idIsValid && (
+                  <tr>
+                    <td>
+                      <Form.Label>
+                        <strong>Client Name</strong>
+                      </Form.Label>
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        className={styles["form-control"]}
+                        value={`${client.name}, ${client.surname}`}
+                        readOnly
+                      />
+                    </td>
+                  </tr>
+                )}
                 <tr>
                   <td>
                     <Form.Label>
@@ -248,16 +255,33 @@ const EditFaultModel = (props) => {
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button
+              variant="secondary"
+              onClick={()=>{handleClose();resetStates();}}
+              disabled={fault.savingForm}
+            >
               Close
             </Button>
-            <Button
-              variant="primary"
-              type="submit"
-              disabled={!fault.formIsValid}
-            >
-              Save
-            </Button>
+            {!savingForm ? (
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={!fault.formIsValid}
+              >
+                Save
+              </Button>
+            ) : (
+              <Button variant="primary" disabled>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                <span> Saving...</span>
+              </Button>
+            )}
           </Modal.Footer>
         </Form>
       </Modal>

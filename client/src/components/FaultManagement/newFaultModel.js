@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import Spinner from "react-bootstrap/Spinner";
 import styles from "./faultModel.module.css";
 import Axios from "axios";
 
@@ -13,6 +14,7 @@ const NewFaultModel = (props) => {
     description: "",
     formIsValid: false,
   });
+  const [savingForm,setSavingForm]=useState(false)
 
   const [client, setClient] = useState({
     id: "",
@@ -31,7 +33,7 @@ const NewFaultModel = (props) => {
     setShow(true);
   };
 
-  const cleanStates = () => {
+  const resetStates = () => {
     setFault((prevState) => {
       return {
         ...prevState,
@@ -49,12 +51,13 @@ const NewFaultModel = (props) => {
         idIsValid: false,
       };
     });
+    setSavingForm(false);
     generateFaultNumber();
   };
 
   const submitNewFault = (e) => {
     e.preventDefault();
-    console.log("hi");
+    setSavingForm(true);
     Axios.post(`faultManagement/NewFaultModel`, {
       number: parseInt(fault.number),
       status: fault.status,
@@ -63,36 +66,37 @@ const NewFaultModel = (props) => {
       description: fault.description,
     })
       .then((response) => {
-        console.log(response.data)
         props.updateFaults(response.data);
+        handleClose();
+        resetStates();
       })
       .catch((err) => {
         console.log(err);
       });
-    handleClose();
-    cleanStates();
   };
 
   const generateFaultNumber = () => {
-    Axios.get(`faultManagement/NewFaultModel/newNumber`).then((response) => {
-      console.log(response.data)
-      if(response.data){
+    Axios.get(`faultManagement/NewFaultModel/newNumber`)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data) {
+          setFault((prevState) => {
+            return {
+              ...prevState,
+              number: response.data,
+            };
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
         setFault((prevState) => {
           return {
             ...prevState,
-            number: response.data,
+            number: 100000000,
           };
         });
-      }  
-    }).catch((err)=>{
-      console.log(err)
-      setFault((prevState) => {
-        return {
-          ...prevState,
-          number: 100000000,
-        };
       });
-    });
   };
 
   useEffect(() => {
@@ -123,7 +127,7 @@ const NewFaultModel = (props) => {
     });
     if (value.length === 9) {
       //need to add if in the id is match
-      Axios.put(`faultManagement/NewFaultModel/clientID`, {
+      Axios.put(`faultManagement/clientID`, {
         id: parseInt(value),
       }).then((response) => {
         if (response.data) {
@@ -221,23 +225,21 @@ const NewFaultModel = (props) => {
                   </td>
                 </tr>
                 {client.idIsValid && (
-                  <>
-                    <tr>
-                      <td>
-                        <Form.Label>
-                          <strong>Client Name</strong>
-                        </Form.Label>
-                      </td>
-                      <td>
-                        <Form.Control
-                          type="text"
-                          className={styles["form-control"]}
-                          value={`${client.name}, ${client.surname}`}
-                          readOnly
-                        />
-                      </td>
-                    </tr>
-                  </>
+                  <tr>
+                    <td>
+                      <Form.Label>
+                        <strong>Client Name</strong>
+                      </Form.Label>
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="text"
+                        className={styles["form-control"]}
+                        value={`${client.name}, ${client.surname}`}
+                        readOnly
+                      />
+                    </td>
+                  </tr>
                 )}
                 <tr>
                   <td>
@@ -284,16 +286,29 @@ const NewFaultModel = (props) => {
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={handleClose} disabled={fault.savingForm}>
               Close
             </Button>
-            <Button
-              variant="primary"
-              type="submit"
-              disabled={!fault.formIsValid}
-            >
-              Save
-            </Button>
+            {!savingForm ? (
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={!fault.formIsValid}
+              >
+                Save
+              </Button>
+            ) : (
+              <Button variant="primary" disabled>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                <span> Saving...</span>
+              </Button>
+            )}
           </Modal.Footer>
         </Form>
       </Modal>

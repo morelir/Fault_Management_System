@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import "./fault_management.css";
+import Spinner from "react-bootstrap/Spinner";
 import NewFaultModel from "./FaultManagement/newFaultModel";
 import EditFaultModel from "./FaultManagement/editFaultModel";
 
@@ -9,6 +10,7 @@ const FaultManagement = (props) => {
   const [faults, setFaults] = useState([]);
   // console.log(faults)
   const [showNewFault, setShowNewFault] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const closeNewFaultHandler = () => {
     setShowNewFault(false);
@@ -18,19 +20,17 @@ const FaultManagement = (props) => {
     setShowNewFault(true);
   };
 
-  const evenPos = pos => pos % 2 == 0
-
+  const evenPos = (pos) => pos % 2 == 0;
 
   useEffect(() => {
-    Axios.get("/faultManagement").then((response) => {
-      setFaults(response.data);
-      console.log(response.data)
-      //new Date
-    }).catch((err)=>{
-      console.log(err)
-     
-    });
-    
+    Axios.get("/faultManagement")
+      .then((response) => {
+        setFaults(response.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   const updateFaults = (faults) => {
@@ -39,11 +39,12 @@ const FaultManagement = (props) => {
 
   const displayDate = (dateFormat) => {
     let date = new Date(dateFormat);
-    let displayDate = `${date.getFullYear()}-${date.getMonth() + 1}-${
-      date.getDate() > 10 ? date.getDate() : "0" + date.getDate()
-    } ${date.getHours() > 10 ? date.getHours() : "0" + date.getHours()}:${
-      date.getMinutes() > 10 ? date.getMinutes() : "0" + date.getMinutes()
-    }`;
+    let month = date.getMonth() + 1;
+    let displayDate = `${date.getFullYear()}-${
+      month >= 10 ? month : "0" + month
+    }-${date.getDate() >= 10 ? date.getDate() : "0" + date.getDate()} ${
+      date.getHours() >= 10 ? date.getHours() : "0" + date.getHours()
+    }:${date.getMinutes() >= 10 ? date.getMinutes() : "0" + date.getMinutes()}`;
     return displayDate;
   };
 
@@ -74,8 +75,6 @@ const FaultManagement = (props) => {
                   </a> */}
                   <NewFaultModel
                     updateFaults={updateFaults}
-                    // show={showNewFault}
-                    // setShow={closeNewFaultHandler}
                   />
                 </div>
               </div>
@@ -94,65 +93,63 @@ const FaultManagement = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {faults.map((fault, pos) => {
-                  return (
-                    <React.Fragment key={fault.number}>
-                      {/* key={fault.number} */}
-                      <tr
-                        id={evenPos(pos) ? "fault-even-pos" : "fault-odd-pos"}
-                      >
-                        <td>{fault.number}</td>
-                        <td>{fault.status}</td>
-                        <td>{displayDate(fault.date_created)}</td>
-                        <td>{`${fault.name}, ${fault.surname}`}</td>
-                        <td>{fault.team}</td>
-                        <td>{fault.handler}</td>
-                        <td>{fault.handling_duration}</td>
-                        <td>
-                          <EditFaultModel
-                            fault={fault}
-                          />
-                          {/* <a
-                            href="#editEmployeeModal"
-                            className="edit"
-                            data-toggle="modal"
-                          >
-                            <i
-                              className="material-icons"
-                              // onClick="edit_click(this.id,'{{q.cat}}','{{q.question}}','{{q.correct}}','{{q.answer1}}',
-                              //               '{{q.answer2}}','{{q.answer3}}','{{q.answer4}}','{{q.timer}}','{{q.url}}','{{q.photoUrl}}')"
-                              data-toggle="tooltip"
-                              title="Edit"
+                {!isLoading ? (
+                  faults.map((fault, pos) => {
+                    return (
+                      <React.Fragment key={fault.number}>
+                        {/* key={fault.number} */}
+                        <tr
+                          id={evenPos(pos) ? "fault-even-pos" : "fault-odd-pos"}
+                        >
+                          <td>{fault.number}</td>
+                          <td>{fault.status}</td>
+                          <td>{displayDate(fault.date_created)}</td>
+                          <td>{`${fault.name}, ${fault.surname}`}</td>
+                          <td>{fault.team}</td>
+                          <td>{fault.handler}</td>
+                          <td>{fault.handling_duration}</td>
+                          <td>
+                            <EditFaultModel fault={fault} updateFaults={updateFaults} />
+
+                            <a
+                              href="#deleteEmployeeModal"
+                              className="delete"
+                              data-toggle="modal"
                             >
-                              &#xE254;
-                            </i>
-                          </a> */}
-                          <a
-                            href="#deleteEmployeeModal"
-                            className="delete"
-                            data-toggle="modal"
-                          >
-                            <i
-                              className="material-icons"
-                              // onClick="delete_click(this.id)"
-                              data-toggle="tooltip"
-                              title="Delete"
-                            >
-                              &#xE872;
-                            </i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr
-                        id={evenPos(pos) ? "fault-even-pos" : "fault-odd-pos"}
-                      >
-                        <td colSpan="8" className="fault-description">
-                          <span>{fault.description}</span>
-                        </td>
-                      </tr>
-                    </React.Fragment>
-                  );
-                })}
+                              <i
+                                className="material-icons"
+                                // onClick="delete_click(this.id)"
+                                data-toggle="tooltip"
+                                title="Delete"
+                              >
+                                &#xE872;
+                              </i>
+                            </a>
+                          </td>
+                        </tr>
+                        <tr
+                          id={evenPos(pos) ? "fault-even-pos" : "fault-odd-pos"}
+                        >
+                          <td colSpan="8" className="fault-description">
+                            <span>{fault.description}</span>
+                          </td>
+                        </tr>
+                      </React.Fragment>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="8">
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
