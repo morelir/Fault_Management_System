@@ -4,6 +4,8 @@ import "./fault_management.css";
 import Spinner from "react-bootstrap/Spinner";
 import NewFaultModel from "./FaultManagement/newFaultModel";
 import EditFaultModel from "./FaultManagement/editFaultModel";
+import axios from "axios";
+import CloseFaultModal from "./FaultManagement/closeFaultModal";
 
 const FaultManagement = (props) => {
   // console.log(props)
@@ -11,14 +13,6 @@ const FaultManagement = (props) => {
   // console.log(faults)
   const [showNewFault, setShowNewFault] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  const closeNewFaultHandler = () => {
-    setShowNewFault(false);
-  };
-
-  const newFaultHandler = () => {
-    setShowNewFault(true);
-  };
 
   const evenPos = (pos) => pos % 2 == 0;
 
@@ -36,6 +30,10 @@ const FaultManagement = (props) => {
   const updateFaults = (faults) => {
     setFaults(faults);
   };
+
+  // const deleteFault = (id) => {
+  //   updateFaults(faults.filter((fault) => fault._id !== id));
+  // };
 
   const displayDate = (dateFormat) => {
     let date = new Date(dateFormat);
@@ -63,19 +61,7 @@ const FaultManagement = (props) => {
                   </h2>
                 </div>
                 <div className="col-sm-10">
-                  {/* <a
-                    onClick={newFaultHandler}
-                    className="btn btn-success"
-                    data-toggle="modal"
-                    style={{ fontSize: "16px" }}
-                  >
-                  
-                    <i className="material-icons">&#xE147;</i>{" "}
-                    <span>New Fault</span>
-                  </a> */}
-                  <NewFaultModel
-                    updateFaults={updateFaults}
-                  />
+                  <NewFaultModel updateFaults={updateFaults} />
                 </div>
               </div>
             </div>
@@ -94,49 +80,46 @@ const FaultManagement = (props) => {
               </thead>
               <tbody>
                 {!isLoading ? (
-                  faults.map((fault, pos) => {
-                    return (
-                      <React.Fragment key={fault.number}>
-                        {/* key={fault.number} */}
-                        <tr
-                          id={evenPos(pos) ? "fault-even-pos" : "fault-odd-pos"}
-                        >
-                          <td>{fault.number}</td>
-                          <td>{fault.status}</td>
-                          <td>{displayDate(fault.date_created)}</td>
-                          <td>{`${fault.name}, ${fault.surname}`}</td>
-                          <td>{fault.team}</td>
-                          <td>{fault.handler}</td>
-                          <td>{fault.handling_duration}</td>
-                          <td>
-                            <EditFaultModel fault={fault} updateFaults={updateFaults} />
-
-                            <a
-                              href="#deleteEmployeeModal"
-                              className="delete"
-                              data-toggle="modal"
-                            >
-                              <i
-                                className="material-icons"
-                                // onClick="delete_click(this.id)"
-                                data-toggle="tooltip"
-                                title="Delete"
-                              >
-                                &#xE872;
-                              </i>
-                            </a>
-                          </td>
-                        </tr>
-                        <tr
-                          id={evenPos(pos) ? "fault-even-pos" : "fault-odd-pos"}
-                        >
-                          <td colSpan="8" className="fault-description">
-                            <span>{fault.description}</span>
-                          </td>
-                        </tr>
-                      </React.Fragment>
-                    );
-                  })
+                  faults
+                    .filter((fault) => fault.status !== "Close")
+                    .map((fault, pos) => {
+                      return (
+                        <React.Fragment key={fault.number}>
+                          <tr
+                            id={
+                              evenPos(pos) ? "fault-even-pos" : "fault-odd-pos"
+                            }
+                          >
+                            <td>{fault.number}</td>
+                            <td>{fault.status}</td>
+                            <td>{displayDate(fault.date_created)}</td>
+                            <td>{`${fault.name}, ${fault.surname}`}</td>
+                            <td>{fault.team}</td>
+                            <td>{fault.handler}</td>
+                            <td>{fault.handling_duration}</td>
+                            <td>
+                              <EditFaultModel
+                                fault={fault}
+                                updateFaults={updateFaults}
+                              />
+                              <CloseFaultModal
+                                _id={fault._id}
+                                updateFaults={updateFaults}
+                              />
+                            </td>
+                          </tr>
+                          <tr
+                            id={
+                              evenPos(pos) ? "fault-even-pos" : "fault-odd-pos"
+                            }
+                          >
+                            <td colSpan="8" className="fault-description">
+                              <span>{fault.description}</span>
+                            </td>
+                          </tr>
+                        </React.Fragment>
+                      );
+                    })
                 ) : (
                   <tr>
                     <td colSpan="8">

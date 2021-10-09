@@ -78,7 +78,6 @@ const NewFaultModel = (props) => {
   const generateFaultNumber = () => {
     Axios.get(`faultManagement/NewFaultModel/newNumber`)
       .then((response) => {
-        console.log(response.data);
         if (response.data) {
           setFault((prevState) => {
             return {

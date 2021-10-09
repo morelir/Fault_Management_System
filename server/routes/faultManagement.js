@@ -55,6 +55,23 @@ router.post("/NewFaultModel", async (req, res) => {
   }
 });
 
+const mergeFaultsAndUsers = async (faults) => {
+  try {
+    let data =await Promise.all(
+      faults.map(async (fault) => {
+        let user = await UserModel.findOne(
+          { id: fault.clientID },
+          "-_id name surname"
+        ).lean();
+        return { ...fault, ...user };
+      })
+    );
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 router.post("/EditFaultModel", async (req, res) => {
   let validBody =  validNewFault(req.body);
   console.log(req.body);
@@ -63,7 +80,7 @@ router.post("/EditFaultModel", async (req, res) => {
   //   return res.status(400).json(validBody.error.details);
   // }
   try {
-    fault = await FaultModel.findOne({ id: req.body.id });
+    fault = await FaultModel.findOne({ _id: req.body._id });
     // fault.team="Logisti" //שומר את המידע ב db
     fault=updateFault(fault,req.body);
     await fault.save();
@@ -85,21 +102,20 @@ const updateFault=(fault,updateFault)=>{
   return fault;
 }
 
-const mergeFaultsAndUsers = async (faults) => {
-  try {
-    let data =await Promise.all(
-      faults.map(async (fault) => {
-        let user = await UserModel.findOne(
-          { id: fault.clientID },
-          "-_id name surname"
-        ).lean();
-        return { ...fault, ...user };
-      })
-    );
-    return data;
-  } catch (err) {
-    console.log(err);
+
+router.put("/closeFault", async (req, res) => {
+  try{
+    fault = await FaultModel.findOne({ _id: req.body._id});
+    fault.status="Close";
+    await fault.save();
+    let faults = await FaultModel.find({}).lean();
+    data = await mergeFaultsAndUsers(faults);
+    res.json(data);
+  }catch(err){
+    console.log(err)
   }
-};
+
+});
+
 
 module.exports = router;

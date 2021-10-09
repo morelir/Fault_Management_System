@@ -22,7 +22,7 @@ const EditFaultModel = (props) => {
     surname: props.fault.surname,
     idIsValid: true,
   });
-  
+
   const [show, setShow] = useState(false);
 
   const handleClose = () => {
@@ -41,7 +41,7 @@ const EditFaultModel = (props) => {
       };
     });
     setClient((prevState) => {
-      return { 
+      return {
         ...prevState,
         idIsValid: true,
       };
@@ -53,6 +53,7 @@ const EditFaultModel = (props) => {
     e.preventDefault();
     setSavingForm(true);
     Axios.post(`faultManagement/EditFaultModel`, {
+      _id: props.fault._id,
       number: parseInt(fault.number),
       status: fault.status,
       clientID: parseInt(client.id),
@@ -67,7 +68,6 @@ const EditFaultModel = (props) => {
       .catch((err) => {
         console.log(err);
       });
-    
   };
 
   useEffect(() => {
@@ -119,14 +119,15 @@ const EditFaultModel = (props) => {
 
   return (
     <>
-      <a href="#editEmployeeModal" className="edit" data-toggle="modal">
+      <a href="#editModal" className="edit" data-toggle="modal">
         <i
           className="material-icons"
           onClick={handleOpen}
           data-toggle="tooltip"
           title="Edit"
         >
-          &#xE254;
+          {/* &#xE254; */}
+          <span style={{ fontSize: "16px" }}>✏️</span>
         </i>
       </a>
       <Modal
@@ -257,7 +258,10 @@ const EditFaultModel = (props) => {
           <Modal.Footer>
             <Button
               variant="secondary"
-              onClick={()=>{handleClose();resetStates();}}
+              onClick={() => {
+                handleClose();
+                resetStates();
+              }}
               disabled={fault.savingForm}
             >
               Close

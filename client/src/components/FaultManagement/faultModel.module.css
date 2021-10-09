@@ -1,16 +1,12 @@
 .modal {
-  color: #444;
- 
+  color: #444; 
   border-radius: 16px;
- 
-  
 }
 
 .modal .modal-dialog{
     max-width: 500px;
 
 }
-
 
 .modal-header {
     color:white;
