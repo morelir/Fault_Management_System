@@ -21,6 +21,12 @@
   line-height:1;
 }
 
+.form-control-select{
+  
+  width: 70%;
+  
+}
+
 .td{
   width: 150px;
 }

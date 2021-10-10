@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./faultModel.module.css";
 import Axios from "axios";
@@ -12,6 +14,7 @@ const EditFaultModel = (props) => {
     status: props.fault.status,
     team: props.fault.team,
     description: props.fault.description,
+    teams: [],
     formIsValid: true,
   });
   const [savingForm, setSavingForm] = useState(false);
@@ -37,12 +40,17 @@ const EditFaultModel = (props) => {
     setFault((prevState) => {
       return {
         ...prevState,
+        number: props.fault.number,
+        description: props.fault.description,
+        team: props.fault.team,
         formIsValid: true,
       };
     });
     setClient((prevState) => {
       return {
-        ...prevState,
+        id: props.fault.clientID,
+        name: props.fault.name,
+        surname: props.fault.surname,
         idIsValid: true,
       };
     });
@@ -69,6 +77,27 @@ const EditFaultModel = (props) => {
         console.log(err);
       });
   };
+  // order teams that team handler first in the array
+  const orderTeamsByTeamHandler=()=>{
+    let temp;
+    let orderTeams=props.teams.filter((team)=>{
+      if(team.name===fault.team){
+        temp=team;
+      }
+      return team.name!==fault.team
+    })
+    orderTeams.unshift(temp);
+    setFault((prevState) => {
+      return {
+        ...prevState,
+        teams: orderTeams,
+      };
+    });
+  }
+
+  useEffect(() => {
+    orderTeamsByTeamHandler();
+  }, []);
 
   useEffect(() => {
     const identifier = setTimeout(() => {
@@ -147,94 +176,71 @@ const EditFaultModel = (props) => {
         </Modal.Header>
         <Form onSubmit={submitSaveFault}>
           <Modal.Body>
-            <table>
-              <tbody>
-                <tr>
-                  <td className={styles["td"]}>
-                    <Form.Label>
-                      <strong>No.</strong>
-                    </Form.Label>
-                  </td>
-                  <td>
-                    <Form.Control
-                      type="text"
-                      className={styles["form-control"]}
-                      value={fault.number}
-                      readOnly
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <Form.Label>
-                      <strong>Status</strong>
-                    </Form.Label>
-                  </td>
-                  <td>
-                    <Form.Control
-                      type="text"
-                      className={styles["form-control"]}
-                      value={fault.status}
-                      readOnly
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <Form.Label>
-                      <strong>Client ID</strong>
-                    </Form.Label>
-                  </td>
-                  <td>
-                    <Form.Control
-                      type="text"
-                      className={styles["form-control"]}
-                      value={client.id}
-                      onChange={clientIdHandler}
-                    />
-                  </td>
-                </tr>
-                {client.idIsValid && (
-                  <tr>
-                    <td>
-                      <Form.Label>
-                        <strong>Client Name</strong>
-                      </Form.Label>
-                    </td>
-                    <td>
-                      <Form.Control
-                        type="text"
-                        className={styles["form-control"]}
-                        value={`${client.name}, ${client.surname}`}
-                        readOnly
-                      />
-                    </td>
-                  </tr>
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>No.</strong>
+                </Form.Label>
+                <Form.Control type="text" value={fault.number} readOnly />
+              </Form.Group>
+
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Status</strong>
+                </Form.Label>
+                <Form.Control type="text" value={fault.status} readOnly />
+              </Form.Group>
+
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Client Name</strong>
+                </Form.Label>
+                {client.idIsValid ? (
+                  <Form.Control
+                    type="text"
+                    value={`${client.name + ", " + client.surname}`}
+                    readOnly
+                  />
+                ) : (
+                  <Form.Control value="" type="text" readOnly />
                 )}
-                <tr>
-                  <td>
-                    <Form.Label>
-                      <strong>Team</strong>
-                    </Form.Label>
-                  </td>
-                  <td>
-                    <Form.Control
-                      type="text"
-                      className={styles["form-control"]}
-                      value={fault.team}
-                      onChange={(e) => {
-                        setFault((prevState) => {
-                          return { ...prevState, team: e.target.value };
-                        });
-                      }}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Client ID</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={client.id}
+                  onChange={clientIdHandler}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Team Handler</strong>
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  value={fault.team}
+                  onChange={(e) => {
+                    setFault((prevState) => {
+                      return { ...prevState, team: e.target.value };
+                    });
+                  }}
+                >
+                  {fault.teams.map((team) => {
+                    return <option key={team._id} value={team.name}>{team.name}</option>;
+                  })}
+                </Form.Control>
+              </Form.Group>
+            </Row>
+
             <Form.Group size="lg" controlId="email">
               <Form.Label>
-                <strong>Description :</strong>
+                <strong>Description </strong>
               </Form.Label>
               <br />
               <Form.Control

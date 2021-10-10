@@ -8,23 +8,35 @@ import axios from "axios";
 import CloseFaultModal from "./FaultManagement/closeFaultModal";
 
 const FaultManagement = (props) => {
-  // console.log(props)
   const [faults, setFaults] = useState([]);
-  // console.log(faults)
-  const [showNewFault, setShowNewFault] = useState(false);
+  const [teams, setTeams] = useState([]);
+
   const [isLoading, setIsLoading] = useState(true);
 
   const evenPos = (pos) => pos % 2 == 0;
 
+  const getFaults = async () => {
+    try {
+      let response = await Axios.get("/faultManagement");
+      setFaults(response.data);
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getTeams = async () => {
+    try {
+      let response = await Axios.get(`faultManagement/teams`);
+      setTeams(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   useEffect(() => {
-    Axios.get("/faultManagement")
-      .then((response) => {
-        setFaults(response.data);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    getFaults();
+    getTeams();
   }, []);
 
   const updateFaults = (faults) => {
@@ -61,7 +73,7 @@ const FaultManagement = (props) => {
                   </h2>
                 </div>
                 <div className="col-sm-10">
-                  <NewFaultModel updateFaults={updateFaults} />
+                  <NewFaultModel teams={teams} updateFaults={updateFaults} />
                 </div>
               </div>
             </div>
@@ -100,6 +112,7 @@ const FaultManagement = (props) => {
                             <td>
                               <EditFaultModel
                                 fault={fault}
+                                teams={teams}
                                 updateFaults={updateFaults}
                               />
                               <CloseFaultModal

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./faultModel.module.css";
 import Axios from "axios";
@@ -12,9 +14,10 @@ const NewFaultModel = (props) => {
     status: "New",
     team: "",
     description: "",
+    teams: props.teams,
     formIsValid: false,
   });
-  const [savingForm,setSavingForm]=useState(false)
+  const [savingForm, setSavingForm] = useState(false);
 
   const [client, setClient] = useState({
     id: "",
@@ -125,7 +128,6 @@ const NewFaultModel = (props) => {
       return { ...prevState, id: value };
     });
     if (value.length === 9) {
-      //need to add if in the id is match
       Axios.put(`faultManagement/clientID`, {
         id: parseInt(value),
       }).then((response) => {
@@ -141,7 +143,12 @@ const NewFaultModel = (props) => {
             return { ...prevState, idIsValid: true };
           });
           return;
+        } else {
+          setClient((prevState) => {
+            return { ...prevState, idIsValid: false };
+          });
         }
+        return;
       });
     }
     setClient((prevState) => {
@@ -176,94 +183,73 @@ const NewFaultModel = (props) => {
         </Modal.Header>
         <Form onSubmit={submitNewFault}>
           <Modal.Body>
-            <table>
-              <tbody>
-                <tr>
-                  <td className={styles["td"]}>
-                    <Form.Label>
-                      <strong>No.</strong>
-                    </Form.Label>
-                  </td>
-                  <td>
-                    <Form.Control
-                      type="text"
-                      className={styles["form-control"]}
-                      value={fault.number}
-                      readOnly
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <Form.Label>
-                      <strong>Status</strong>
-                    </Form.Label>
-                  </td>
-                  <td>
-                    <Form.Control
-                      type="text"
-                      className={styles["form-control"]}
-                      value={fault.status}
-                      readOnly
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <Form.Label>
-                      <strong>Client ID</strong>
-                    </Form.Label>
-                  </td>
-                  <td>
-                    <Form.Control
-                      type="text"
-                      className={styles["form-control"]}
-                      value={client.id}
-                      onChange={clientIdHandler}
-                    />
-                  </td>
-                </tr>
-                {client.idIsValid && (
-                  <tr>
-                    <td>
-                      <Form.Label>
-                        <strong>Client Name</strong>
-                      </Form.Label>
-                    </td>
-                    <td>
-                      <Form.Control
-                        type="text"
-                        className={styles["form-control"]}
-                        value={`${client.name}, ${client.surname}`}
-                        readOnly
-                      />
-                    </td>
-                  </tr>
+
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>No.</strong>
+                </Form.Label>
+                <Form.Control type="text" value={fault.number} readOnly />
+              </Form.Group>
+
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Status</strong>
+                </Form.Label>
+                <Form.Control type="text" value={fault.status} readOnly />
+              </Form.Group>
+
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Client Name</strong>
+                </Form.Label>
+                {client.idIsValid ? (
+                  <Form.Control
+                    type="text"
+                    value={`${client.name + ", " + client.surname}`}
+                    readOnly
+                  />
+                ) : (
+                  <Form.Control value="" type="text" readOnly />
                 )}
-                <tr>
-                  <td>
-                    <Form.Label>
-                      <strong>Team</strong>
-                    </Form.Label>
-                  </td>
-                  <td>
-                    <Form.Control
-                      type="text"
-                      className={styles["form-control"]}
-                      value={fault.team}
-                      onChange={(e) => {
-                        setFault((prevState) => {
-                          return { ...prevState, team: e.target.value };
-                        });
-                      }}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Client ID</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={client.id}
+                  onChange={clientIdHandler}
+                />
+                
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Team Handler</strong>
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  value={fault.team}
+                  onChange={(e) => {
+                    setFault((prevState) => {
+                      return { ...prevState, team: e.target.value };
+                    });
+                  }}
+                >
+                  {fault.teams.map((team) => {
+                    return <option value={team.name}>{team.name}</option>
+                  })}
+                </Form.Control>
+              </Form.Group>
+            </Row>
+
             <Form.Group size="lg" controlId="email">
               <Form.Label>
-                <strong>Description :</strong>
+                <strong>Description</strong>
               </Form.Label>
               <br />
               <Form.Control
@@ -285,7 +271,11 @@ const NewFaultModel = (props) => {
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose} disabled={fault.savingForm}>
+            <Button
+              variant="secondary"
+              onClick={handleClose}
+              disabled={fault.savingForm}
+            >
               Close
             </Button>
             {!savingForm ? (

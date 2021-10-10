@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const router = express.Router();
 const { FaultModel, validNewFault } = require("../models/faultModel");
 const { UserModel } = require("../models/UserModel");
+const { TeamModel } = require("../models/teamModel");
+
 
 router.get("/", async (req, res) => {
   try{
@@ -115,6 +117,13 @@ router.put("/closeFault", async (req, res) => {
     console.log(err)
   }
 
+});
+
+router.get("/teams", async (req, res) => {
+  console.log("hi");
+  teams=await TeamModel.find();
+  console.log(teams);
+  res.json(teams)
 });
 
 
