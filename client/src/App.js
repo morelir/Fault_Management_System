@@ -6,7 +6,7 @@ import {
   Link,
   Redirect,
 } from "react-router-dom";
-import { useContext } from "react";
+import { useContext,useEffect,useState } from "react";
 
 import Home from "./components/home";
 import MainNavigation from "./shared/components/Navigation/MainNavigation";
@@ -14,10 +14,28 @@ import Login from "./components/login";
 import Registration from "./components/registration";
 import AuthContext from "./store/auth-context";
 import FaultManagement from "./components/fault_management";
+import Axios from "axios";
 
 const App = () => {
   const authCtx = useContext(AuthContext);
-  console.log(authCtx)
+  const [teams,setTeams]=useState([]);
+  
+  const getTeams = async () => {
+    try {
+      let response = await Axios.get(`faultManagement/teams`);
+      console.log(response.data)
+      let _teams=response.data.map((team)=>{return team.name})
+      setTeams(_teams)
+      
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getTeams();
+  }, []);
+
   return (
     <Router>
       <MainNavigation />
@@ -27,13 +45,13 @@ const App = () => {
           <h1></h1>
           <Switch>
             <Route exact path="/" component={Home}></Route>
-           
-            <Route
-              exact
-              path="/faultManagement"
-              component={FaultManagement}
-            ></Route>
-
+            {authCtx.isLoggedIn && teams.includes(authCtx.user.team) &&
+              <Route
+                exact
+                path="/faultManagement"
+                component={FaultManagement}
+              ></Route>
+            }
             {!authCtx.isLoggedIn && (
               <>
                 <Route exact path="/login" component={Login}></Route>

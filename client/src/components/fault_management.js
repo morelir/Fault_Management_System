@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, {useContext, useState, useEffect } from "react";
 import Axios from "axios";
 import "./fault_management.css";
 import Spinner from "react-bootstrap/Spinner";
 import NewFaultModel from "./FaultManagement/newFaultModel";
 import EditFaultModel from "./FaultManagement/editFaultModel";
-import axios from "axios";
 import CloseFaultModal from "./FaultManagement/closeFaultModal";
+import AuthContext from "../store/auth-context";
 
 const FaultManagement = (props) => {
+  const authCtx = useContext(AuthContext);
   const [faults, setFaults] = useState([]);
   const [teams, setTeams] = useState([]);
 
@@ -93,7 +94,7 @@ const FaultManagement = (props) => {
               <tbody>
                 {!isLoading ? (
                   faults
-                    .filter((fault) => fault.status !== "Close")
+                    .filter((fault) => fault.status !== "Close" && fault.team===authCtx.user.team)
                     .map((fault, pos) => {
                       return (
                         <React.Fragment key={fault.number}>

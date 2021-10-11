@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory,Link } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import Axios from "axios";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -9,16 +9,61 @@ import styles from "./auth.module.css";
 // this.props.location.state.detail.user
 const Registration = (props) => {
   const history = useHistory();
+
+  const [teams, setTeams] = useState([]);
+
   const [registration, setRegistration] = useState({
     email: "",
     pass: "",
     confPass: "",
     id: "",
     name: "",
-    surname:"",
+    surname: "",
+    team: "",
     formIsValid: false,
     registerErrors: "",
   });
+
+
+
+  const resetStates = () => {
+    setRegistration((prevState) => {
+      return {
+        ...prevState,
+        email: "",
+        pass: "",
+        confPass: "",
+        team: "",
+        id: "",
+        name:"",
+        surname: "",
+        team: "",
+        formIsValid: false,
+        registerErrors: "",
+      };
+    });
+    
+  };
+
+  const getTeams = async () => {
+    try {
+      let response = await Axios.get(`faultManagement/teams`);
+      setTeams(response.data);
+      setRegistration((prevState) => {
+        return {
+          ...prevState, 
+          team: response.data[0].name,      
+        };
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getTeams();
+    
+  }, []);
 
   //check if the form is valid
   useEffect(() => {
@@ -64,7 +109,12 @@ const Registration = (props) => {
     return () => {
       clearTimeout(identifier);
     };
-  }, [registration.id,registration.surname,registration.name, registration.email]);
+  }, [
+    registration.id,
+    registration.surname,
+    registration.name,
+    registration.email,
+  ]);
 
   //set error password not match to conf password
   useEffect(() => {
@@ -87,16 +137,18 @@ const Registration = (props) => {
     event.preventDefault();
     console.log("registration event");
     Axios.post("/register", {
-      id:parseInt(registration.id),
+      id: parseInt(registration.id),
       name: registration.name,
-      surname:registration.surname,
+      surname: registration.surname,
       email: registration.email,
       pass: registration.pass,
+      team:registration.team,
     })
       .then((response) => {
         console.log(response.data);
+        resetStates();
         alert("Registration Succeed");
-        history.replace("/registration");
+        // history.replace("/login");
       })
       .catch((err) => {
         console.log(err.response);
@@ -137,7 +189,6 @@ const Registration = (props) => {
         <Form.Group size="lg" controlId="email">
           <Form.Label>Name</Form.Label>
           <Form.Control
-            
             value={registration.name}
             onChange={(e) =>
               setRegistration({ ...registration, name: e.target.value })
@@ -148,7 +199,6 @@ const Registration = (props) => {
         <Form.Group size="lg" controlId="email">
           <Form.Label>Surname</Form.Label>
           <Form.Control
-            
             value={registration.surname}
             onChange={(e) =>
               setRegistration({ ...registration, surname: e.target.value })
@@ -187,6 +237,25 @@ const Registration = (props) => {
             // onChange={(e) => this.ValidPassConfirm(e)}
             onChange={ValidPassConfirm}
           />
+        </Form.Group>
+        <br />
+        <Form.Group>
+          <Form.Label>
+            Team Handler
+          </Form.Label>
+          <Form.Control
+            as="select"
+            value={registration.team}
+            onChange={(e) => {
+              setRegistration((prevState) => {
+                return { ...prevState, team: e.target.value };
+              });
+            }}
+          >
+            {teams.map((team) => {
+              return <option value={team.name}>{team.name}</option>;
+            })}
+          </Form.Control>
         </Form.Group>
         <br />
         <Button

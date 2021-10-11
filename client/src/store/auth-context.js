@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 let timeoutID;
 
 const AuthContext = React.createContext({
@@ -38,8 +37,9 @@ export const AuthContextProvider = (props) => {
   const userData = retrieveStoredToken();
   let initialUser;
   if (userData) {
-    initialUser = userData.user;
+    initialUser = JSON.parse(userData.user);
   }
+  console.log(initialUser)
   const [user, setUser] = useState(initialUser);
 
   const userIsLoggedIn = !!user; //was ... = !!token need to see why need token
