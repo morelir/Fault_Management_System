@@ -23,7 +23,6 @@ const App = () => {
   const getTeams = async () => {
     try {
       let response = await Axios.get(`faultManagement/teams`);
-      console.log(response.data)
       let _teams=response.data.map((team)=>{return team.name})
       setTeams(_teams)
       

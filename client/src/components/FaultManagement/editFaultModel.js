@@ -97,6 +97,7 @@ const EditFaultModel = (props) => {
 
   useEffect(() => {
     orderTeamsByTeamHandler();
+    // console.log(fault.teams)
   }, []);
 
   useEffect(() => {

@@ -39,7 +39,6 @@ export const AuthContextProvider = (props) => {
   if (userData) {
     initialUser = JSON.parse(userData.user);
   }
-  console.log(initialUser)
   const [user, setUser] = useState(initialUser);
 
   const userIsLoggedIn = !!user; //was ... = !!token need to see why need token

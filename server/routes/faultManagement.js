@@ -120,9 +120,7 @@ router.put("/closeFault", async (req, res) => {
 });
 
 router.get("/teams", async (req, res) => {
-  console.log("hi");
   teams=await TeamModel.find();
-  console.log(teams);
   res.json(teams)
 });
 

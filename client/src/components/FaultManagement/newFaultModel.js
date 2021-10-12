@@ -103,6 +103,7 @@ const NewFaultModel = (props) => {
 
   useEffect(() => {
     generateFaultNumber();
+    // console.log(fault.teams)
   }, []);
 
   useEffect(() => {
@@ -241,7 +242,7 @@ const NewFaultModel = (props) => {
                   }}
                 >
                   {fault.teams.map((team) => {
-                    return <option value={team.name}>{team.name}</option>
+                    return <option key={team._id} value={team.name}>{team.name}</option>
                   })}
                 </Form.Control>
               </Form.Group>

@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
 import "./fault_management.css";
 import Spinner from "react-bootstrap/Spinner";
@@ -20,7 +20,6 @@ const FaultManagement = (props) => {
     try {
       let response = await Axios.get("/faultManagement");
       setFaults(response.data);
-      setIsLoading(false);
     } catch (err) {
       console.log(err);
     }
@@ -35,9 +34,10 @@ const FaultManagement = (props) => {
     }
   };
 
-  useEffect(() => {
-    getFaults();
-    getTeams();
+  useEffect(async () => {
+    await getTeams();
+    await getFaults();
+    setIsLoading(false);
   }, []);
 
   const updateFaults = (faults) => {
@@ -73,9 +73,11 @@ const FaultManagement = (props) => {
                     <strong>Fault List</strong>
                   </h2>
                 </div>
-                <div className="col-sm-10">
-                  <NewFaultModel teams={teams} updateFaults={updateFaults} />
-                </div>
+                {!isLoading &&
+                  <div className="col-sm-10">
+                    <NewFaultModel teams={teams} updateFaults={updateFaults} />
+                  </div>
+                }
               </div>
             </div>
             <table className="table table-striped table-hover">
@@ -94,7 +96,11 @@ const FaultManagement = (props) => {
               <tbody>
                 {!isLoading ? (
                   faults
-                    .filter((fault) => fault.status !== "Close" && fault.team===authCtx.user.team)
+                    .filter(
+                      (fault) =>
+                        fault.status !== "Close" &&
+                        fault.team === authCtx.user.team
+                    )
                     .map((fault, pos) => {
                       return (
                         <React.Fragment key={fault.number}>

@@ -1,35 +1,21 @@
-import React, {useState,useContext} from 'react'
-import Navbar  from "react-bootstrap/Navbar"
-import Nav  from "react-bootstrap/Nav"
-import Container  from "react-bootstrap/Container"
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-
-import Login from './login';
-import Register from './registration';
-import AuthContext from '../store/auth-context';
+import React, { useState, useContext } from "react";
+import AuthContext from "../store/auth-context";
+import image from "./Internet_Business_Technology_HD_Wallpaper_11_1920x1440.jpg"
 
 // this.props.location.login.user.email
 const Home = (props) => {
-    const authCtx=useContext(AuthContext)
-    console.log(authCtx.user)
-    const [isLogin,setIsLogin] = useState(false)
-    const [user,setUser] = useState(null)
+  const authCtx = useContext(AuthContext);
+  const [isLogin, setIsLogin] = useState(false);
+  const [user, setUser] = useState(null);
 
-   
-    
-    return (
-        <div >
-            <h1>home</h1>
-            {/* {isLogin
-            ? user.name
-            : "guest"
-            } */}
-         
-        </div>
-    );
-    
-}
+  return (
+    <div>
+      <img
+        src={image}
+        alt="FMS wallpaper"
+      />
+    </div>
+  );
+};
 
 export default Home;
-
