@@ -230,7 +230,7 @@ const NewFaultModel = (props) => {
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Team Handler</strong>
+                  <strong>Handler Team</strong>
                 </Form.Label>
                 <Form.Control
                   as="select"

@@ -78,14 +78,14 @@ const EditFaultModel = (props) => {
       });
   };
   // order teams that team handler first in the array
-  const orderTeamsByTeamHandler=()=>{
+  const orderTeamsByTeamHandler = () => {
     let temp;
-    let orderTeams=props.teams.filter((team)=>{
-      if(team.name===fault.team){
-        temp=team;
+    let orderTeams = props.teams.filter((team) => {
+      if (team.name === fault.team) {
+        temp = team;
       }
-      return team.name!==fault.team
-    })
+      return team.name !== fault.team;
+    });
     orderTeams.unshift(temp);
     setFault((prevState) => {
       return {
@@ -93,7 +93,7 @@ const EditFaultModel = (props) => {
         teams: orderTeams,
       };
     });
-  }
+  };
 
   useEffect(() => {
     orderTeamsByTeamHandler();
@@ -147,6 +147,8 @@ const EditFaultModel = (props) => {
     });
   };
 
+
+
   return (
     <>
       <a href="#editModal" className="edit" data-toggle="modal">
@@ -177,7 +179,7 @@ const EditFaultModel = (props) => {
         </Modal.Header>
         <Form onSubmit={submitSaveFault}>
           <Modal.Body>
-            <Row className="mb-3">
+            <Row className="mb-3" >
               <Form.Group as={Col}>
                 <Form.Label>
                   <strong>No.</strong>
@@ -191,37 +193,58 @@ const EditFaultModel = (props) => {
                 </Form.Label>
                 <Form.Control type="text" value={fault.status} readOnly />
               </Form.Group>
-
-              <Form.Group as={Col}>
-                <Form.Label>
-                  <strong>Client Name</strong>
+            </Row>
+            
+            <Row>
+              <Form.Group as={Col} className={styles["form-group"]}>
+                <Form.Label style={{textDecoration: "underline"}}>
+                  <h4><strong>Client details</strong></h4>
                 </Form.Label>
-                {client.idIsValid ? (
-                  <Form.Control
-                    type="text"
-                    value={`${client.name + ", " + client.surname}`}
-                    readOnly
-                  />
-                ) : (
-                  <Form.Control value="" type="text" readOnly />
-                )}
+                
               </Form.Group>
             </Row>
 
             <Row className="mb-3">
               <Form.Group as={Col}>
-                <Form.Label>
-                  <strong>Client ID</strong>
+                  <Form.Label>
+                    <strong>Client Name</strong>
+                  </Form.Label>
+                  {client.idIsValid ? (
+                    <Form.Control
+                      type="text"
+                      value={`${client.name + ", " + client.surname}`}
+                      readOnly
+                    />
+                  ) : (
+                    <Form.Control value="" type="text" readOnly />
+                  )}
+                </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Label>
+                    <strong>Client ID</strong>
+                  </Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={client.id}
+                    onChange={clientIdHandler}
+                  />
+                </Form.Group>
+            </Row>
+
+            <Row>
+              <Form.Group as={Col} className={styles["form-group"]}>
+                <Form.Label style={{textDecoration: "underline",textAlign:"center"}}>
+                  <h4><strong>Handler details</strong></h4>
                 </Form.Label>
-                <Form.Control
-                  type="text"
-                  value={client.id}
-                  onChange={clientIdHandler}
-                />
+                
               </Form.Group>
+            </Row>
+
+
+            <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Team Handler</strong>
+                  <strong>Handler Team</strong>
                 </Form.Label>
                 <Form.Control
                   as="select"
@@ -233,9 +256,36 @@ const EditFaultModel = (props) => {
                   }}
                 >
                   {fault.teams.map((team) => {
-                    return <option key={team._id} value={team.name}>{team.name}</option>;
+                    return (
+                      <option key={team._id} value={team.name}>
+                        {team.name}
+                      </option>
+                    );
                   })}
                 </Form.Control>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Handler Member Name</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={client.id}
+                  onChange={clientIdHandler}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Handler Member ID</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={client.id}
+                  onChange={clientIdHandler}
+                />
               </Form.Group>
             </Row>
 

@@ -124,5 +124,10 @@ router.get("/teams", async (req, res) => {
   res.json(teams)
 });
 
+router.get("/users", async (req, res) => {
+  users=await UserModel.find();
+  res.json(users)
+});
+
 
 module.exports = router;

@@ -15,6 +15,10 @@
     
 }
 
+.form-group{
+  text-align: center;
+}
+
 .form-control{
   display:inline-block;
   width: 70%;

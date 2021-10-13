@@ -11,33 +11,31 @@ const FaultManagement = (props) => {
   const authCtx = useContext(AuthContext);
   const [faults, setFaults] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
 
   const evenPos = (pos) => pos % 2 == 0;
 
-  const getFaults = async () => {
+  const getData = async () => {
     try {
       let response = await Axios.get("/faultManagement");
       setFaults(response.data);
+      response = await Axios.get(`faultManagement/teams`);
+      setTeams(response.data);
+      response = await Axios.get(`faultManagement/users`);
+      setUsers(response.data);
+      setIsLoading(false);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const getTeams = async () => {
-    try {
-      let response = await Axios.get(`faultManagement/teams`);
-      setTeams(response.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  
 
   useEffect(async () => {
-    await getTeams();
-    await getFaults();
-    setIsLoading(false);
+    await getData();
+    
   }, []);
 
   const updateFaults = (faults) => {
@@ -120,6 +118,7 @@ const FaultManagement = (props) => {
                               <EditFaultModel
                                 fault={fault}
                                 teams={teams}
+                                users={users}
                                 updateFaults={updateFaults}
                               />
                               <CloseFaultModal
