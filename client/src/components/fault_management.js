@@ -39,9 +39,6 @@ const FaultManagement = (props) => {
     setFaults(faults);
   };
 
-  // const deleteFault = (id) => {
-  //   updateFaults(faults.filter((fault) => fault._id !== id));
-  // };
 
   const displayDate = (dateFormat) => {
     let date = new Date(dateFormat);

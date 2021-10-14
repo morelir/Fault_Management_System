@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./faultModel.module.css";
 import Axios from "axios";
+import { clientIdHandler, teamMemberIdHandler } from "../../utils/functions";
 
 const EditFaultModel = (props) => {
   const [fault, setFault] = useState({
@@ -124,7 +125,9 @@ const EditFaultModel = (props) => {
           formIsValid:
             fault.description.length > 0 &&
             client.idIsValid &&
-            (teamMember.idIsValid ||teamMember.id===null || teamMember.id.length===0),
+            (teamMember.idIsValid ||
+              teamMember.id === null ||
+              teamMember.id.length === 0),
         };
       });
     }, 250);
@@ -134,58 +137,6 @@ const EditFaultModel = (props) => {
       clearTimeout(identifier);
     };
   }, [fault.description, client.id, teamMember.id]);
-
-  const clientIdHandler = (e) => {
-    let value = e.target.value;
-    setClient((prevState) => {
-      return { ...prevState, id: value };
-    });
-    if (value.length === 9) {
-      //need to add if in the id is match
-      let [user] = props.users.filter((user) => user.id === parseInt(value));
-      console.log(user);
-      if (user) {
-        setClient((prevState) => {
-          return {
-            ...prevState,
-            name: user.name,
-            surname: user.surname,
-            idIsValid: true,
-          };
-        });
-        return;
-      }
-    }
-    setClient((prevState) => {
-      return { ...prevState, idIsValid: false };
-    });
-  };
-
-  const teamMemberIdHandler = (e) => {
-    let value = e.target.value;
-    setTeamMember((prevState) => {
-      return { ...prevState, id: value };
-    });
-    if (value.length === 9) {
-      //need to add if in the id is match
-      let [user] = props.users.filter((user) => user.id === parseInt(value));
-      console.log(user);
-      if (user) {
-        setTeamMember((prevState) => {
-          return {
-            ...prevState,
-            name: user.name,
-            surname: user.surname,
-            idIsValid: true,
-          };
-        });
-        return;
-      }
-    }
-    setTeamMember((prevState) => {
-      return { ...prevState, idIsValid: false };
-    });
-  };
 
   return (
     <>
@@ -249,7 +200,9 @@ const EditFaultModel = (props) => {
                 <Form.Control
                   type="text"
                   value={client.id}
-                  onChange={clientIdHandler}
+                  onChange={(e) => {
+                    clientIdHandler(e, setClient, props);
+                  }}
                 />
               </Form.Group>
             </Row>
@@ -313,7 +266,9 @@ const EditFaultModel = (props) => {
                 <Form.Control
                   type="text"
                   value={teamMember.id}
-                  onChange={teamMemberIdHandler}
+                  onChange={(e) => {
+                    teamMemberIdHandler(e, setTeamMember, props);
+                  }}
                 />
               </Form.Group>
             </Row>

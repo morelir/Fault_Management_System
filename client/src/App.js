@@ -62,8 +62,7 @@ const App = () => {
               </>
             )}
             
-            
-            <Route path="*">
+            <Route path="*" >
               <Redirect to="/" />
             </Route>
           </Switch>

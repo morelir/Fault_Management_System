@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./faultModel.module.css";
 import Axios from "axios";
+import { clientIdHandler, teamMemberIdHandler } from "../../utils/functions";
 
 const NewFaultModel = (props) => {
   const [fault, setFault] = useState({
@@ -144,57 +145,7 @@ const NewFaultModel = (props) => {
     };
   }, [fault.description, client.id, teamMember.id]);
 
-  const clientIdHandler = (e) => {
-    let value = e.target.value;
-    setClient((prevState) => {
-      return { ...prevState, id: value };
-    });
-    if (value.length === 9) {
-      //need to add if in the id is match
-      let [user] = props.users.filter((user) => user.id === parseInt(value));
-      console.log(user);
-      if (user) {
-        setClient((prevState) => {
-          return {
-            ...prevState,
-            name: user.name,
-            surname: user.surname,
-            idIsValid: true,
-          };
-        });
-        return;
-      }
-    }
-    setClient((prevState) => {
-      return { ...prevState, idIsValid: false };
-    });
-  };
-
-  const teamMemberIdHandler = (e) => {
-    let value = e.target.value;
-    setTeamMember((prevState) => {
-      return { ...prevState, id: value };
-    });
-    if (value.length === 9) {
-      //need to add if in the id is match
-      let [user] = props.users.filter((user) => user.id === parseInt(value));
-      console.log(user);
-      if (user) {
-        setTeamMember((prevState) => {
-          return {
-            ...prevState,
-            name: user.name,
-            surname: user.surname,
-            idIsValid: true,
-          };
-        });
-        return;
-      }
-    }
-    setTeamMember((prevState) => {
-      return { ...prevState, idIsValid: false };
-    });
-  };
+  
 
   return (
     <>
@@ -255,7 +206,7 @@ const NewFaultModel = (props) => {
                 <Form.Control
                   type="text"
                   value={client.id}
-                  onChange={clientIdHandler}
+                  onChange={(e)=>{clientIdHandler(e,setClient,props)}}
                 />
               </Form.Group>
             </Row>
@@ -319,7 +270,7 @@ const NewFaultModel = (props) => {
                 <Form.Control
                   type="text"
                   value={teamMember.id}
-                  onChange={teamMemberIdHandler}
+                  onChange={(e)=>{teamMemberIdHandler(e,setTeamMember,props)}}
                 />
               </Form.Group>
             </Row>
