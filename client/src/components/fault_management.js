@@ -31,11 +31,8 @@ const FaultManagement = (props) => {
     }
   };
 
-  
-
   useEffect(async () => {
     await getData();
-    
   }, []);
 
   const updateFaults = (faults) => {
@@ -71,11 +68,15 @@ const FaultManagement = (props) => {
                     <strong>Fault List</strong>
                   </h2>
                 </div>
-                {!isLoading &&
+                {!isLoading && (
                   <div className="col-sm-10">
-                    <NewFaultModel teams={teams} updateFaults={updateFaults} />
+                    <NewFaultModel
+                      teams={teams}
+                      users={users}
+                      updateFaults={updateFaults}
+                    />
                   </div>
-                }
+                )}
               </div>
             </div>
             <table className="table table-striped table-hover">
@@ -86,7 +87,7 @@ const FaultManagement = (props) => {
                   <th>Date created</th>
                   <th>Client name </th>
                   <th>Team</th>
-                  <th>Handler </th>
+                  <th>Team member </th>
                   <th>Handling duration</th>
                   <th>Actions</th>
                 </tr>
@@ -110,9 +111,13 @@ const FaultManagement = (props) => {
                             <td>{fault.number}</td>
                             <td>{fault.status}</td>
                             <td>{displayDate(fault.date_created)}</td>
-                            <td>{`${fault.name}, ${fault.surname}`}</td>
+                            <td>{`${fault.clientName}, ${fault.clientSurname}`}</td>
                             <td>{fault.team}</td>
-                            <td>{fault.handler}</td>
+                            {fault.teamMemberID === null ? (
+                              <td></td>
+                            ) : (
+                              <td>{`${fault.teamMemberName}, ${fault.teamMemberSurname}`}</td>
+                            )}
                             <td>{fault.handling_duration}</td>
                             <td>
                               <EditFaultModel

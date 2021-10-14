@@ -7,8 +7,7 @@ const faultSchema = new mongoose.Schema({
   clientID: Number,
   description: String,
   team: String,
-  handler: String,
-  handling_duration: Number,
+  teamMemberID: Number,
   date_created: {
     type: Date,
     default: Date.now,

@@ -5,15 +5,13 @@ const { FaultModel, validNewFault } = require("../models/faultModel");
 const { UserModel } = require("../models/UserModel");
 const { TeamModel } = require("../models/teamModel");
 
-
 router.get("/", async (req, res) => {
-  try{
+  try {
     let faults = await FaultModel.find({}).lean();
     let data = await mergeFaultsAndUsers(faults);
     res.json(data);
-  }
-  catch(err){
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -39,7 +37,7 @@ router.put("/clientID", async (req, res) => {
 });
 
 router.post("/NewFaultModel", async (req, res) => {
-  let validBody =  validNewFault(req.body);
+  let validBody = validNewFault(req.body);
   console.log(req.body);
   // if (validBody.error) {
   //   console.log("blat")
@@ -59,13 +57,30 @@ router.post("/NewFaultModel", async (req, res) => {
 
 const mergeFaultsAndUsers = async (faults) => {
   try {
-    let data =await Promise.all(
+    let data = await Promise.all(
       faults.map(async (fault) => {
-        let user = await UserModel.findOne(
+        let client = await UserModel.findOne(
           { id: fault.clientID },
           "-_id name surname"
         ).lean();
-        return { ...fault, ...user };
+        if (fault.teamMemberID===null) {
+          let teamMember = await UserModel.findOne(
+            { id: fault.teamMemberID },
+            "-_id name surname"
+          ).lean();
+          return {
+            ...fault,
+            clientName: client.name,
+            clientSurname: client.surname,
+            teamMemberName: teamMember.name,
+            teamMemberSurname: teamMember.surname,
+          };
+        }
+        return {
+          ...fault,
+          clientName: client.name,
+          clientSurname: client.surname,
+        };
       })
     );
     return data;
@@ -75,7 +90,7 @@ const mergeFaultsAndUsers = async (faults) => {
 };
 
 router.post("/EditFaultModel", async (req, res) => {
-  let validBody =  validNewFault(req.body);
+  let validBody = validNewFault(req.body);
   console.log(req.body);
   // if (validBody.error) {
   //   console.log("blat")
@@ -84,7 +99,7 @@ router.post("/EditFaultModel", async (req, res) => {
   try {
     fault = await FaultModel.findOne({ _id: req.body._id });
     // fault.team="Logisti" //שומר את המידע ב db
-    fault=updateFault(fault,req.body);
+    fault = updateFault(fault, req.body);
     await fault.save();
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);
@@ -95,39 +110,36 @@ router.post("/EditFaultModel", async (req, res) => {
   }
 });
 
-const updateFault=(fault,updateFault)=>{
-  fault.number=updateFault.number;
-  fault.status=updateFault.status;
-  fault.clientID=updateFault.clientID;
-  fault.team=updateFault.team;
-  fault.description=updateFault.description;
+const updateFault = (fault, updateFault) => {
+  fault.number = updateFault.number;
+  fault.status = updateFault.status;
+  fault.clientID = updateFault.clientID;
+  fault.team = updateFault.team;
+  fault.description = updateFault.description;
   return fault;
-}
-
+};
 
 router.put("/closeFault", async (req, res) => {
-  try{
-    fault = await FaultModel.findOne({ _id: req.body._id});
-    fault.status="Close";
+  try {
+    fault = await FaultModel.findOne({ _id: req.body._id });
+    fault.status = "Close";
     await fault.save();
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);
     res.json(data);
-  }catch(err){
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
-
 });
 
 router.get("/teams", async (req, res) => {
-  teams=await TeamModel.find();
-  res.json(teams)
+  teams = await TeamModel.find();
+  res.json(teams);
 });
 
 router.get("/users", async (req, res) => {
-  users=await UserModel.find();
-  res.json(users)
+  users = await UserModel.find();
+  res.json(users);
 });
-
 
 module.exports = router;

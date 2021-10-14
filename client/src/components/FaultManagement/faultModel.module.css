@@ -15,25 +15,19 @@
     
 }
 
-.form-group{
+.modal-body {
+  padding:0 0.85rem;
+  
+}
+
+.form-group-sub-title{
   text-align: center;
+  background-color: #f7f7f7;
 }
 
-.form-control{
-  display:inline-block;
-  width: 70%;
-  line-height:1;
-}
 
-.form-control-select{
-  
-  width: 70%;
-  
-}
 
-.td{
-  width: 150px;
-}
+
 
 
 /* .modal {

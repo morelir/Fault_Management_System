@@ -26,6 +26,13 @@ const NewFaultModel = (props) => {
     idIsValid: false,
   });
 
+  const [teamMember, setTeamMember] = useState({
+    id: "",
+    name: "",
+    surname: "",
+    idIsValid: false,
+  });
+
   const [show, setShow] = useState(false);
 
   const handleClose = () => {
@@ -51,6 +58,16 @@ const NewFaultModel = (props) => {
         ...prevState,
         id: "",
         name: "",
+        surname: "",
+        idIsValid: false,
+      };
+    });
+    setTeamMember((prevState) => {
+      return {
+        ...prevState,
+        id: "",
+        name: "",
+        surname: "",
         idIsValid: false,
       };
     });
@@ -66,6 +83,7 @@ const NewFaultModel = (props) => {
       status: fault.status,
       clientID: parseInt(client.id),
       team: fault.team,
+      teamMemberID: parseInt(teamMember.id),
       description: fault.description,
     })
       .then((response) => {
@@ -112,7 +130,10 @@ const NewFaultModel = (props) => {
       setFault((prevState) => {
         return {
           ...prevState,
-          formIsValid: fault.description.length > 0,
+          formIsValid:
+            fault.description.length > 0 &&
+            client.idIsValid &&
+            (teamMember.idIsValid || teamMember.id.length===0),
         };
       });
     }, 250);
@@ -121,7 +142,7 @@ const NewFaultModel = (props) => {
       console.log("Clean-Up Timeout");
       clearTimeout(identifier);
     };
-  }, [fault.description]);
+  }, [fault.description, client.id, teamMember.id]);
 
   const clientIdHandler = (e) => {
     let value = e.target.value;
@@ -129,30 +150,48 @@ const NewFaultModel = (props) => {
       return { ...prevState, id: value };
     });
     if (value.length === 9) {
-      Axios.put(`faultManagement/clientID`, {
-        id: parseInt(value),
-      }).then((response) => {
-        if (response.data) {
-          setClient((prevState) => {
-            return {
-              ...prevState,
-              name: response.data.name,
-              surname: response.data.surname,
-            };
-          });
-          setClient((prevState) => {
-            return { ...prevState, idIsValid: true };
-          });
-          return;
-        } else {
-          setClient((prevState) => {
-            return { ...prevState, idIsValid: false };
-          });
-        }
+      //need to add if in the id is match
+      let [user] = props.users.filter((user) => user.id === parseInt(value));
+      console.log(user);
+      if (user) {
+        setClient((prevState) => {
+          return {
+            ...prevState,
+            name: user.name,
+            surname: user.surname,
+            idIsValid: true,
+          };
+        });
         return;
-      });
+      }
     }
     setClient((prevState) => {
+      return { ...prevState, idIsValid: false };
+    });
+  };
+
+  const teamMemberIdHandler = (e) => {
+    let value = e.target.value;
+    setTeamMember((prevState) => {
+      return { ...prevState, id: value };
+    });
+    if (value.length === 9) {
+      //need to add if in the id is match
+      let [user] = props.users.filter((user) => user.id === parseInt(value));
+      console.log(user);
+      if (user) {
+        setTeamMember((prevState) => {
+          return {
+            ...prevState,
+            name: user.name,
+            surname: user.surname,
+            idIsValid: true,
+          };
+        });
+        return;
+      }
+    }
+    setTeamMember((prevState) => {
       return { ...prevState, idIsValid: false };
     });
   };
@@ -183,7 +222,119 @@ const NewFaultModel = (props) => {
           </Modal.Title>
         </Modal.Header>
         <Form onSubmit={submitNewFault}>
-          <Modal.Body>
+          <Modal.Body className={styles["modal-body"]}>
+            <Row>
+              <Form.Group as={Col} className={styles["form-group-sub-title"]}>
+                <Form.Label style={{ textDecoration: "underline" }}>
+                  <h4>
+                    <strong>Client details</strong>
+                  </h4>
+                </Form.Label>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Client name</strong>
+                </Form.Label>
+                {client.idIsValid ? (
+                  <Form.Control
+                    type="text"
+                    value={client.name + ", " + client.surname}
+                    readOnly
+                  />
+                ) : (
+                  <Form.Control value="" type="text" readOnly />
+                )}
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Client ID</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={client.id}
+                  onChange={clientIdHandler}
+                />
+              </Form.Group>
+            </Row>
+
+            <Row>
+              <Form.Group as={Col} className={styles["form-group-sub-title"]}>
+                <Form.Label
+                  style={{ textDecoration: "underline", textAlign: "center" }}
+                >
+                  <h4>
+                    <strong>Handler details</strong>
+                  </h4>
+                </Form.Label>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Team</strong>
+                </Form.Label>
+                <Form.Control
+                  as="select"
+                  value={fault.team}
+                  onChange={(e) => {
+                    setFault((prevState) => {
+                      return { ...prevState, team: e.target.value };
+                    });
+                  }}
+                >
+                  {fault.teams.map((team) => {
+                    return (
+                      <option key={team._id} value={team.name}>
+                        {team.name}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Team member name</strong>
+                </Form.Label>
+                {teamMember.idIsValid ? (
+                  <Form.Control
+                    type="text"
+                    value={teamMember.name + ", " + teamMember.surname}
+                    readOnly
+                  />
+                ) : (
+                  <Form.Control value="" type="text" readOnly />
+                )}
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Team member ID</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={teamMember.id}
+                  onChange={teamMemberIdHandler}
+                />
+              </Form.Group>
+            </Row>
+
+            <Row>
+              <Form.Group as={Col} className={styles["form-group-sub-title"]}>
+                <Form.Label
+                  style={{ textDecoration: "underline", textAlign: "center" }}
+                >
+                  <h4>
+                    <strong>Fault details</strong>
+                  </h4>
+                </Form.Label>
+              </Form.Group>
+            </Row>
 
             <Row className="mb-3">
               <Form.Group as={Col}>
@@ -199,58 +350,11 @@ const NewFaultModel = (props) => {
                 </Form.Label>
                 <Form.Control type="text" value={fault.status} readOnly />
               </Form.Group>
-
-              <Form.Group as={Col}>
-                <Form.Label>
-                  <strong>Client Name</strong>
-                </Form.Label>
-                {client.idIsValid ? (
-                  <Form.Control
-                    type="text"
-                    value={`${client.name + ", " + client.surname}`}
-                    readOnly
-                  />
-                ) : (
-                  <Form.Control value="" type="text" readOnly />
-                )}
-              </Form.Group>
-            </Row>
-
-            <Row className="mb-3">
-              <Form.Group as={Col}>
-                <Form.Label>
-                  <strong>Client ID</strong>
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  value={client.id}
-                  onChange={clientIdHandler}
-                />
-                
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>
-                  <strong>Handler Team</strong>
-                </Form.Label>
-                <Form.Control
-                  as="select"
-                  value={fault.team}
-                  onChange={(e) => {
-                    setFault((prevState) => {
-                      return { ...prevState, team: e.target.value };
-                    });
-                  }}
-                >
-                  {fault.teams.map((team) => {
-                    return <option key={team._id} value={team.name}>{team.name}</option>
-                  })}
-                </Form.Control>
-              </Form.Group>
             </Row>
 
             <Form.Group size="lg" controlId="email">
               <Form.Label>
-                <strong>Description</strong>
+                <strong>Description </strong>
               </Form.Label>
               <br />
               <Form.Control
@@ -267,14 +371,17 @@ const NewFaultModel = (props) => {
 
             <br />
             {/* <Form.Control
-                  autoFocus
-              /> */}
+                autoFocus
+            /> */}
           </Modal.Body>
 
           <Modal.Footer>
             <Button
               variant="secondary"
-              onClick={handleClose}
+              onClick={() => {
+                handleClose();
+                resetStates();
+              }}
               disabled={fault.savingForm}
             >
               Close

@@ -21,9 +21,16 @@ const EditFaultModel = (props) => {
 
   const [client, setClient] = useState({
     id: props.fault.clientID,
-    name: props.fault.name,
-    surname: props.fault.surname,
+    name: props.fault.clientName,
+    surname: props.fault.clientSurname,
     idIsValid: true,
+  });
+
+  const [teamMember, setTeamMember] = useState({
+    id: props.fault.teamMemberID,
+    name: props.fault.teamMemberName,
+    surname: props.fault.teamMemberSurname,
+    idIsValid: props.fault.teamMemberID === null ? false : true,
   });
 
   const [show, setShow] = useState(false);
@@ -52,6 +59,14 @@ const EditFaultModel = (props) => {
         name: props.fault.name,
         surname: props.fault.surname,
         idIsValid: true,
+      };
+    });
+    setTeamMember((prevState) => {
+      return {
+        id: props.fault.teamMemberID,
+        name: props.fault.teamMemberName,
+        surname: props.fault.teamMemberSurname,
+        idIsValid: props.fault.teamMemberID === null ? false : true,
       };
     });
     setSavingForm(false);
@@ -106,7 +121,10 @@ const EditFaultModel = (props) => {
       setFault((prevState) => {
         return {
           ...prevState,
-          formIsValid: fault.description.length > 0,
+          formIsValid:
+            fault.description.length > 0 &&
+            client.idIsValid &&
+            (teamMember.idIsValid ||teamMember.id===null || teamMember.id.length===0),
         };
       });
     }, 250);
@@ -115,7 +133,7 @@ const EditFaultModel = (props) => {
       console.log("Clean-Up Timeout");
       clearTimeout(identifier);
     };
-  }, [fault.description]);
+  }, [fault.description, client.id, teamMember.id]);
 
   const clientIdHandler = (e) => {
     let value = e.target.value;
@@ -124,30 +142,50 @@ const EditFaultModel = (props) => {
     });
     if (value.length === 9) {
       //need to add if in the id is match
-      Axios.put(`faultManagement/clientID`, {
-        id: parseInt(value),
-      }).then((response) => {
-        if (response.data) {
-          setClient((prevState) => {
-            return {
-              ...prevState,
-              name: response.data.name,
-              surname: response.data.surname,
-            };
-          });
-          setClient((prevState) => {
-            return { ...prevState, idIsValid: true };
-          });
-          return;
-        }
-      });
+      let [user] = props.users.filter((user) => user.id === parseInt(value));
+      console.log(user);
+      if (user) {
+        setClient((prevState) => {
+          return {
+            ...prevState,
+            name: user.name,
+            surname: user.surname,
+            idIsValid: true,
+          };
+        });
+        return;
+      }
     }
     setClient((prevState) => {
       return { ...prevState, idIsValid: false };
     });
   };
 
-
+  const teamMemberIdHandler = (e) => {
+    let value = e.target.value;
+    setTeamMember((prevState) => {
+      return { ...prevState, id: value };
+    });
+    if (value.length === 9) {
+      //need to add if in the id is match
+      let [user] = props.users.filter((user) => user.id === parseInt(value));
+      console.log(user);
+      if (user) {
+        setTeamMember((prevState) => {
+          return {
+            ...prevState,
+            name: user.name,
+            surname: user.surname,
+            idIsValid: true,
+          };
+        });
+        return;
+      }
+    }
+    setTeamMember((prevState) => {
+      return { ...prevState, idIsValid: false };
+    });
+  };
 
   return (
     <>
@@ -178,73 +216,60 @@ const EditFaultModel = (props) => {
           </Modal.Title>
         </Modal.Header>
         <Form onSubmit={submitSaveFault}>
-          <Modal.Body>
-            <Row className="mb-3" >
-              <Form.Group as={Col}>
-                <Form.Label>
-                  <strong>No.</strong>
-                </Form.Label>
-                <Form.Control type="text" value={fault.number} readOnly />
-              </Form.Group>
-
-              <Form.Group as={Col}>
-                <Form.Label>
-                  <strong>Status</strong>
-                </Form.Label>
-                <Form.Control type="text" value={fault.status} readOnly />
-              </Form.Group>
-            </Row>
-            
+          <Modal.Body className={styles["modal-body"]}>
             <Row>
-              <Form.Group as={Col} className={styles["form-group"]}>
-                <Form.Label style={{textDecoration: "underline"}}>
-                  <h4><strong>Client details</strong></h4>
+              <Form.Group as={Col} className={styles["form-group-sub-title"]}>
+                <Form.Label style={{ textDecoration: "underline" }}>
+                  <h4>
+                    <strong>Client details</strong>
+                  </h4>
                 </Form.Label>
-                
               </Form.Group>
             </Row>
 
             <Row className="mb-3">
               <Form.Group as={Col}>
-                  <Form.Label>
-                    <strong>Client Name</strong>
-                  </Form.Label>
-                  {client.idIsValid ? (
-                    <Form.Control
-                      type="text"
-                      value={`${client.name + ", " + client.surname}`}
-                      readOnly
-                    />
-                  ) : (
-                    <Form.Control value="" type="text" readOnly />
-                  )}
-                </Form.Group>
-                <Form.Group as={Col}>
-                  <Form.Label>
-                    <strong>Client ID</strong>
-                  </Form.Label>
+                <Form.Label>
+                  <strong>Client name</strong>
+                </Form.Label>
+                {client.idIsValid ? (
                   <Form.Control
                     type="text"
-                    value={client.id}
-                    onChange={clientIdHandler}
+                    value={client.name + ", " + client.surname}
+                    readOnly
                   />
-                </Form.Group>
-            </Row>
-
-            <Row>
-              <Form.Group as={Col} className={styles["form-group"]}>
-                <Form.Label style={{textDecoration: "underline",textAlign:"center"}}>
-                  <h4><strong>Handler details</strong></h4>
+                ) : (
+                  <Form.Control value="" type="text" readOnly />
+                )}
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Client ID</strong>
                 </Form.Label>
-                
+                <Form.Control
+                  type="text"
+                  value={client.id}
+                  onChange={clientIdHandler}
+                />
               </Form.Group>
             </Row>
 
+            <Row>
+              <Form.Group as={Col} className={styles["form-group-sub-title"]}>
+                <Form.Label
+                  style={{ textDecoration: "underline", textAlign: "center" }}
+                >
+                  <h4>
+                    <strong>Handler details</strong>
+                  </h4>
+                </Form.Label>
+              </Form.Group>
+            </Row>
 
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Handler Team</strong>
+                  <strong>Team</strong>
                 </Form.Label>
                 <Form.Control
                   as="select"
@@ -269,23 +294,55 @@ const EditFaultModel = (props) => {
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Handler Member Name</strong>
+                  <strong>Team member name</strong>
                 </Form.Label>
-                <Form.Control
-                  type="text"
-                  value={client.id}
-                  onChange={clientIdHandler}
-                />
+                {teamMember.idIsValid ? (
+                  <Form.Control
+                    type="text"
+                    value={teamMember.name + ", " + teamMember.surname}
+                    readOnly
+                  />
+                ) : (
+                  <Form.Control value="" type="text" readOnly />
+                )}
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Handler Member ID</strong>
+                  <strong>Team member ID</strong>
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  value={client.id}
-                  onChange={clientIdHandler}
+                  value={teamMember.id}
+                  onChange={teamMemberIdHandler}
                 />
+              </Form.Group>
+            </Row>
+
+            <Row>
+              <Form.Group as={Col} className={styles["form-group-sub-title"]}>
+                <Form.Label
+                  style={{ textDecoration: "underline", textAlign: "center" }}
+                >
+                  <h4>
+                    <strong>Fault details</strong>
+                  </h4>
+                </Form.Label>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>No.</strong>
+                </Form.Label>
+                <Form.Control type="text" value={fault.number} readOnly />
+              </Form.Group>
+
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Status</strong>
+                </Form.Label>
+                <Form.Control type="text" value={fault.status} readOnly />
               </Form.Group>
             </Row>
 
