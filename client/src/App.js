@@ -6,7 +6,7 @@ import {
   Link,
   Redirect,
 } from "react-router-dom";
-import { useContext,useEffect,useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import Home from "./components/home";
 import MainNavigation from "./shared/components/Navigation/MainNavigation";
@@ -15,17 +15,19 @@ import Registration from "./components/registration";
 import AuthContext from "./store/auth-context";
 import FaultManagement from "./components/fault_management";
 import Axios from "axios";
+import ProtectedRoute from "./routes/protectedRoute";
 
 const App = () => {
   const authCtx = useContext(AuthContext);
-  const [teams,setTeams]=useState([]);
-  
+  const [teams, setTeams] = useState([]);
+
   const getTeams = async () => {
     try {
       let response = await Axios.get(`faultManagement/teams`);
-      let _teams=response.data.map((team)=>{return team.name})
-      setTeams(_teams)
-      
+      let _teams = response.data.map((team) => {
+        return team.name;
+      });
+      setTeams(_teams);
     } catch (err) {
       console.log(err);
     }
@@ -44,25 +46,24 @@ const App = () => {
           <h1></h1>
           <Switch>
             <Route exact path="/" component={Home}></Route>
-            {authCtx.isLoggedIn && teams.includes(authCtx.user.team) &&
-              <Route
-                exact
-                path="/faultManagement"
-                component={FaultManagement}
-              ></Route>
-            }
-            {!authCtx.isLoggedIn && (
-              <>
-                <Route exact path="/login" component={Login}></Route>
-                <Route
-                  exact
-                  path="/registration"
-                  component={Registration}
-                ></Route>
-              </>
-            )}
-            
-            <Route path="*" >
+            <ProtectedRoute
+              condition={!authCtx.isLoggedIn}
+              component={Login}
+              path="/login"
+            />
+            <ProtectedRoute
+              condition={!authCtx.isLoggedIn}
+              component={Registration}
+              path="/registration"
+            />
+            <ProtectedRoute
+              condition={
+                authCtx.isLoggedIn && teams.includes(authCtx.user.team)
+              }
+              component={FaultManagement}
+              path="/faultManagement"
+            />
+            <Route path="*">
               <Redirect to="/" />
             </Route>
           </Switch>
