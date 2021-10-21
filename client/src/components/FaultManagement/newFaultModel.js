@@ -6,14 +6,14 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./faultModel.module.css";
+import styleBtn from "./newFaultModel.module.css";
 import Axios from "axios";
 import { clientIdHandler, teamMemberIdHandler } from "../../utils/functions";
-
 const NewFaultModel = (props) => {
   const [fault, setFault] = useState({
     number: "",
     status: "New",
-    team: "",
+    team: props.teams[0].name,
     description: "",
     teams: props.teams,
     formIsValid: false,
@@ -151,12 +151,13 @@ const NewFaultModel = (props) => {
     <>
       <a
         onClick={handleOpen}
-        className="btn btn-success"
+        className={`btn btn-success ${styleBtn.btn}`}
         data-toggle="modal"
-        style={{ fontSize: "16px" }}
+        style={{ fontSize: "16px",borderRadius:"6px",fontWeight:"600",color:"#292929"}}
       >
-        <i className="material-icons">&#xE147;</i> <span>New Fault</span>
+        <i style={{marginTop:"4px"}} className="material-icons">&#xE147;</i> <span>New Fault</span>
       </a>
+      
       <Modal
         show={show}
         onHide={handleClose}
