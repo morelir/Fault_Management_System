@@ -57,8 +57,8 @@ const EditFaultModel = (props) => {
     setClient((prevState) => {
       return {
         id: props.fault.clientID,
-        name: props.fault.name,
-        surname: props.fault.surname,
+        name: props.fault.clientName,
+        surname: props.fault.clientSurname,
         idIsValid: true,
       };
     });
