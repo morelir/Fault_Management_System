@@ -63,7 +63,7 @@ const mergeFaultsAndUsers = async (faults) => {
           { id: fault.clientID },
           "-_id name surname"
         ).lean();
-        if (fault.teamMemberID===null) {
+        if (fault.teamMemberID!==null) {
           let teamMember = await UserModel.findOne(
             { id: fault.teamMemberID },
             "-_id name surname"
