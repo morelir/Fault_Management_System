@@ -153,9 +153,9 @@ const NewFaultModel = (props) => {
         onClick={handleOpen}
         className={`btn btn-success ${styleBtn.btn}`}
         data-toggle="modal"
-        style={{ fontSize: "16px",borderRadius:"6px",fontWeight:"600",color:"#292929"}}
+        style={{ fontSize: "16px",borderRadius:"6px",fontWeight:"600"}}
       >
-        <i style={{marginTop:"4px"}} className="material-icons">&#xE147;</i> <span>New Fault</span>
+        <i style={{marginTop:"4px"}} className="material-icons">&#xE147;</i> <span >New Fault</span>
       </a>
       
       <Modal
