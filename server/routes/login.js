@@ -6,7 +6,7 @@ const {
   validUser,
   validLogin,
   genToken,
-} = require("../models/UserModel");
+} = require("../models/userModel");
 const { authToken } = require("../auth/authToken");
 
 router.get("/", (req, res) => {

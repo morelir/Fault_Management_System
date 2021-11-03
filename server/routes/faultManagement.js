@@ -2,7 +2,8 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
 const { FaultModel, validNewFault } = require("../models/faultModel");
-const { UserModel } = require("../models/UserModel");
+const { UserModel } = require("../models/userModel");
+const { ClientModel } = require("../models/clientModel");
 const { TeamModel } = require("../models/teamModel");
 
 router.get("/", async (req, res) => {
@@ -56,14 +57,16 @@ router.post("/NewFaultModel", async (req, res) => {
 });
 
 const mergeFaultsAndUsers = async (faults) => {
+  console.log(faults);
   try {
     let data = await Promise.all(
       faults.map(async (fault) => {
-        let client = await UserModel.findOne(
+        let client = await ClientModel.findOne(
           { id: fault.clientID },
           "-_id name surname"
         ).lean();
-        if (fault.teamMemberID!==null) {
+        console.log(client);
+        if (fault.teamMemberID !== null) {
           let teamMember = await UserModel.findOne(
             { id: fault.teamMemberID },
             "-_id name surname"
@@ -83,6 +86,7 @@ const mergeFaultsAndUsers = async (faults) => {
         };
       })
     );
+
     return data;
   } catch (err) {
     console.log(err);
@@ -140,6 +144,11 @@ router.get("/teams", async (req, res) => {
 router.get("/users", async (req, res) => {
   users = await UserModel.find();
   res.json(users);
+});
+
+router.get("/clients", async (req, res) => {
+  clients = await ClientModel.find();
+  res.json(clients);
 });
 
 module.exports = router;

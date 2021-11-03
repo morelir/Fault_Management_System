@@ -51,3 +51,16 @@ server.listen(port);
 
 
 // await FaultModel.findByIdAndRemove(id); delete collection from Fault table by id
+
+
+
+//shopData query search
+router.get("/category",(req,res) => {
+    let categoryQ=req.query.category
+    let temp_ar = prods_ar.filter(item => {
+        return item.cat==categoryQ;
+    })
+    res.json(temp_ar)
+
+    
+})

@@ -12,6 +12,8 @@ const FaultManagement = (props) => {
   const [faults, setFaults] = useState([]);
   const [teams, setTeams] = useState([]);
   const [users, setUsers] = useState([]);
+  const [clients, setClients] = useState([]);
+
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,6 +27,8 @@ const FaultManagement = (props) => {
       setTeams(response.data);
       response = await Axios.get(`faultManagement/users`);
       setUsers(response.data);
+      response = await Axios.get(`faultManagement/clients`);
+      setClients(response.data);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
@@ -70,6 +74,7 @@ const FaultManagement = (props) => {
                     <NewFaultModel
                       teams={teams}
                       users={users}
+                      clients={clients}
                       updateFaults={updateFaults}
                     />
                   </div>
@@ -121,6 +126,7 @@ const FaultManagement = (props) => {
                                 fault={fault}
                                 teams={teams}
                                 users={users}
+                                clients={clients}
                                 updateFaults={updateFaults}
                               />
                               <CloseFaultModal
