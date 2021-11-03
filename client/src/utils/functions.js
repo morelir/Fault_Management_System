@@ -1,8 +1,8 @@
-export const clientIdHandler = (e,setClient,props) => {
+export const clientIdHandler = (e, setClient, props) => {
   let value = e.target.value;
-  console.log('hi');
+  console.log("hi");
   setClient((prevState) => {
-    return { ...prevState, id: value };
+    return { ...prevState, id: value, idIsValid: false };
   });
   if (value.length === 9) {
     //need to add if in the id is match
@@ -17,18 +17,14 @@ export const clientIdHandler = (e,setClient,props) => {
           idIsValid: true,
         };
       });
-      return;
     }
   }
-  setClient((prevState) => {
-    return { ...prevState, idIsValid: false };
-  });
 };
 
-export const teamMemberIdHandler = (e,setTeamMember,props) => {
+export const teamMemberIdHandler = (e, setTeamMember, props) => {
   let value = e.target.value;
   setTeamMember((prevState) => {
-    return { ...prevState, id: value };
+    return { ...prevState, id: value, idIsValid: false };
   });
   if (value.length === 9) {
     //need to add if in the id is match
@@ -43,10 +39,6 @@ export const teamMemberIdHandler = (e,setTeamMember,props) => {
           idIsValid: true,
         };
       });
-      return;
     }
   }
-  setTeamMember((prevState) => {
-    return { ...prevState, idIsValid: false };
-  });
 };

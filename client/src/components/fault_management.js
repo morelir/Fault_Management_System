@@ -14,7 +14,6 @@ const FaultManagement = (props) => {
   const [users, setUsers] = useState([]);
   const [clients, setClients] = useState([]);
 
-
   const [isLoading, setIsLoading] = useState(true);
 
   const evenPos = (pos) => pos % 2 == 0;
@@ -43,7 +42,6 @@ const FaultManagement = (props) => {
     setFaults(faults);
   };
 
-
   const displayDate = (dateFormat) => {
     let date = new Date(dateFormat);
     let month = date.getMonth() + 1;
@@ -69,10 +67,14 @@ const FaultManagement = (props) => {
                     <strong>Fault List</strong>
                   </h2>
                 </div>
-                {!isLoading && (
+                {authCtx.user.team==="Customer service" && !isLoading  &&   (
                   <div className="col-sm-10">
                     <NewFaultModel
-                      teams={teams}
+                      teams={teams.filter(
+                        (team) =>
+                          team.name === "Technical service" ||
+                          team.name === "Customer service"
+                      )}
                       users={users}
                       clients={clients}
                       updateFaults={updateFaults}
@@ -124,7 +126,11 @@ const FaultManagement = (props) => {
                             <td>
                               <EditFaultModel
                                 fault={fault}
-                                teams={teams}
+                                teams={teams.filter(
+                                  (team) =>
+                                    team.name === "Technical service" ||
+                                    team.name === "Customer service"
+                                )}
                                 users={users}
                                 clients={clients}
                                 updateFaults={updateFaults}
