@@ -5,18 +5,26 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
+import MessageModal from "../../shared/components/UIElements/messageModal";
 import styles from "./faultModel.module.css";
 import styleBtn from "./newFaultModel.module.css";
 import Axios from "axios";
-import { clientIdHandler, teamMemberIdHandler } from "../../utils/functions";
+import {
+  clientIdHandler,
+  teamMemberIdHandler,
+  teamHandler,
+  urgencyHandler,
+} from "../../utils/functions";
 const NewFaultModel = (props) => {
   const [fault, setFault] = useState({
     number: "",
     status: "New",
+    urgency: "Regular",
     team: props.teams[0].name,
     description: "",
     teams: props.teams,
     formIsValid: false,
+    showCreatedMessage:false,
   });
   const [savingForm, setSavingForm] = useState(false);
 
@@ -34,6 +42,7 @@ const NewFaultModel = (props) => {
     idIsValid: false,
   });
 
+  const [showCreatedMessage, setShowCreatedMessage] = useState(false);
   const [show, setShow] = useState(false);
 
   const handleClose = () => {
@@ -72,15 +81,13 @@ const NewFaultModel = (props) => {
         idIsValid: false,
       };
     });
-    setSavingForm(false);
-    generateFaultNumber();
+    
   };
 
   const submitNewFault = (e) => {
     e.preventDefault();
     setSavingForm(true);
     Axios.post(`faultManagement/NewFaultModel`, {
-      number: parseInt(fault.number),
       status: fault.status,
       clientID: parseInt(client.id),
       team: fault.team,
@@ -88,40 +95,50 @@ const NewFaultModel = (props) => {
       description: fault.description,
     })
       .then((response) => {
-        props.updateFaults(response.data);
+        props.updateFaults(response.data.faults);
+        
         handleClose();
         resetStates();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const generateFaultNumber = () => {
-    Axios.get(`faultManagement/NewFaultModel/newNumber`)
-      .then((response) => {
-        if (response.data) {
-          setFault((prevState) => {
-            return {
-              ...prevState,
-              number: response.data,
-            };
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
+        setSavingForm(false);
         setFault((prevState) => {
           return {
             ...prevState,
-            number: 100000000,
+            number: response.data.faultNumber,
+            showCreatedMessage:true,
           };
         });
+        // setShowCreatedMessage(true);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
+  // const generateFaultNumber = () => {
+  //   Axios.get(`faultManagement/NewFaultModel/newNumber`)
+  //     .then((response) => {
+  //       if (response.data) {
+  //         setFault((prevState) => {
+  //           return {
+  //             ...prevState,
+  //             number: response.data,
+  //           };
+  //         });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       setFault((prevState) => {
+  //         return {
+  //           ...prevState,
+  //           number: 100000000,
+  //         };
+  //       });
+  //     });
+  // };
+
   useEffect(() => {
-    generateFaultNumber();
+    // generateFaultNumber();
     // console.log(fault.teams)
   }, []);
 
@@ -134,7 +151,7 @@ const NewFaultModel = (props) => {
           formIsValid:
             fault.description.length > 0 &&
             client.idIsValid &&
-            (teamMember.idIsValid || teamMember.id.length===0),
+            (teamMember.idIsValid || teamMember.id.length === 0),
         };
       });
     }, 250);
@@ -145,19 +162,20 @@ const NewFaultModel = (props) => {
     };
   }, [fault.description, client.id, teamMember.id]);
 
-  
-
   return (
     <>
       <a
         onClick={handleOpen}
         className={`btn btn-success ${styleBtn.btn}`}
         data-toggle="modal"
-        style={{ fontSize: "16px",borderRadius:"6px",fontWeight:"600"}}
+        style={{ fontSize: "16px", borderRadius: "6px", fontWeight: "600" }}
       >
-        <i style={{marginTop:"4px"}} className="material-icons">&#xE147;</i> <span >New Fault</span>
+        <i style={{ marginTop: "4px" }} className="material-icons">
+          &#xE147;
+        </i>{" "}
+        <span>New Fault</span>
       </a>
-      
+
       <Modal
         show={show}
         onHide={handleClose}
@@ -180,6 +198,7 @@ const NewFaultModel = (props) => {
                 <Form.Label style={{ textDecoration: "underline" }}>
                   <h4>
                     <strong>Client details</strong>
+                    {/*--------------Client Details----------------*/}
                   </h4>
                 </Form.Label>
               </Form.Group>
@@ -204,10 +223,13 @@ const NewFaultModel = (props) => {
                 <Form.Label>
                   <strong>Client ID</strong>
                 </Form.Label>
+
                 <Form.Control
                   type="text"
                   value={client.id}
-                  onChange={(e)=>{clientIdHandler(e,setClient,props)}}
+                  onChange={(e) => {
+                    clientIdHandler(e, setClient, props);
+                  }}
                 />
               </Form.Group>
             </Row>
@@ -219,6 +241,7 @@ const NewFaultModel = (props) => {
                 >
                   <h4>
                     <strong>Handler details</strong>
+                    {/*--------------Handler Details----------------*/}
                   </h4>
                 </Form.Label>
               </Form.Group>
@@ -233,9 +256,7 @@ const NewFaultModel = (props) => {
                   as="select"
                   value={fault.team}
                   onChange={(e) => {
-                    setFault((prevState) => {
-                      return { ...prevState, team: e.target.value };
-                    });
+                    teamHandler(e, setFault, setTeamMember);
                   }}
                 >
                   {fault.teams.map((team) => {
@@ -268,11 +289,17 @@ const NewFaultModel = (props) => {
                 <Form.Label>
                   <strong>Team member ID</strong>
                 </Form.Label>
-                <Form.Control
-                  type="text"
-                  value={teamMember.id}
-                  onChange={(e)=>{teamMemberIdHandler(e,setTeamMember,props)}}
-                />
+                {fault.team === "Customer service" ? (
+                  <Form.Control
+                    type="text"
+                    value={teamMember.id}
+                    onChange={(e) => {
+                      teamMemberIdHandler(e, setTeamMember, props);
+                    }}
+                  />
+                ) : (
+                  <Form.Control type="text" value={teamMember.id} readOnly />
+                )}
               </Form.Group>
             </Row>
 
@@ -283,6 +310,7 @@ const NewFaultModel = (props) => {
                 >
                   <h4>
                     <strong>Fault details</strong>
+                    {/*--------------Fault Details----------------*/}
                   </h4>
                 </Form.Label>
               </Form.Group>
@@ -291,9 +319,21 @@ const NewFaultModel = (props) => {
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>No.</strong>
+                  <strong>Urgency level</strong>
                 </Form.Label>
-                <Form.Control type="text" value={fault.number} readOnly />
+                <Form.Control
+                  type="text"
+                  value={fault.urgency}
+                  as="select"
+                  onChange={(e) => {
+                    urgencyHandler(e, setFault);
+                  }}
+                >
+                  <>
+                    <option value={"Regular"}>Regular</option>
+                    <option value={"Urgent"}>Urgent</option>
+                  </>
+                </Form.Control>
               </Form.Group>
 
               <Form.Group as={Col}>
@@ -361,6 +401,17 @@ const NewFaultModel = (props) => {
           </Modal.Footer>
         </Form>
       </Modal>
+
+      <MessageModal show={fault.showCreatedMessage} header="Fault has created!">
+        <Form.Group>
+          <Form.Label>
+            <h4>
+              <strong>Fault No. : </strong>
+              {fault.number}
+            </h4>
+          </Form.Label>
+        </Form.Group>
+      </MessageModal>
     </>
   );
 };

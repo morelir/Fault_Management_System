@@ -46,18 +46,28 @@ router.post("/NewFaultModel", async (req, res) => {
   // }
   try {
     let fault = new FaultModel(req.body);
+    fault.number = await generateFaultNumber();
     await fault.save(); //שומר את המידע ב db
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);
-    res.json(data);
+    console.log(fault.number);
+    res.json({ faults: data, faultNumber: fault.number });
   } catch (err) {
     console.log(err);
     res.status(401).json({ msg: "Error" });
   }
 });
 
+const generateFaultNumber = async () => {
+  let data = await FaultModel.findOne({}, "-_id number").sort("-date_created");
+  if (data) {
+    return data.number + 1;
+  } else {
+    return data;
+  }
+};
+
 const mergeFaultsAndUsers = async (faults) => {
-  console.log(faults);
   try {
     let data = await Promise.all(
       faults.map(async (fault) => {

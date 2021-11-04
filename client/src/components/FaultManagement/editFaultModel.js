@@ -7,7 +7,11 @@ import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./faultModel.module.css";
 import Axios from "axios";
-import { clientIdHandler, teamMemberIdHandler } from "../../utils/functions";
+import {
+  clientIdHandler,
+  teamMemberIdHandler,
+  teamHandler,
+} from "../../utils/functions";
 
 const EditFaultModel = (props) => {
   const [fault, setFault] = useState({
@@ -70,7 +74,7 @@ const EditFaultModel = (props) => {
         idIsValid: props.fault.teamMemberID === null ? false : true,
       };
     });
-    setSavingForm(false);
+   
   };
 
   const submitSaveFault = (e) => {
@@ -88,6 +92,7 @@ const EditFaultModel = (props) => {
         props.updateFaults(response.data);
         handleClose();
         resetStates();
+        setSavingForm(false);
       })
       .catch((err) => {
         console.log(err);
@@ -173,6 +178,7 @@ const EditFaultModel = (props) => {
                 <Form.Label style={{ textDecoration: "underline" }}>
                   <h4>
                     <strong>Client details</strong>
+                    {/*--------------Client Details----------------*/}
                   </h4>
                 </Form.Label>
               </Form.Group>
@@ -214,6 +220,7 @@ const EditFaultModel = (props) => {
                 >
                   <h4>
                     <strong>Handler details</strong>
+                    {/*--------------Handler Details----------------*/}
                   </h4>
                 </Form.Label>
               </Form.Group>
@@ -228,9 +235,7 @@ const EditFaultModel = (props) => {
                   as="select"
                   value={fault.team}
                   onChange={(e) => {
-                    setFault((prevState) => {
-                      return { ...prevState, team: e.target.value };
-                    });
+                    teamHandler(e, setFault, setTeamMember);
                   }}
                 >
                   {fault.teams.map((team) => {
@@ -280,6 +285,7 @@ const EditFaultModel = (props) => {
                 >
                   <h4>
                     <strong>Fault details</strong>
+                    {/*--------------Fault Details----------------*/}
                   </h4>
                 </Form.Label>
               </Form.Group>
