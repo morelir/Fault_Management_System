@@ -16,14 +16,14 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/NewFaultModel/newNumber", async (req, res) => {
-  let data = await FaultModel.findOne({}, "-_id number").sort("-date_created");
-  if (data) {
-    res.json(data.number + 1);
-  } else {
-    res.json(data);
-  }
-});
+// router.get("/NewFaultModel/newNumber", async (req, res) => {
+//   let data = await FaultModel.findOne({}, "-_id number").sort("-date_created");
+//   if (data) {
+//     res.json(data.number + 1);
+//   } else {
+//     res.json(data);
+//   }
+// });
 
 // Person.findOne({ 'name.last': 'Ghost' }, 'name occupation', function (err, person) {
 //   if (err) return handleError(err);

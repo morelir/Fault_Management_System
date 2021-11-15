@@ -9,8 +9,8 @@ const {
 } = require("../models/userModel");
 const { authToken } = require("../auth/authToken");
 
-router.get("/", (req, res) => {
-  let users = [{ name: "tal" }, { name: "mor" }, { name: "yuval" }];
+router.get("/", async(req, res) => {
+  let users = await UserModel.find();
   res.json(users);
 });
 

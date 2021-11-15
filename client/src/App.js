@@ -16,26 +16,25 @@ import AuthContext from "./store/auth-context";
 import FaultManagement from "./components/fault_management";
 import Axios from "axios";
 import ProtectedRoute from "./routes/protectedRoute";
+import UserManagement from "./components/userManagement";
 
 const App = () => {
   const authCtx = useContext(AuthContext);
-  const [teams, setTeams] = useState([]);
-
-  const getTeams = async () => {
-    try {
-      let response = await Axios.get(`faultManagement/teams`);
-      let _teams = response.data.map((team) => {
-        return team.name;
-      });
-      setTeams(_teams);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getTeams();
-  }, []);
+  // const [teams, setTeams] = useState([]);
+  // const getTeams = async () => {
+  //   try {
+  //     let response = await Axios.get(`faultManagement/teams`);
+  //     let _teams = response.data.map((team) => {
+  //       return team.name;
+  //     });
+  //     setTeams(_teams);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+  // useEffect(() => {
+  //   getTeams();
+  // }, []);
 
   return (
     <Router>
@@ -58,10 +57,19 @@ const App = () => {
             />
             <ProtectedRoute
               condition={
-                authCtx.isLoggedIn && teams.includes(authCtx.user.team)
+                authCtx.isLoggedIn &&
+                (authCtx.user.team === "Customer service" ||
+                  authCtx.user.team === "Technical service")
               }
               component={FaultManagement}
               path="/faultManagement"
+            />
+            <ProtectedRoute
+              condition={
+                authCtx.isLoggedIn && authCtx.user.role === "team leader"
+              }
+              component={UserManagement}
+              path="/userManagement"
             />
             <Route path="*">
               <Redirect to="/" />
