@@ -5,25 +5,31 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
+import MessageModal from "../../../../shared/components/UIElements/messageModal";
 import styles from "./UserModal.module.css";
+import styleBtn from "./CreateNewUserModal.module.css";
 import Axios from "axios";
-import { userIdHandler, emailHandler } from "../../../../utils/UserUtils";
-import Error from "../../../../shared/components/FormElements/error";
-import { common } from "@material-ui/core/colors";
-
-const EditUserModal = (props) => {
+import {
+  clientIdHandler,
+  teamMemberIdHandler,
+  teamHandler,
+  urgencyHandler,
+} from "../../../../utils/functions";
+const CreateNewUserModal = (props) => {
   const reg = /^\d{9}/;
-  const [formIsValid, setFormIsValid] = useState(true);
   const [savingForm, setSavingForm] = useState(false);
+  const [showCreatedMessage, setShowCreatedMessage] = useState(false);
   const [show, setShow] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [formIsValid, setFormIsValid] = useState(true);
+
   const [user, setUser] = useState({
-    id: props.user.id.toString(),
-    name: props.user.name,
-    surname: props.user.surname,
-    email: props.user.email,
-    team: props.user.team,
-    newPassword: "",
+    id: "",
+    name: "",
+    surname: "",
+    email: "",
+    team: "",
+    pass: "",
+    confPass: "",
   });
 
   const handleClose = () => {
@@ -35,76 +41,80 @@ const EditUserModal = (props) => {
   };
 
   const resetStates = () => {
-    setFormIsValid(true);
-    setUser(() => {
+    setUser((prevState) => {
       return {
-        id: props.user.id,
-        name: props.user.name,
-        surname: props.user.surname,
-        email: props.user.email,
-        team: props.user.team,
-        newPassword: "",
+        id: "",
+        name: "",
+        surname: "",
+        email: "",
+        role: "",
+        team: "",
+        pass: "",
+        confPass: "",
       };
     });
   };
 
-  const submitSaveUser = (e) => {
+  const submitNewFault = (e) => {
     e.preventDefault();
     setSavingForm(true);
-    Axios.post(`users/editUserDetails`, {
-      _id: props.user._id,
+    Axios.post(`users/createNewUser`, {
       id: user.id,
       name: user.name,
       surname: user.surname,
       email: user.email,
-      newPassword: user.newPassword,
+      role: user.role,
+      team: user.team,
+      pass: user.pass,
     })
       .then((response) => {
-        props.updateUsers(response.data);
+        props.updateFaults(response.data.faults);
         handleClose();
+        resetStates();
         setSavingForm(false);
+        setShowCreatedMessage(true);
       })
       .catch((err) => {
         console.log(err);
-        setErrorMessage(err.response.data.msg);
-        setSavingForm(false);
       });
   };
 
+
   useEffect(() => {
     const identifier = setTimeout(() => {
-      setErrorMessage("");
-      setFormIsValid(() => {
+      console.log("checking form validity");
+      setFormIsValid(()=>{
         return (
           reg.test(user.id) &&
           user.id.length === 9 &&
           user.name.length > 0 &&
           user.surname.length > 0 &&
-          user.email.includes("@") > 0 &&
-          (user.newPassword.length > 3 || user.newPassword.length === 0)
+          user.email.includes("@") > 0 
         );
-      });
-    }, 200);
+      })
+    }, 250);
 
     return () => {
       console.log("Clean-Up Timeout");
       clearTimeout(identifier);
     };
-  }, [user.id, user.name, user.surname, user.email, user.newPassword]);
+  }, [user.id, user.name, user.surname, user.email]);
 
   return (
     <>
-      <a href="#editModal" className="edit" data-toggle="modal">
-        <i
-          className="material-icons"
-          onClick={handleOpen}
-          data-toggle="tooltip"
-          title="Edit"
-        >
-          {/* &#xE254; */}
-          <span style={{ fontSize: "16px" }}>✏️</span>
-        </i>
+      <a
+      
+        onClick={handleOpen}
+        className={`btn ${styleBtn.btn} `}
+        data-toggle="modal"
+        style={{ fontSize: "24px", borderRadius: "6px", fontWeight: "600" }}
+      >
+        <i style={{ marginTop: "4px" }} className="material-icons">
+          &#xE147;
+        </i>{" "}
+        <span>Create New User</span>
       </a>
+
       <Modal
         show={show}
         onHide={handleClose}
@@ -116,13 +126,13 @@ const EditUserModal = (props) => {
         <Modal.Header className={styles["modal-header"]}>
           <Modal.Title>
             <h3>
-              <strong>Edit User</strong>
+              <strong>New Fault</strong>
             </h3>
           </Modal.Title>
         </Modal.Header>
-        <Form onSubmit={submitSaveUser}>
+        <Form onSubmit={submitNewFault}>
           <Modal.Body className={styles["modal-body"]}>
-            <Row className="mb-3">
+          <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
                   <strong>ID</strong>
@@ -208,7 +218,7 @@ const EditUserModal = (props) => {
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>New Password</strong>
+                  <strong>Password</strong>
                 </Form.Label>
                 <Form.Control
                   type="password"
@@ -217,7 +227,24 @@ const EditUserModal = (props) => {
                     setUser((prevState) => {
                       return {
                         ...prevState,
-                        newPassword: e.target.value,
+                        pass: e.target.value,
+                      };
+                    });
+                  }}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Confirm Password</strong>
+                </Form.Label>
+                <Form.Control
+                  type="password"
+                  value={user.newPassword}
+                  onChange={(e) => {
+                    setUser((prevState) => {
+                      return {
+                        ...prevState,
+                        confPass: e.target.value,
                       };
                     });
                   }}
@@ -225,13 +252,13 @@ const EditUserModal = (props) => {
               </Form.Group>
             </Row>
 
+
+            
             <br />
             {/* <Form.Control
                 autoFocus
             /> */}
           </Modal.Body>
-
-          <Error Error={errorMessage} />
 
           <Modal.Footer>
             <Button
@@ -245,7 +272,11 @@ const EditUserModal = (props) => {
               Close
             </Button>
             {!savingForm ? (
-              <Button variant="primary" type="submit" disabled={!formIsValid}>
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={!formIsValid}
+              >
                 Save
               </Button>
             ) : (
@@ -263,8 +294,19 @@ const EditUserModal = (props) => {
           </Modal.Footer>
         </Form>
       </Modal>
+
+      {/* <MessageModal show={showCreatedMessage} header="User has created!">
+        <Form.Group>
+          <Form.Label>
+            <h4>
+              <strong>Fault No. : </strong>
+              {fault.number}
+            </h4>
+          </Form.Label>
+        </Form.Group>
+      </MessageModal> */}
     </>
   );
 };
 
-export default EditUserModal;
+export default CreateNewUserModal;

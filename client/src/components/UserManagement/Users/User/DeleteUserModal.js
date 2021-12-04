@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
-import styles from "./EditUserModal.module.css";
+import styles from "./UserModal.module.css";
 import Axios from "axios";
 
 const DeleteUserModal = (props) => {

@@ -114,33 +114,6 @@ const NewFaultModel = (props) => {
       });
   };
 
-  // const generateFaultNumber = () => {
-  //   Axios.get(`faultManagement/NewFaultModel/newNumber`)
-  //     .then((response) => {
-  //       if (response.data) {
-  //         setFault((prevState) => {
-  //           return {
-  //             ...prevState,
-  //             number: response.data,
-  //           };
-  //         });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       setFault((prevState) => {
-  //         return {
-  //           ...prevState,
-  //           number: 100000000,
-  //         };
-  //       });
-  //     });
-  // };
-
-  useEffect(() => {
-    // generateFaultNumber();
-    // console.log(fault.teams)
-  }, []);
 
   useEffect(() => {
     const identifier = setTimeout(() => {
@@ -166,7 +139,7 @@ const NewFaultModel = (props) => {
     <>
       <a
         onClick={handleOpen}
-        className={`btn btn-success ${styleBtn.btn}`}
+        className={`btn  ${styleBtn.btn}`}
         data-toggle="modal"
         style={{ fontSize: "16px", borderRadius: "6px", fontWeight: "600" }}
       >
