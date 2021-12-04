@@ -27,10 +27,9 @@ router.post("/", async (req, res) => {
     user.pass = "*****";
     res.json(user);
   } catch (err) {
-    console.log(err);
     res
       .status(401)
-      .json({ msg: "Email already in system or there another problem" });
+      .json({msg: "Email or ID already in system or there another problem" });
   }
 });
 

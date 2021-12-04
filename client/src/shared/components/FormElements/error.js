@@ -1,28 +1,28 @@
-import React, {Component} from 'react'
+import React from 'react'
 
 // this.props.location.state.detail.user
-class Error extends Component {
+const Error=(props)=> {
 
     
-    LoginErrors=() => {
+    const LoginErrors=() => {
         let LoginErrors="";
-        if(this.props.Error.length>0){
+        if(props.Error.length>0){
             LoginErrors=<div className="alert alert-warning" style={{height: "100%"
                 ,margin: "0"}}>
-                {this.props.Error}
+                {props.Error}
             </div>;     
         }
         return LoginErrors
     }
     
-    render(){
-        return (
-            <div >
-                {this.LoginErrors()}
 
-            </div>   
-        );
-    }
+    return (
+        <div >
+            {LoginErrors()}
+
+        </div>   
+    );
+ 
 }
 
 export default Error;

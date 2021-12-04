@@ -9,7 +9,7 @@ import styles from "./auth.module.css";
 // this.props.location.state.detail.user
 const Registration = (props) => {
   const history = useHistory();
-
+  const reg = /^\d{9}/;
   const [teams, setTeams] = useState([]);
 
   const [registration, setRegistration] = useState({
@@ -24,8 +24,6 @@ const Registration = (props) => {
     registerErrors: "",
   });
 
-
-
   const resetStates = () => {
     setRegistration((prevState) => {
       return {
@@ -35,14 +33,13 @@ const Registration = (props) => {
         confPass: "",
         team: "",
         id: "",
-        name:"",
+        name: "",
         surname: "",
         team: "",
         formIsValid: false,
         registerErrors: "",
       };
     });
-    
   };
 
   const getTeams = async () => {
@@ -51,8 +48,8 @@ const Registration = (props) => {
       setTeams(response.data);
       setRegistration((prevState) => {
         return {
-          ...prevState, 
-          team: response.data[0].name,      
+          ...prevState,
+          team: response.data[0].name,
         };
       });
     } catch (err) {
@@ -62,7 +59,6 @@ const Registration = (props) => {
 
   useEffect(() => {
     getTeams();
-    
   }, []);
 
   //check if the form is valid
@@ -72,6 +68,7 @@ const Registration = (props) => {
         return {
           ...registration,
           formIsValid:
+            reg.test(registration.id) &&
             registration.id.length === 9 &&
             registration.name.length > 0 &&
             registration.surname.length > 0 &&
@@ -81,7 +78,7 @@ const Registration = (props) => {
             registration.pass == registration.confPass,
         };
       });
-    }, 1000);
+    }, 200);
 
     return () => {
       console.log("Clean-Up Timeout");
@@ -142,7 +139,7 @@ const Registration = (props) => {
       surname: registration.surname,
       email: registration.email,
       pass: registration.pass,
-      team:registration.team,
+      team: registration.team,
     })
       .then((response) => {
         console.log(response.data);
@@ -240,9 +237,7 @@ const Registration = (props) => {
         </Form.Group>
         <br />
         <Form.Group>
-          <Form.Label>
-            Team Handler
-          </Form.Label>
+          <Form.Label>Team Handler</Form.Label>
           <Form.Control
             as="select"
             value={registration.team}

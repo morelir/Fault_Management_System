@@ -66,7 +66,9 @@ const App = () => {
             />
             <ProtectedRoute
               condition={
-                authCtx.isLoggedIn && authCtx.user.role === "team leader"
+                authCtx.isLoggedIn &&
+                (authCtx.user.role === "system administrator" ||
+                  authCtx.user.role === "team leader")
               }
               component={UserManagement}
               path="/userManagement"

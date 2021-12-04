@@ -15,8 +15,9 @@ import {
 
 // import { useDispatch } from "react-redux";
 import useStyles from "./styles";
+import EditUserModal from "./User/EditUserModel";
 
-const User = ({ user }) => {
+const User = ({ user,updateUsers }) => {
   const classes = useStyles();
   // const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
@@ -56,8 +57,17 @@ const User = ({ user }) => {
         {[
           {
             label: "Full Name",
-            field: user.name,
+            field: `${user.name} ${user.surname}`,
           },
+          {
+            label: "Team",
+            field: `${user.team}`,
+          },
+          {
+            label: "Email",
+            field: `${user.email}`,
+          },
+
           // {
           //   label: "Gender",
           //   field: user.gender,
@@ -80,21 +90,21 @@ const User = ({ user }) => {
             color="textSecondary"
             variant="h6"
             align="center"
-            key={item.field} 
+            key={item.field}
           >
-            {item.label}: {item.field}
+            <strong>{item.label}</strong>: {item.field}
           </Typography>
         ))}
+
+        <EditUserModal user={user} updateUsers={updateUsers}/>
+        
       </CardContent>
       <CardActions className={classes.cardActions}>
         <Button size="small" color="primary" onClick={handleClickOpen}>
           {/* <DeleteIcon fontSize="small" /> Delete */}
         </Button>
       </CardActions>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-      >
+      <Dialog open={open} onClose={handleClose}>
         <DialogTitle className={classes.dialogTitle} id="alert-dialog-title">
           {"Are you sure you want to delete this user?"}
         </DialogTitle>
