@@ -93,7 +93,7 @@ const Users = (props) => {
             );
           })
           .map((user) => (
-            <Grid item xs={4} sm={2} key={user._id} item>
+            <Grid style={{paddingRight:'70px'}} item xs={4} sm={2} key={user._id} item>
               <User user={user} updateUsers={updateUsers} />
             </Grid>
           ))}

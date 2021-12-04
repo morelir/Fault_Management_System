@@ -9,24 +9,22 @@ import MessageModal from "../../../../shared/components/UIElements/messageModal"
 import styles from "./UserModal.module.css";
 import styleBtn from "./CreateNewUserModal.module.css";
 import Axios from "axios";
-import {
-  clientIdHandler,
-  teamMemberIdHandler,
-  teamHandler,
-  urgencyHandler,
-} from "../../../../utils/functions";
+
 const CreateNewUserModal = (props) => {
   const reg = /^\d{9}/;
   const [savingForm, setSavingForm] = useState(false);
   const [showCreatedMessage, setShowCreatedMessage] = useState(false);
   const [show, setShow] = useState(false);
   const [formIsValid, setFormIsValid] = useState(true);
+  const [teams, setTeams] = useState([]);
 
   const [user, setUser] = useState({
     id: "",
     name: "",
     surname: "",
     email: "",
+    role: "regular",
+    gender:"male",
     team: "",
     pass: "",
     confPass: "",
@@ -47,7 +45,8 @@ const CreateNewUserModal = (props) => {
         name: "",
         surname: "",
         email: "",
-        role: "",
+        role: "regular",
+        gender:"male",
         team: "",
         pass: "",
         confPass: "",
@@ -55,7 +54,26 @@ const CreateNewUserModal = (props) => {
     });
   };
 
-  const submitNewFault = (e) => {
+  const getTeams = async () => {
+    try {
+      let response = await Axios.get(`faultManagement/teams`);
+      setTeams(response.data);
+      setUser((prevState) => {
+        return {
+          ...prevState,
+          team: response.data[0].name,
+        };
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getTeams();
+  }, []);
+
+  const submitNewUser = (e) => {
     e.preventDefault();
     setSavingForm(true);
     Axios.post(`users/createNewUser`, {
@@ -64,11 +82,13 @@ const CreateNewUserModal = (props) => {
       surname: user.surname,
       email: user.email,
       role: user.role,
+      gender:user.gender,
       team: user.team,
       pass: user.pass,
     })
       .then((response) => {
-        props.updateFaults(response.data.faults);
+        console.log(response.data)
+        props.updateUsers(response.data);
         handleClose();
         resetStates();
         setSavingForm(false);
@@ -79,31 +99,31 @@ const CreateNewUserModal = (props) => {
       });
   };
 
-
   useEffect(() => {
     const identifier = setTimeout(() => {
       console.log("checking form validity");
-      setFormIsValid(()=>{
+      setFormIsValid(() => {
         return (
           reg.test(user.id) &&
           user.id.length === 9 &&
           user.name.length > 0 &&
           user.surname.length > 0 &&
-          user.email.includes("@") > 0 
+          user.email.includes("@") > 0 &&
+          user.pass.length > 3 &&
+          user.pass === user.confPass
         );
-      })
+      });
     }, 250);
 
     return () => {
       console.log("Clean-Up Timeout");
       clearTimeout(identifier);
     };
-  }, [user.id, user.name, user.surname, user.email]);
+  }, [user.id, user.name, user.surname, user.email, user.pass, user.confPass]);
 
   return (
     <>
       <a
-      
         onClick={handleOpen}
         className={`btn ${styleBtn.btn} `}
         data-toggle="modal"
@@ -126,13 +146,13 @@ const CreateNewUserModal = (props) => {
         <Modal.Header className={styles["modal-header"]}>
           <Modal.Title>
             <h3>
-              <strong>New Fault</strong>
+              <strong>Create New User</strong>
             </h3>
           </Modal.Title>
         </Modal.Header>
-        <Form onSubmit={submitNewFault}>
+        <Form onSubmit={submitNewUser}>
           <Modal.Body className={styles["modal-body"]}>
-          <Row className="mb-3">
+            <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
                   <strong>ID</strong>
@@ -191,9 +211,76 @@ const CreateNewUserModal = (props) => {
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
+                  <strong>Role</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={user.role}
+                  as="select"
+                  onChange={(e) => {
+                    setUser((prevState) => {
+                      return {
+                        ...prevState,
+                        role: e.target.value,
+                      };
+                    });
+                  }}
+                >
+                  <>
+                    <option value={"regular"}>Regular</option>
+                    <option value={"team leader"}>Team Leader</option>
+                    <option value={"system administrator"}>
+                      System Administrator
+                    </option>
+                  </>
+                </Form.Control>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
                   <strong>Team</strong>
                 </Form.Label>
-                <Form.Control type="text" value={user.team} readOnly />
+                <Form.Control
+                  as="select"
+                  value={user.team}
+                  onChange={(e) => {
+                    setUser((prevState) => {
+                      return {
+                        ...prevState,
+                        team: e.target.value,
+                      };
+                    });
+                  }}
+                >
+                  {teams.map((team) => {
+                    return <option value={team.name}>{team.name}</option>;
+                  })}
+                </Form.Control>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Gender</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={user.gender}
+                  as="select"
+                  onChange={(e) => {
+                    setUser((prevState) => {
+                      return {
+                        ...prevState,
+                        gender: e.target.value,
+                      };
+                    });
+                  }}
+                >
+                  <>
+                    <option value={"male"}>Male</option>
+                    <option value={"female"}>Female</option>
+                  </>
+                </Form.Control>
               </Form.Group>
 
               <Form.Group as={Col}>
@@ -252,8 +339,6 @@ const CreateNewUserModal = (props) => {
               </Form.Group>
             </Row>
 
-
-            
             <br />
             {/* <Form.Control
                 autoFocus
@@ -272,12 +357,8 @@ const CreateNewUserModal = (props) => {
               Close
             </Button>
             {!savingForm ? (
-              <Button
-                variant="primary"
-                type="submit"
-                disabled={!formIsValid}
-              >
-                Save
+              <Button variant="primary" type="submit" disabled={!formIsValid}>
+                Create
               </Button>
             ) : (
               <Button variant="primary" disabled>
@@ -288,7 +369,7 @@ const CreateNewUserModal = (props) => {
                   role="status"
                   aria-hidden="true"
                 />
-                <span> Saving...</span>
+                <span> Creating...</span>
               </Button>
             )}
           </Modal.Footer>

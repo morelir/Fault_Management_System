@@ -38,7 +38,7 @@ const User = ({ user,updateUsers }) => {
       style={{ display: "inline-block" }}
     >
       <CardMedia align="center">
-        {/* {user.gender === "female" ? (
+        {user.gender === "female" ? (
           <img
             src="https://img.icons8.com/ios-filled/100/000000/user-female-circle.png"
             alt=""
@@ -48,11 +48,8 @@ const User = ({ user,updateUsers }) => {
             src="https://img.icons8.com/ios-filled/100/000000/user-male-circle.png"
             alt=""
           />
-        )} */}
-        <img
-          src="https://img.icons8.com/ios-filled/100/000000/user-male-circle.png"
-          alt=""
-        />
+        )}
+        
       </CardMedia>
       <CardContent className={classes.cardContent}>
         {[

@@ -7,7 +7,6 @@ import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./UserModal.module.css";
 import Axios from "axios";
-import { userIdHandler, emailHandler } from "../../../../utils/UserUtils";
 import Error from "../../../../shared/components/FormElements/error";
 import { common } from "@material-ui/core/colors";
 
