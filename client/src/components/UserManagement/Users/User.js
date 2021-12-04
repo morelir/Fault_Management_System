@@ -16,6 +16,7 @@ import {
 // import { useDispatch } from "react-redux";
 import useStyles from "./styles";
 import EditUserModal from "./User/EditUserModel";
+import DeleteUserModal from "./User/DeleteUserModal";
 
 const User = ({ user,updateUsers }) => {
   const classes = useStyles();
@@ -97,6 +98,7 @@ const User = ({ user,updateUsers }) => {
         ))}
 
         <EditUserModal user={user} updateUsers={updateUsers}/>
+        <DeleteUserModal _id={user._id} updateUsers={updateUsers}/>
         
       </CardContent>
       <CardActions className={classes.cardActions}>

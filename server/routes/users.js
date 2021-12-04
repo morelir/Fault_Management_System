@@ -44,6 +44,17 @@ const updateUser = async (updateUser, user) => {
   return updateUser;
 };
 
+router.delete("/deleteUser/:id", async (req, res) => {
+  try {
+    console.log(req.params.id)
+    await UserModel.findOneAndRemove({_id: req.params.id})
+    let users = await UserModel.find();
+    res.json(users);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 router.get("/userInfo", authToken, async (req, res) => {
   let user = await UserModel.findOne({ _id: req.tokenData._id }, { pass: 0 });
   res.json(user);
