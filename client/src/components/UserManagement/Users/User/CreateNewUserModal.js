@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useContext } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -6,6 +6,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import MessageModal from "../../../../shared/components/UIElements/messageModal";
+import AuthContext from "../../../../store/auth-context";
 import styles from "./UserModal.module.css";
 import styleBtn from "./CreateNewUserModal.module.css";
 import Axios from "axios";
@@ -17,6 +18,7 @@ const CreateNewUserModal = (props) => {
   const [show, setShow] = useState(false);
   const [formIsValid, setFormIsValid] = useState(true);
   const [teams, setTeams] = useState([]);
+  const authCtx = useContext(AuthContext);
 
   const [user, setUser] = useState({
     id: "",
@@ -24,8 +26,8 @@ const CreateNewUserModal = (props) => {
     surname: "",
     email: "",
     role: "regular",
-    gender:"male",
-    team: "",
+    gender: "male",
+    team: "Customer service",
     pass: "",
     confPass: "",
   });
@@ -46,8 +48,8 @@ const CreateNewUserModal = (props) => {
         surname: "",
         email: "",
         role: "regular",
-        gender:"male",
-        team: "",
+        gender: "male",
+        team: "Customer service",
         pass: "",
         confPass: "",
       };
@@ -82,12 +84,12 @@ const CreateNewUserModal = (props) => {
       surname: user.surname,
       email: user.email,
       role: user.role,
-      gender:user.gender,
+      gender: user.gender,
       team: user.team,
       pass: user.pass,
     })
       .then((response) => {
-        console.log(response.data)
+        console.log(response.data);
         props.updateUsers(response.data);
         handleClose();
         resetStates();
@@ -239,22 +241,38 @@ const CreateNewUserModal = (props) => {
                 <Form.Label>
                   <strong>Team</strong>
                 </Form.Label>
-                <Form.Control
-                  as="select"
-                  value={user.team}
-                  onChange={(e) => {
-                    setUser((prevState) => {
-                      return {
-                        ...prevState,
-                        team: e.target.value,
-                      };
-                    });
-                  }}
-                >
-                  {teams.map((team) => {
-                    return <option value={team.name}>{team.name}</option>;
-                  })}
-                </Form.Control>
+                {authCtx.user.role === "system administrator" ? (
+                  <Form.Control
+                    as="select"
+                    value={user.team}
+                    onChange={(e) => {
+                      setUser((prevState) => {
+                        return {
+                          ...prevState,
+                          team: e.target.value,
+                        };
+                      });
+                    }}
+                  >
+                    {teams.map((team) => {
+                      return <option value={team.name}>{team.name}</option>;
+                    })}
+                  </Form.Control>
+                ) : (      
+                  // team leader case
+                  <Form.Control
+                    value={user.team}
+                    readOnly
+                    onChange={(e) => {
+                      setUser((prevState) => {
+                        return {
+                          ...prevState,
+                          team: authCtx.user.team,
+                        };
+                      });
+                    }}
+                  /> 
+                )}
               </Form.Group>
             </Row>
 
