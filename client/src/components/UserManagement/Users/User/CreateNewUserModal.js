@@ -1,10 +1,11 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
+import Error from "../../../../shared/components/FormElements/error";
 import MessageModal from "../../../../shared/components/UIElements/messageModal";
 import AuthContext from "../../../../store/auth-context";
 import styles from "./UserModal.module.css";
@@ -15,6 +16,7 @@ const CreateNewUserModal = (props) => {
   const reg = /^\d{9}/;
   const [savingForm, setSavingForm] = useState(false);
   const [showCreatedMessage, setShowCreatedMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [show, setShow] = useState(false);
   const [formIsValid, setFormIsValid] = useState(true);
   const [teams, setTeams] = useState([]);
@@ -98,6 +100,8 @@ const CreateNewUserModal = (props) => {
       })
       .catch((err) => {
         console.log(err);
+        setErrorMessage(err.response.data.msg);
+        setSavingForm(false);
       });
   };
 
@@ -258,7 +262,7 @@ const CreateNewUserModal = (props) => {
                       return <option value={team.name}>{team.name}</option>;
                     })}
                   </Form.Control>
-                ) : (      
+                ) : (
                   // team leader case
                   <Form.Control
                     value={user.team}
@@ -271,7 +275,7 @@ const CreateNewUserModal = (props) => {
                         };
                       });
                     }}
-                  /> 
+                  />
                 )}
               </Form.Group>
             </Row>
@@ -362,6 +366,8 @@ const CreateNewUserModal = (props) => {
                 autoFocus
             /> */}
           </Modal.Body>
+
+          <Error Error={errorMessage} />
 
           <Modal.Footer>
             <Button

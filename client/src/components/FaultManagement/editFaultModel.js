@@ -74,7 +74,6 @@ const EditFaultModel = (props) => {
         idIsValid: props.fault.teamMemberID === null ? false : true,
       };
     });
-   
   };
 
   const submitSaveFault = (e) => {
@@ -86,6 +85,7 @@ const EditFaultModel = (props) => {
       status: fault.status,
       clientID: parseInt(client.id),
       team: fault.team,
+      teamMemberID: parseInt(teamMember.id),
       description: fault.description,
     })
       .then((response) => {

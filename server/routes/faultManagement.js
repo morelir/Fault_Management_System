@@ -130,6 +130,7 @@ const updateFault = (fault, updateFault) => {
   fault.clientID = updateFault.clientID;
   fault.team = updateFault.team;
   fault.description = updateFault.description;
+  fault.teamMemberID = updateFault.teamMemberID;
   return fault;
 };
 
