@@ -147,6 +147,19 @@ router.put("/closeFault", async (req, res) => {
   }
 });
 
+router.put("/doneFault", async (req, res) => {
+  try {
+    fault = await FaultModel.findOne({ _id: req.body._id });
+    fault.team = "Customer service";
+    await fault.save();
+    let faults = await FaultModel.find({}).lean();
+    data = await mergeFaultsAndUsers(faults);
+    res.json(data);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 router.get("/teams", async (req, res) => {
   teams = await TeamModel.find();
   res.json(teams);

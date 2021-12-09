@@ -6,6 +6,8 @@ import NewFaultModel from "./FaultManagement/newFaultModel";
 import EditFaultModel from "./FaultManagement/editFaultModel";
 import CloseFaultModal from "./FaultManagement/closeFaultModal";
 import AuthContext from "../store/auth-context";
+import DoneFaultModal from "./FaultManagement/doneFaultModal";
+import Icon from "../shared/components/FormElements/Icon";
 
 const FaultManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -67,7 +69,7 @@ const FaultManagement = (props) => {
                     <strong>Fault List</strong>
                   </h2>
                 </div>
-                {authCtx.user.team==="Customer service" && !isLoading  &&   (
+                {authCtx.user.team === "Customer service" && !isLoading && (
                   <div className="col-sm-10">
                     <NewFaultModel
                       teams={teams.filter(
@@ -102,7 +104,8 @@ const FaultManagement = (props) => {
                     .filter(
                       (fault) =>
                         fault.status !== "Close" &&
-                        fault.team === authCtx.user.team
+                        (fault.team === authCtx.user.team ||
+                          authCtx.user.team === "Customer service")
                     )
                     .map((fault, pos) => {
                       return (
@@ -139,6 +142,26 @@ const FaultManagement = (props) => {
                                 _id={fault._id}
                                 updateFaults={updateFaults}
                               />
+                              {authCtx.user.team === "Customer service" ? (
+                                fault.team === "Customer service" ? (
+                                  <Icon
+                                    className="done_mark"
+                                    icon="check_circle_outline"
+                                    title="done"
+                                  />
+                                ) : (
+                                  <Icon
+                                    className="pending"
+                                    icon="pending"
+                                    title="pending"
+                                  />
+                                )
+                              ) : (
+                                <DoneFaultModal
+                                  _id={fault._id}
+                                  updateFaults={updateFaults}
+                                />
+                              )}
                             </td>
                           </tr>
                           <tr

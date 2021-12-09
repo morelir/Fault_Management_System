@@ -5,7 +5,7 @@ import Spinner from "react-bootstrap/Spinner";
 import styles from "./faultModel.module.css";
 import Axios from "axios";
 
-const CloseFaultModal = (props) => {
+const DoneFaultModal = (props) => {
   const [show, setShow] = useState(false);
 
   const [savingForm, setSavingForm] = useState(false);
@@ -20,12 +20,12 @@ const CloseFaultModal = (props) => {
 
   const handleCloseFault = async () => {
     try {
-      setSavingForm(true);
-      const response = await Axios.put("/faultManagement/closeFault", {
+      setSavingForm(true)
+      const response = await Axios.put("/faultManagement/doneFault", {
         _id: props._id,
       });
       props.updateFaults(response.data);
-      setSavingForm(false);
+      setSavingForm(false)
       handleClose();
     } catch (err) {
       console.log(err);
@@ -34,20 +34,17 @@ const CloseFaultModal = (props) => {
 
   return (
     <>
-      <a href="#closeModal" className="close" data-toggle="modal">
+      <a href="#doneModal" className="done" data-toggle="modal">
         <i
           className="material-icons"
           onClick={handleOpen}
           data-toggle="tooltip"
-          title="Close"
+          title="Done"
         >
           {/* &#xE872; */}
-          <span style={{ fontSize: "20px" }}> lock </span>
-          
+          <span style={{ fontSize: "21px" }}> check_circle_outline</span>
         </i>
       </a>
-      
-     
 
       <Modal
         show={show}
@@ -60,14 +57,12 @@ const CloseFaultModal = (props) => {
         <Modal.Header className={styles["modal-header"]}>
           <Modal.Title>
             <h3>
-              <strong>Close Fault</strong>
+              <strong>Done Fault</strong>
             </h3>
           </Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
-          <strong>Are you sure you want to close the fault ?</strong>
-        </Modal.Body>
+        <Modal.Body><strong>Are you sure the fault has been done ?</strong></Modal.Body>
         <Modal.Footer>
           <Button
             variant="secondary"
@@ -100,4 +95,4 @@ const CloseFaultModal = (props) => {
   );
 };
 
-export default CloseFaultModal;
+export default DoneFaultModal;

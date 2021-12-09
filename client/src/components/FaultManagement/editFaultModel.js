@@ -147,13 +147,13 @@ const EditFaultModel = (props) => {
     <>
       <a href="#editModal" className="edit" data-toggle="modal">
         <i
-          className="material-icons"
+          className="material-icons icon-blue "
           onClick={handleOpen}
           data-toggle="tooltip"
           title="Edit"
         >
           {/* &#xE254; */}
-          <span style={{ fontSize: "16px" }}>✏️</span>
+          <span style={{ fontSize: "20px" }}>mode</span>
         </i>
       </a>
       <Modal
