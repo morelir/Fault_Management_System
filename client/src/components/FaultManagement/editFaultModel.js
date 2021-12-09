@@ -232,20 +232,21 @@ const EditFaultModel = (props) => {
                   <strong>Team</strong>
                 </Form.Label>
                 <Form.Control
-                  as="select"
                   value={fault.team}
                   onChange={(e) => {
                     teamHandler(e, setFault, setTeamMember);
                   }}
-                >
-                  {fault.teams.map((team) => {
+                  readOnly
+                />
+                  
+                  {/* {fault.teams.map((team) => {
                     return (
                       <option key={team._id} value={team.name}>
                         {team.name}
                       </option>
                     );
-                  })}
-                </Form.Control>
+                  })} */}
+                
               </Form.Group>
             </Row>
 

@@ -137,25 +137,27 @@ const FaultManagement = (props) => {
                                 users={users}
                                 clients={clients}
                                 updateFaults={updateFaults}
-                              />
-                              <CloseFaultModal
-                                _id={fault._id}
-                                updateFaults={updateFaults}
-                              />
+                              />           
                               {authCtx.user.team === "Customer service" ? (
-                                fault.team === "Customer service" ? (
+                                <>
+                                  <CloseFaultModal
+                                    _id={fault._id}
+                                    updateFaults={updateFaults}
+                                  />
+                                  {fault.team === "Customer service" ? (
                                   <Icon
                                     className="done_mark"
                                     icon="check_circle_outline"
                                     title="done"
                                   />
-                                ) : (
+                                  ) : (
                                   <Icon
                                     className="pending"
                                     icon="pending"
                                     title="pending"
                                   />
-                                )
+                                  )}
+                                </>
                               ) : (
                                 <DoneFaultModal
                                   _id={fault._id}
