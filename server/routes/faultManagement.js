@@ -151,6 +151,8 @@ router.put("/doneFault", async (req, res) => {
   try {
     fault = await FaultModel.findOne({ _id: req.body._id });
     fault.team = "Customer service";
+    fault.status="Done"
+    fault.teamMemberID=null
     await fault.save();
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);

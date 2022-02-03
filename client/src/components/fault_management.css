@@ -110,6 +110,18 @@ table.table td a {
   outline: none !important;
 }
 
+table.table td.new_status {
+  min-width: 100px;
+}
+table.table td.In_treatment_status {
+  
+  min-width: 100px;
+}
+table.table td.done_status {
+  color: rgb(6, 175, 0);
+  min-width: 100px;
+}
+
 table.table td a:hover {
   color: #2196f3;
 }
@@ -124,6 +136,7 @@ table.table td a.edit:hover {
 table.table td a.done {
   color: rgb(6, 175, 0);
 }
+
 table.table td a.done:hover {
   color: #0062ff;
 }
@@ -301,6 +314,13 @@ table.table .avatar {
 .modal form label {
     font-weight: normal;
 } */
+
+.button {
+  background:#ffffff;
+  border-radius:6px;
+  min-width: 100px;
+  
+}
 
 .col-sm-2 {
   width: 16.66666667%;

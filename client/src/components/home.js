@@ -10,10 +10,10 @@ const Home = (props) => {
 
   return (
     <div>
-      <img
+      {/* <img
         src={image}
         alt="FMS wallpaper"
-      />
+      /> */}
     </div>
   );
 };

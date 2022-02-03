@@ -20,7 +20,7 @@ export const clientIdHandler = (e, setClient, props) => {
   }
 };
 
-export const teamMemberIdHandler = (e, setTeamMember, props) => {
+export const teamMemberIdHandler = (e,setFault,setTeamMember, props) => {
   let value = e.target.value;
   setTeamMember((prevState) => {
     return { ...prevState, id: value, idIsValid: false };
@@ -37,6 +37,13 @@ export const teamMemberIdHandler = (e, setTeamMember, props) => {
           idIsValid: true,
         };
       });
+      setFault((prevState)=>{
+        return {
+          ...prevState,
+          status:"In treatment"
+        }
+
+      })
     }
   }
 };

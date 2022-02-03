@@ -18,13 +18,13 @@ import {
 const NewFaultModel = (props) => {
   const [fault, setFault] = useState({
     number: "",
-    status: "New",
+    status: "In treatment",
     urgency: "Regular",
     team: props.teams[1].name,
     description: "",
     teams: props.teams,
     formIsValid: false,
-    showCreatedMessage:false,
+    showCreatedMessage: false,
   });
   const [savingForm, setSavingForm] = useState(false);
 
@@ -81,7 +81,6 @@ const NewFaultModel = (props) => {
         idIsValid: false,
       };
     });
-    
   };
 
   const submitNewFault = (e) => {
@@ -96,7 +95,7 @@ const NewFaultModel = (props) => {
     })
       .then((response) => {
         props.updateFaults(response.data.faults);
-        
+
         handleClose();
         resetStates();
         setSavingForm(false);
@@ -104,7 +103,7 @@ const NewFaultModel = (props) => {
           return {
             ...prevState,
             number: response.data.faultNumber,
-            showCreatedMessage:true,
+            showCreatedMessage: true,
           };
         });
         // setShowCreatedMessage(true);
@@ -113,7 +112,6 @@ const NewFaultModel = (props) => {
         console.log(err);
       });
   };
-
 
   useEffect(() => {
     const identifier = setTimeout(() => {
@@ -232,7 +230,6 @@ const NewFaultModel = (props) => {
                   }}
                   readOnly
                 />
-                
               </Form.Group>
             </Row>
 
@@ -296,8 +293,9 @@ const NewFaultModel = (props) => {
                   }}
                 >
                   <>
+                    <option value={"Low"}>Low</option>
                     <option value={"Regular"}>Regular</option>
-                    <option value={"Urgent"}>Urgent</option>
+                    <option value={"High"}>Urgent</option>
                   </>
                 </Form.Control>
               </Form.Group>

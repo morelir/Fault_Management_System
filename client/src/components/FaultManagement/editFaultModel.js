@@ -145,17 +145,20 @@ const EditFaultModel = (props) => {
 
   return (
     <>
-      <a href="#editModal" className="edit" data-toggle="modal">
-        <i
-          className="material-icons icon-blue "
-          onClick={handleOpen}
-          data-toggle="tooltip"
-          title="Edit"
-        >
-          {/* &#xE254; */}
-          <span style={{ fontSize: "20px" }}>mode</span>
-        </i>
-      </a>
+      <button className="button">
+        <a href="#editModal" className="edit" data-toggle="modal" >
+          <i
+            className="material-icons icon-blue "
+            onClick={handleOpen}
+            data-toggle="tooltip"
+            title="Edit"
+          >
+            <strong style={{fontFamily:"none" }}>Edit </strong>
+            {/* &#xE254; */}
+            <span style={{ fontSize: "20px" }}>mode</span>
+          </i>
+        </a>
+      </button>
       <Modal
         show={show}
         onHide={handleClose}
@@ -238,15 +241,14 @@ const EditFaultModel = (props) => {
                   }}
                   readOnly
                 />
-                  
-                  {/* {fault.teams.map((team) => {
+
+                {/* {fault.teams.map((team) => {
                     return (
                       <option key={team._id} value={team.name}>
                         {team.name}
                       </option>
                     );
                   })} */}
-                
               </Form.Group>
             </Row>
 
@@ -273,7 +275,7 @@ const EditFaultModel = (props) => {
                   type="text"
                   value={teamMember.id}
                   onChange={(e) => {
-                    teamMemberIdHandler(e, setTeamMember, props);
+                    teamMemberIdHandler(e, setFault,setTeamMember, props);
                   }}
                 />
               </Form.Group>

@@ -34,17 +34,20 @@ const DoneFaultModal = (props) => {
 
   return (
     <>
-      <a href="#doneModal" className="done" data-toggle="modal">
-        <i
-          className="material-icons"
-          onClick={handleOpen}
-          data-toggle="tooltip"
-          title="Done"
-        >
-          {/* &#xE872; */}
-          <span style={{ fontSize: "21px" }}> check_circle_outline</span>
-        </i>
-      </a>
+      <button className="button">
+        <a href="#doneModal" className="done" data-toggle="modal">
+          <i
+            className="material-icons"
+            onClick={handleOpen}
+            data-toggle="tooltip"
+            title="Done"
+          >
+            <strong style={{fontFamily:"none" }}>Done </strong>
+            {/* &#xE872; */}
+            <span style={{ fontSize: "21px" }}> check_circle_outline</span>
+          </i>
+        </a>
+      </button>
 
       <Modal
         show={show}

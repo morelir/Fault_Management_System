@@ -34,20 +34,20 @@ const CloseFaultModal = (props) => {
 
   return (
     <>
-      <a href="#closeModal" className="close" data-toggle="modal">
-        <i
-          className="material-icons"
-          onClick={handleOpen}
-          data-toggle="tooltip"
-          title="Close"
-        >
-          {/* &#xE872; */}
-          <span style={{ fontSize: "20px" }}> lock </span>
-          
-        </i>
-      </a>
-      
-     
+      <button className="button" >
+        <a href="#closeModal" className="close" data-toggle="modal">
+          <i
+            className="material-icons"
+            onClick={handleOpen}
+            data-toggle="tooltip"
+            title="Close"
+          >
+            {/* &#xE872; */}
+            <strong style={{ fontFamily: "none" }}>Close </strong>
+            <span style={{ fontSize: "20px" }}> lock </span>
+          </i>
+        </a>
+      </button>
 
       <Modal
         show={show}

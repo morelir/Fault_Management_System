@@ -92,8 +92,8 @@ const FaultManagement = (props) => {
                   <th>Status</th>
                   <th>Date created</th>
                   <th>Client name </th>
-                  <th>Team</th>
-                  <th>Team member </th>
+                  <th>Handler Team</th>
+                  <th>Handler Team member</th>
                   <th>Handling duration</th>
                   <th>Actions</th>
                 </tr>
@@ -116,7 +116,16 @@ const FaultManagement = (props) => {
                             }
                           >
                             <td>{fault.number}</td>
-                            <td>{fault.status}</td>
+                            {fault.status==="In treatment" &&
+                            <td className="In_treatment_status">
+                              <strong>{fault.status}{" "}</strong> 
+                            </td>
+                            }
+                            {fault.status==="Done" &&
+                            <td className="done_status">
+                              <strong>{fault.status}{" "}</strong>
+                            </td>
+                            }
                             <td>{displayDate(fault.date_created)}</td>
                             <td>{`${fault.clientName}, ${fault.clientSurname}`}</td>
                             <td>{fault.team}</td>
@@ -137,14 +146,14 @@ const FaultManagement = (props) => {
                                 users={users}
                                 clients={clients}
                                 updateFaults={updateFaults}
-                              />           
+                              />
                               {authCtx.user.team === "Customer service" ? (
                                 <>
                                   <CloseFaultModal
                                     _id={fault._id}
                                     updateFaults={updateFaults}
                                   />
-                                  {fault.team === "Customer service" ? (
+                                  {/* {fault.team === "Customer service" ? (
                                   <Icon
                                     className="done_mark"
                                     icon="check_circle_outline"
@@ -156,7 +165,7 @@ const FaultManagement = (props) => {
                                     icon="pending"
                                     title="pending"
                                   />
-                                  )}
+                                  )} */}
                                 </>
                               ) : (
                                 <DoneFaultModal
