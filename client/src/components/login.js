@@ -73,7 +73,7 @@ const Login = (props) => {
         };
         authCtx.login(objUserAndToken, expirationTime.toISOString());
 
-        history.replace("/");
+        history.replace("/faultManagement");
         // props.history.push({
         //     pathname:'/',
         //     login:login

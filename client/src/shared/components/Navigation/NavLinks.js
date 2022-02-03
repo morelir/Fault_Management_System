@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useHistory } from "react-router-dom";
 import AuthContext from "../../../store/auth-context";
 import Axios from "axios";
 
@@ -8,10 +8,11 @@ import "./NavLinks.css";
 const NavLinks = (props) => {
   const authCtx = useContext(AuthContext);
   const isLoggedIn = authCtx.isLoggedIn;
-  
+  const history = useHistory();
 
   const LogoutHandler = () => {
     authCtx.logout();
+    // history.replace("/login");
   };
 
   // let [teams, setTeams] = useState([]);
@@ -53,7 +54,8 @@ const NavLinks = (props) => {
               </NavLink>
             </li>
           )}
-          {(authCtx.user.role === "system administrator" || authCtx.user.role === "team leader") && (
+          {(authCtx.user.role === "system administrator" ||
+            authCtx.user.role === "team leader") && (
             <li>
               <NavLink to="/userManagement" exact>
                 User Management
