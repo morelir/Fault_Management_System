@@ -170,12 +170,11 @@ const FaultManagement = (props) => {
                                 </>
                               ) : (
                                 <>
-                                  
+                                  <NewRequestModal number={fault.number} team="Stock" />
                                   <DoneFaultModal
                                     _id={fault._id}
                                     updateFaults={updateFaults}
                                   />
-                                  <NewRequestModal number={fault.number} />
                                 </>
                               )}
                             </td>

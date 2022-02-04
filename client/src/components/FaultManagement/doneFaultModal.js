@@ -48,7 +48,6 @@ const DoneFaultModal = (props) => {
           </i>
         </a>
       </button>
-
       <Modal
         show={show}
         onHide={handleClose}

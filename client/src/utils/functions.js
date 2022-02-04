@@ -36,20 +36,13 @@ export const teamMemberIdHandler = (e,setFault,setTeamMember, props) => {
           surname: user.surname,
           idIsValid: true,
         };
-      });
-      setFault((prevState)=>{
-        return {
-          ...prevState,
-          status:"In treatment"
-        }
-
-      })
+      });     
     }
   }
 };
 
-export const teamHandler = (e, setFault, setTeamMember) => {
-  setFault((prevState) => {
+export const teamHandler = (e, set, setTeamMember) => {
+  set((prevState) => {
     return { ...prevState, team: e.target.value };
   });
   setTeamMember((prevState) => {
