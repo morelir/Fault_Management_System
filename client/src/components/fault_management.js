@@ -8,6 +8,7 @@ import CloseFaultModal from "./FaultManagement/closeFaultModal";
 import AuthContext from "../store/auth-context";
 import DoneFaultModal from "./FaultManagement/doneFaultModal";
 import Icon from "../shared/components/FormElements/Icon";
+import NewRequestModal from "./RequestManagement/NewRequestModal";
 
 const FaultManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -116,16 +117,16 @@ const FaultManagement = (props) => {
                             }
                           >
                             <td>{fault.number}</td>
-                            {fault.status==="In treatment" &&
-                            <td className="In_treatment_status">
-                              <strong>{fault.status}{" "}</strong> 
-                            </td>
-                            }
-                            {fault.status==="Done" &&
-                            <td className="done_status">
-                              <strong>{fault.status}{" "}</strong>
-                            </td>
-                            }
+                            {fault.status === "In treatment" && (
+                              <td className="In_treatment_status">
+                                <strong>{fault.status} </strong>
+                              </td>
+                            )}
+                            {fault.status === "Done" && (
+                              <td className="done_status">
+                                <strong>{fault.status} </strong>
+                              </td>
+                            )}
                             <td>{displayDate(fault.date_created)}</td>
                             <td>{`${fault.clientName}, ${fault.clientSurname}`}</td>
                             <td>{fault.team}</td>
@@ -168,10 +169,14 @@ const FaultManagement = (props) => {
                                   )} */}
                                 </>
                               ) : (
-                                <DoneFaultModal
-                                  _id={fault._id}
-                                  updateFaults={updateFaults}
-                                />
+                                <>
+                                  
+                                  <DoneFaultModal
+                                    _id={fault._id}
+                                    updateFaults={updateFaults}
+                                  />
+                                  <NewRequestModal number={fault.number} />
+                                </>
                               )}
                             </td>
                           </tr>

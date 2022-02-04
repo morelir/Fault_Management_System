@@ -17,6 +17,7 @@ import FaultManagement from "./components/fault_management";
 import Axios from "axios";
 import ProtectedRoute from "./routes/protectedRoute";
 import UserManagement from "./components/userManagement";
+import RequestManagement from "./components/Request_Management";
 
 const App = () => {
   const authCtx = useContext(AuthContext);
@@ -63,6 +64,15 @@ const App = () => {
               }
               component={FaultManagement}
               path="/faultManagement"
+            />
+            <ProtectedRoute
+              condition={
+                authCtx.isLoggedIn &&
+                (authCtx.user.team === "Stock" ||
+                  authCtx.user.team === "Purchase")
+              }
+              component={RequestManagement}
+              path="/requestManagement"
             />
             <ProtectedRoute
               condition={

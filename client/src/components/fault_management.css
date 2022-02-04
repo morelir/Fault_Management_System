@@ -129,6 +129,13 @@ table.table td a:hover {
 table.table td a.edit {
   color: #ffc107;
 }
+table.table td a.request:hover {
+  color: #0062ff;
+}
+
+table.table td a.request {
+  color: #ff6207;
+}
 table.table td a.edit:hover {
   color: #0062ff;
 }
