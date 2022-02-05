@@ -24,12 +24,3 @@ exports.validNewRequest = (_bodyData) => {
   });
   return joiSchema.validate(_bodyData);
 };
-
-// const generateFaultNumber=()=> {
-//   let data = await FaultModel.findOne({}, "-_id number").sort("-date_created");
-//   if (data) {
-//     return data.number + 1;
-//   } else {
-//     return data;
-//   }
-// }

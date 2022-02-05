@@ -16,6 +16,7 @@ const FaultManagement = (props) => {
   const [teams, setTeams] = useState([]);
   const [users, setUsers] = useState([]);
   const [clients, setClients] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,6 +32,8 @@ const FaultManagement = (props) => {
       setUsers(response.data);
       response = await Axios.get(`faultManagement/clients`);
       setClients(response.data);
+      response = await Axios.get(`faultManagement/products`);
+      setProducts(response.data);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
@@ -170,7 +173,11 @@ const FaultManagement = (props) => {
                                 </>
                               ) : (
                                 <>
-                                  <NewRequestModal number={fault.number} team="Stock" />
+                                  <NewRequestModal
+                                    products={products}
+                                    number={fault.number}
+                                    team="Stock"
+                                  />
                                   <DoneFaultModal
                                     _id={fault._id}
                                     updateFaults={updateFaults}

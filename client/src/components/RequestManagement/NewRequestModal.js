@@ -21,10 +21,16 @@ const NewRequestModal = (props) => {
     number: props.number,
     team: props.team,
     status: "In treatment",
-    equipment_SerialNumbers: {},
+    // equipment_SerialNumbers: [],
     formIsValid: false,
     showCreatedMessage: false,
   });
+
+  const [products, setProducts] = useState([]);
+
+  const [serial, setSerial] = useState("");
+  const [model, setModel] = useState("");
+  const [serialIsValid, setSerialIsValid] = useState(false);
 
   const [savingForm, setSavingForm] = useState(false);
 
@@ -59,7 +65,7 @@ const NewRequestModal = (props) => {
         ...prevState,
         number: props.number,
         status: "In treatment",
-        equipment_SerialNumbers: {},
+        equipment_SerialNumbers: [],
         formIsValid: false,
         showCreatedMessage: false,
       };
@@ -106,6 +112,35 @@ const NewRequestModal = (props) => {
         console.log(err);
       });
   };
+
+  const serial_handler = (e) => {
+    let value = e.target.value;
+    setSerial(value);
+    setSerialIsValid(false);
+    if (props.products.some((product) => product.serialNumber === value)) {
+      console.log("true");
+      setSerialIsValid(true);
+    }
+  };
+
+  const add_serial = () => {
+    let copyArr = products.slice();
+    let [product] = props.products.filter(
+      (product) => product.serialNumber === serial
+    );
+    if (product) {
+      copyArr.push(product);
+      console.log(copyArr);
+      setProducts([...copyArr]);
+      // setRequest((prevState) => {
+      //   return {
+      //     ...prevState,
+      //     equipment_SerialNumbers: [...copyArr],
+      //   };
+      // });
+    }
+  };
+
   return (
     <>
       <button className="button">
@@ -215,20 +250,86 @@ const NewRequestModal = (props) => {
               </Form.Group>
             </Row>
 
-            <Form.Group size="lg" controlId="email">
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Products Serial No.</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={serial}
+                  onChange={serial_handler}
+                ></Form.Control>
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>model</strong>
+                </Form.Label>
+                <Form.Control type="text" value={model}></Form.Control>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              {products.map((product, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <Form.Group as={Col}>
+                      <Form.Control
+                        type="text"
+                        value={product.serialNumber}
+                        readOnly
+                      ></Form.Control>
+                    </Form.Group>
+                    <Form.Group as={Col}>
+                      <Form.Control
+                        type="text"
+                        value={`${product.name} ${product.type}`}
+                        readOnly
+                      ></Form.Control>
+                    </Form.Group>
+                    <br />
+                  </React.Fragment>
+                );
+              })}
+            </Row>
+            <Row className="mb-3">
+              <Form.Group>
+                <button className="button" onClick={add_serial}>
+                  <a
+                    href="#requestModal"
+                    className={styles.add_serial}
+                    data-toggle="modal"
+                  >
+                    <i
+                      className="material-icons icon-blue "
+                      data-toggle="tooltip"
+                      title="Request"
+                    >
+                      <strong style={{ fontFamily: "none", fontSize: "20px" }}>
+                        Add S.N.{" "}
+                      </strong>
+
+                      <span style={{ fontSize: "21px" }}>control_point</span>
+                    </i>
+                  </a>
+                </button>
+              </Form.Group>
+            </Row>
+
+            <Form.Group size="sm" controlId="email">
               <Form.Label>
-                <strong>Description </strong>
+                <strong>Note </strong>
               </Form.Label>
               <br />
               <Form.Control
                 as="textarea"
+                rows={1}
                 value={request.description}
                 onChange={(e) =>
                   setRequest((prevState) => {
                     return { ...prevState, description: e.target.value };
                   })
                 }
-                style={{ width: "100%", height: "200px" }}
               />
             </Form.Group>
 

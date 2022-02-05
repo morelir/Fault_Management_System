@@ -5,6 +5,7 @@ const { FaultModel, validNewFault } = require("../models/faultModel");
 const { UserModel } = require("../models/userModel");
 const { ClientModel } = require("../models/clientModel");
 const { TeamModel } = require("../models/teamModel");
+const { ProductModel } = require("../models/productModel");
 
 router.get("/", async (req, res) => {
   try {
@@ -151,8 +152,8 @@ router.put("/doneFault", async (req, res) => {
   try {
     fault = await FaultModel.findOne({ _id: req.body._id });
     fault.team = "Customer service";
-    fault.status="Done"
-    fault.teamMemberID=null
+    fault.status = "Done";
+    fault.teamMemberID = null;
     await fault.save();
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);
@@ -175,6 +176,11 @@ router.get("/users", async (req, res) => {
 router.get("/clients", async (req, res) => {
   clients = await ClientModel.find();
   res.json(clients);
+});
+
+router.get("/products", async (req, res) => {
+  products = await ProductModel.find();
+  res.json(products);
 });
 
 module.exports = router;

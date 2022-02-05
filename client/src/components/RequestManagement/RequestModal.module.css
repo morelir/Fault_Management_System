@@ -28,6 +28,14 @@
     text-align: center;
     background-color: #f7f7f7;
   }
+
+  .add_serial {
+    color: #0359f8;
+  }
+  
+  .add_serial:hover {
+    color: #0077ff;
+  }
   
   
   
