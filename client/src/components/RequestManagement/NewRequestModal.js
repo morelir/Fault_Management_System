@@ -20,34 +20,15 @@ const NewRequestModal = (props) => {
   const [request, setRequest] = useState({
     number: props.number,
     team: props.team,
-    status: "In treatment",
-    // equipment_SerialNumbers: [],
-    formIsValid: false,
-    showCreatedMessage: false,
+    note: "",
+    status: "New",
   });
 
   const [products, setProducts] = useState([]);
-
   const [serial, setSerial] = useState("");
   const [model, setModel] = useState("");
   const [serialIsValid, setSerialIsValid] = useState(false);
-
   const [savingForm, setSavingForm] = useState(false);
-
-  const [client, setClient] = useState({
-    id: "",
-    name: "",
-    surname: "",
-    idIsValid: false,
-  });
-
-  const [teamMember, setTeamMember] = useState({
-    id: "",
-    name: "",
-    surname: "",
-    idIsValid: false,
-  });
-
   const [showCreatedMessage, setShowCreatedMessage] = useState(false);
   const [show, setShow] = useState(false);
 
@@ -62,32 +43,16 @@ const NewRequestModal = (props) => {
   const resetStates = () => {
     setRequest((prevState) => {
       return {
-        ...prevState,
         number: props.number,
-        status: "In treatment",
-        equipment_SerialNumbers: [],
-        formIsValid: false,
-        showCreatedMessage: false,
+        team: props.team,
+        note: "",
+        status: "New",
       };
     });
-    setClient((prevState) => {
-      return {
-        ...prevState,
-        id: "",
-        name: "",
-        surname: "",
-        idIsValid: false,
-      };
-    });
-    setTeamMember((prevState) => {
-      return {
-        ...prevState,
-        id: "",
-        name: "",
-        surname: "",
-        idIsValid: false,
-      };
-    });
+    setProducts([]);
+    setModel("");
+    setSerial("");
+    setSerialIsValid(false);
   };
 
   const submitNewRequest = (e) => {
@@ -95,18 +60,17 @@ const NewRequestModal = (props) => {
     setSavingForm(true);
     Axios.post(`requestManagement/NewRequest`, {
       number: request.number,
-      status: request.status,
-      clientID: parseInt(client.id),
+      status: "In treatment",
       team: request.team,
-      teamMemberID: parseInt(teamMember.id),
-      equipment_SerialNumbers: request.equipment_SerialNumbers,
+      teamMemberID: null,
+      products: products,
+      note: request.note,
     })
       .then((response) => {
         handleClose();
         resetStates();
         setSavingForm(false);
-
-        // setShowCreatedMessage(true);
+        setShowCreatedMessage(true);
       })
       .catch((err) => {
         console.log(err);
@@ -117,8 +81,11 @@ const NewRequestModal = (props) => {
     let value = e.target.value;
     setSerial(value);
     setSerialIsValid(false);
-    if (props.products.some((product) => product.serialNumber === value)) {
-      console.log("true");
+    let product = props.products.find(
+      (product) => product.serialNumber === value
+    );
+    if (product) {
+      setModel(`${product.name} ${product.type}`);
       setSerialIsValid(true);
     }
   };
@@ -130,15 +97,19 @@ const NewRequestModal = (props) => {
     );
     if (product) {
       copyArr.push(product);
-      console.log(copyArr);
       setProducts([...copyArr]);
-      // setRequest((prevState) => {
-      //   return {
-      //     ...prevState,
-      //     equipment_SerialNumbers: [...copyArr],
-      //   };
-      // });
+      setSerial("");
+      setModel("");
+      setSerialIsValid(false);
     }
+  };
+
+  const remove_serial = (index) => {
+    let copyArr = products.slice();
+    copyArr.splice(index, 1);
+    console.log(index);
+    console.log(copyArr);
+    setProducts([...copyArr]);
   };
 
   return (
@@ -193,13 +164,7 @@ const NewRequestModal = (props) => {
                 <Form.Label>
                   <strong>Team</strong>
                 </Form.Label>
-                <Form.Control
-                  value={request.team}
-                  //   onChange={(e) => {
-                  //     teamHandler(e, setRequest, setTeamMember);
-                  //   }}
-                  readOnly
-                />
+                <Form.Control value={request.team} readOnly />
               </Form.Group>
             </Row>
 
@@ -259,51 +224,84 @@ const NewRequestModal = (props) => {
                   type="text"
                   value={serial}
                   onChange={serial_handler}
+                  style={{ width: "196px" }}
                 ></Form.Control>
               </Form.Group>
-              <Form.Group as={Col}>
+              <Form.Group as={Col} style={{ marginRight: "50px" }}>
                 <Form.Label>
                   <strong>model</strong>
                 </Form.Label>
-                <Form.Control type="text" value={model}></Form.Control>
+                <Form.Control
+                  style={{ width: "196px" }}
+                  type="text"
+                  value={model}
+                  readOnly
+                />
               </Form.Group>
             </Row>
+            {products.map((product, index) => {
+              return (
+                <Row className="mb-3" key={index}>
+                  <Form.Group as={Col}>
+                    <Form.Control
+                      type="text"
+                      value={product.serialNumber}
+                      readOnly
+                    ></Form.Control>
+                  </Form.Group>
 
-            <Row className="mb-3">
-              {products.map((product, index) => {
-                return (
-                  <React.Fragment key={index}>
-                    <Form.Group as={Col}>
-                      <Form.Control
-                        type="text"
-                        value={product.serialNumber}
-                        readOnly
-                      ></Form.Control>
-                    </Form.Group>
-                    <Form.Group as={Col}>
-                      <Form.Control
-                        type="text"
-                        value={`${product.name} ${product.type}`}
-                        readOnly
-                      ></Form.Control>
-                    </Form.Group>
-                    <br />
-                  </React.Fragment>
-                );
-              })}
-            </Row>
-            <Row className="mb-3">
-              <Form.Group>
-                <button className="button" onClick={add_serial}>
+                  <Form.Group as={Col}>
+                    <Form.Control
+                      type="text"
+                      value={`${product.name} ${product.type}`}
+                      readOnly
+                    ></Form.Control>
+                  </Form.Group>
                   <a
-                    href="#requestModal"
-                    className={styles.add_serial}
+                    href="#removeSerial"
+                    className={styles.remove_serial}
                     data-toggle="modal"
+                    onClick={() => {
+                      remove_serial(index);
+                    }}
                   >
                     <i
                       className="material-icons icon-blue "
                       data-toggle="tooltip"
-                      title="Request"
+                      title="remove serial"
+                      style={{ margin: "4px" }}
+                    >
+                      <span style={{ fontSize: "21px" }}>
+                        remove_circle_outline
+                      </span>
+                    </i>
+                  </a>
+                </Row>
+              );
+            })}
+            <Row className="mb-3">
+              <Form.Group>
+                <Button
+                  className={`button ${styles.add_serial}`}
+                  disabled={!serialIsValid}
+                  onClick={add_serial}
+                >
+                  <i
+                    className="material-icons icon-blue "
+                    data-toggle="tooltip"
+                    title="add serial"
+                  >
+                    <strong style={{ fontFamily: "none", fontSize: "20px" }}>
+                      Add S.N.{" "}
+                    </strong>
+
+                    <span style={{ fontSize: "21px" }}>control_point</span>
+                  </i>
+                  {/* <a href="#addSerial" data-toggle="modal">
+                    <i
+                      className="material-icons icon-blue"
+                      data-toggle="tooltip"
+                      title="add serial"
                     >
                       <strong style={{ fontFamily: "none", fontSize: "20px" }}>
                         Add S.N.{" "}
@@ -311,8 +309,8 @@ const NewRequestModal = (props) => {
 
                       <span style={{ fontSize: "21px" }}>control_point</span>
                     </i>
-                  </a>
-                </button>
+                  </a> */}
+                </Button>
               </Form.Group>
             </Row>
 
@@ -324,10 +322,10 @@ const NewRequestModal = (props) => {
               <Form.Control
                 as="textarea"
                 rows={1}
-                value={request.description}
+                value={request.note}
                 onChange={(e) =>
                   setRequest((prevState) => {
-                    return { ...prevState, description: e.target.value };
+                    return { ...prevState, note: e.target.value };
                   })
                 }
               />
@@ -354,7 +352,7 @@ const NewRequestModal = (props) => {
               <Button
                 variant="primary"
                 type="submit"
-                disabled={!request.formIsValid}
+                disabled={products.length === 0}
               >
                 Save
               </Button>

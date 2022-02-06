@@ -1,48 +1,68 @@
 .modal {
-    color: #444; 
-    border-radius: 16px;
-  }
-  
-  .modal .modal-dialog{
-      max-width: 500px;
-  
-  }
-  
-  .modal-header {
-      color:white;
-      background: #212529;
-      border-radius: 0px;
-      display:block;
-      text-align: center;
-      border:0;
-      box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12);
-      
-  }
-  
-  .modal-body {
-    padding:0 0.85rem;
-    
-  }
-  
-  .form-group-sub-title{
-    text-align: center;
-    background-color: #f7f7f7;
-  }
+  color: #444;
+  border-radius: 16px;
+}
 
-  .add_serial {
-    color: #0359f8;
-  }
+.modal .modal-dialog {
+  max-width: 500px;
+}
+
+.modal-header {
+  color: white;
+  background: #212529;
+  border-radius: 0px;
+  display: block;
+  text-align: center;
+  border: 0;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.modal-body {
+  padding: 0 0.85rem;
+}
+
+.form-group-sub-title {
+  text-align: center;
+  background-color: #f7f7f7;
+}
+
+.add_serial {
+  background-color: #0b5ed7;
+  border-color: #0b5ed7;
+}
+
+.add_serial:hover {
+  background-color: rgb(0, 36, 196);
+  border-color: rgb(0, 36, 196);
+}
+.add_serial.disabled,
+.add_serial:disabled {
+  background-color: #000000b6;
+  border-color:#000000b6;
+}
+
+.add_serial:focus {
   
-  .add_serial:hover {
-    color: #0077ff;
-  }
-  
-  
-  
-  
-  
-  
-  /* .modal {
+  outline: none ;
+  box-shadow: none ;
+}
+
+/* .add_serial:hover {
+  color: #048600;
+} */
+
+.remove_serial {
+  display: inline-block;
+  color: #ff0707;
+  width: auto;
+}
+.remove_serial:hover {
+  color: #0062ff;
+}
+
+/* .btn-primary.disabled, .btn-primary:disabled */
+
+/* .modal {
       z-index: 100;
       position: fixed;
       top: 22vh;
@@ -52,6 +72,3 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
       border-radius: 8px;
     } */
-  
-
-

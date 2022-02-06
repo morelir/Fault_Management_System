@@ -18,7 +18,7 @@ import {
 const NewFaultModel = (props) => {
   const [fault, setFault] = useState({
     number: "",
-    status: "In treatment",
+    status: "New",
     urgency: "Regular",
     team: props.teams[1].name,
     description: "",
@@ -87,7 +87,7 @@ const NewFaultModel = (props) => {
     e.preventDefault();
     setSavingForm(true);
     Axios.post(`faultManagement/NewFaultModel`, {
-      status: fault.status,
+      status: "In treatment",
       clientID: parseInt(client.id),
       team: fault.team,
       teamMemberID: parseInt(teamMember.id),

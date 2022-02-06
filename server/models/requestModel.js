@@ -3,10 +3,11 @@ const Joi = require("joi");
 
 const requestSchema = new mongoose.Schema({
   number: Number,
-  equipment_SerialNumbers: {},
+  products: [],
+  status: String,
   team: String,
   teamMemberID: Number,
-  clientID: Number,
+  note:String,
   date_created: {
     type: Date,
     default: Date.now,
