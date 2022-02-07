@@ -6,8 +6,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import MessageModal from "../../shared/components/UIElements/messageModal";
-import styles from "./RequestModal.module.css";
-import styleBtn from "./NewRequestModal.module.css";
+import styles from "./faultModel.module.css";
+
 import Axios from "axios";
 import {
   clientIdHandler,
@@ -81,6 +81,7 @@ const NewRequestModal = (props) => {
     let value = e.target.value;
     setSerial(value);
     setSerialIsValid(false);
+    setModel("");
     let product = props.products.find(
       (product) => product.serialNumber === value
     );
@@ -373,7 +374,7 @@ const NewRequestModal = (props) => {
       </Modal>
 
       <MessageModal
-        show={request.showCreatedMessage}
+        show={showCreatedMessage}
         header="Request has created!"
       >
         <Form.Group>

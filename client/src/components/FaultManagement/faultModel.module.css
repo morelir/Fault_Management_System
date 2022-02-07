@@ -29,6 +29,39 @@
   background-color: #f7f7f7;
 }
 
+.add_serial {
+  background-color: #0b5ed7;
+  border-color: #0b5ed7;
+}
+
+.add_serial:hover {
+  background-color: rgb(0, 36, 196);
+  border-color: rgb(0, 36, 196);
+}
+.add_serial.disabled,
+.add_serial:disabled {
+  background-color: #000000b6;
+  border-color:#000000b6;
+}
+
+.add_serial:focus {
+  
+  outline: none ;
+  box-shadow: none ;
+}
+
+/* .add_serial:hover {
+  color: #048600;
+} */
+
+.remove_serial {
+  display: inline-block;
+  color: #ff0707;
+  width: auto;
+}
+.remove_serial:hover {
+  color: #0062ff;
+}
 
 
 

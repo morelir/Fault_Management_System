@@ -72,12 +72,18 @@ const Login = (props) => {
           token: response.data.token,
         };
         authCtx.login(objUserAndToken, expirationTime.toISOString());
-
-        history.replace("/faultManagement");
-        // props.history.push({
-        //     pathname:'/',
-        //     login:login
-        // })
+        console.log(authCtx.user);
+        if (
+          response.data.user.team === "Customer service" ||
+          response.data.user.team === "Technical service"
+        )
+          history.replace("/faultManagement");
+        else if (
+          response.data.user.team === "Stock" ||
+          response.data.user.team === "Purchase"
+        )
+          history.replace("/requestManagement");
+        else history.replace("/");
       })
       .catch((err) => {
         setLogin((prevState) => {
@@ -95,7 +101,7 @@ const Login = (props) => {
         }
       });
   };
-  console.log(styles.invalid)
+  console.log(styles.invalid);
   return (
     <div className={`${styles["auth"]} ${login.invalidUser && styles.invalid}`}>
       <h1 className={styles["auth-header"]}>Login</h1>

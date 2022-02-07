@@ -19,7 +19,7 @@ const RequestManagement = (props) => {
         try {
           let response = await Axios.get("/requestManagement");
           setRequests(response.data);
-          
+          setIsLoading(false)
         } catch (err) {
           console.log(err);
         }
@@ -98,8 +98,7 @@ const RequestManagement = (props) => {
                                 </td>
                                 }
                                 <td>{displayDate(request.date_created)}</td>
-                                <td>{`${request.clientName}, ${request.clientSurname}`}</td>
-                                <td>{request.team}</td>
+                                <td>{request.team}</td>         
                                 {request.teamMemberID === null ? (
                                   <td></td>
                                 ) : (
@@ -139,7 +138,7 @@ const RequestManagement = (props) => {
                                 }
                               >
                                 <td colSpan="8" className="fault-description">
-                                  <span>{request.equipment_SerialNumbers}</span>
+                                  <span>{request.product}</span>
                                 </td>
                               </tr>
                             </React.Fragment>

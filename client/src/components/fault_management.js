@@ -8,7 +8,7 @@ import CloseFaultModal from "./FaultManagement/closeFaultModal";
 import AuthContext from "../store/auth-context";
 import DoneFaultModal from "./FaultManagement/doneFaultModal";
 import Icon from "../shared/components/FormElements/Icon";
-import NewRequestModal from "./RequestManagement/NewRequestModal";
+import NewRequestModal from "./FaultManagement/NewRequestModal";
 
 const FaultManagement = (props) => {
   const authCtx = useContext(AuthContext);
