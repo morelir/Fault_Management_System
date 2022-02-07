@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
-import "./fault_management.css";
+import styles from "./Request_Management.module.css";
 import Spinner from "react-bootstrap/Spinner";
 import EditFaultModel from "./FaultManagement/editFaultModel";
 import CloseFaultModal from "./FaultManagement/closeFaultModal";
@@ -46,13 +46,13 @@ const RequestManagement = (props) => {
           {/* className="container-xl" */}
           <div className="container-xl container-max-width">
             {/* className="table-responsive" */}
-            <div className="table-responsive">
-              <div className="table-wrapper">
-                <div className="table-title">
+            <div className={styles.table_responsive}>
+              <div className={styles.table_wrapper}>
+                <div className={styles.table_title}>
                   <div className="row">
-                    <div className="col-sm-2">
+                    <div className="col-sm-11">
                       <h2>
-                        <strong>Requests List</strong>
+                        <strong>Request List</strong>
                       </h2>
                     </div>
                   </div>
@@ -132,15 +132,15 @@ const RequestManagement = (props) => {
                                   )} */}
                                 </td>
                               </tr>
-                              <tr
+                              {/* <tr
                                 id={
                                   evenPos(pos) ? "fault-even-pos" : "fault-odd-pos"
                                 }
                               >
                                 <td colSpan="8" className="fault-description">
-                                  <span>{request.product}</span>
+                                  <span>{request.note}</span>
                                 </td>
-                              </tr>
+                              </tr> */}
                             </React.Fragment>
                           );
                         })
