@@ -8,6 +8,10 @@ const faultSchema = new mongoose.Schema({
   description: String,
   team: String,
   teamMemberID: Number,
+  request:{
+    type: Boolean,
+    default: false,
+  },
   date_created: {
     type: Date,
     default: Date.now,

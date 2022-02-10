@@ -5,16 +5,9 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
-import MessageModal from "../../shared/components/UIElements/messageModal";
+import MessageModal from "../../shared/components/Modals/messageModal";
 import styles from "./faultModel.module.css";
-
 import Axios from "axios";
-import {
-  clientIdHandler,
-  teamMemberIdHandler,
-  teamHandler,
-  urgencyHandler,
-} from "../../utils/functions";
 
 const NewRequestModal = (props) => {
   const [request, setRequest] = useState({
@@ -36,6 +29,10 @@ const NewRequestModal = (props) => {
     setShow(false);
   };
 
+  const handleCloseMessage = () => {
+    setShowCreatedMessage(false);
+  };
+
   const handleOpen = () => {
     setShow(true);
   };
@@ -55,26 +52,31 @@ const NewRequestModal = (props) => {
     setSerialIsValid(false);
   };
 
-  const submitNewRequest = (e) => {
-    e.preventDefault();
-    setSavingForm(true);
-    Axios.post(`requestManagement/NewRequest`, {
-      number: request.number,
-      status: "In treatment",
-      team: request.team,
-      teamMemberID: null,
-      products: products,
-      note: request.note,
-    })
-      .then((response) => {
-        handleClose();
-        resetStates();
-        setSavingForm(false);
-        setShowCreatedMessage(true);
-      })
-      .catch((err) => {
-        console.log(err);
+  const submitNewRequest = async (e) => {
+    try {
+      e.preventDefault();
+      setSavingForm(true);
+      await Axios.post(`faultManagement/NewRequest`, {
+        number: request.number,
+        status: "In treatment",
+        team: request.team,
+        teamMemberID: null,
+        products: products,
+        note: request.note,
       });
+      await Axios.patch(`/faultManagement/updateFault`, {
+        number: request.number,
+        updated: "request",
+        value: true,
+      });
+      props.updateFaults();
+      handleClose();
+      resetStates();
+      setSavingForm(false);
+      setShowCreatedMessage(true);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const serial_handler = (e) => {
@@ -115,18 +117,37 @@ const NewRequestModal = (props) => {
 
   return (
     <>
-      <button className="button">
-        <a href="#requestModal" className="request" data-toggle="modal">
-          <i
-            className="material-icons icon-blue "
-            onClick={handleOpen}
-            data-toggle="tooltip"
-            title="Request"
-          >
-            <strong style={{ fontFamily: "none" }}>Request </strong>
-            {/* &#xE254; */}
-            <span style={{ fontSize: "21px" }}>note_add</span>
-          </i>
+      <button className="button" disabled={props.request}>
+        <a
+          href="#requestModal"
+          className={`request ${props.request && "invalid"}`}
+          data-toggle="modal"
+        >
+          {props.request ? (
+            <i
+              className="material-icons icon-blue "
+              onClick={handleOpen}
+              data-toggle="tooltip"
+              title="Request Sent"
+            >
+              <strong style={{ fontFamily: "none" }}>Sent</strong>
+              <span style={{ fontSize: "21px" }}>grading</span>
+            </i>
+          ) : (
+            <i
+              className="material-icons icon-blue "
+              onClick={handleOpen}
+              data-toggle="tooltip"
+              title="New Request"
+            >
+              <>
+                <strong style={{ fontFamily: "none" }}>Request</strong>
+                <span style={{ fontSize: "21px" }}>note_add</span>
+              </>
+            </i>
+          )}
+          {/* &#xE254; */}
+          {/* <span style={{ fontSize: "21px" }}>note_add</span> */}
         </a>
       </button>
 
@@ -375,6 +396,7 @@ const NewRequestModal = (props) => {
 
       <MessageModal
         show={showCreatedMessage}
+        handleClose={handleCloseMessage}
         header="Request has created!"
       >
         <Form.Group>

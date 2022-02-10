@@ -2,13 +2,13 @@ import React, { useContext, useState, useEffect } from "react";
 import Axios from "axios";
 import "./fault_management.css";
 import Spinner from "react-bootstrap/Spinner";
+import Form from "react-bootstrap/Form";
 import NewFaultModel from "./FaultManagement/newFaultModel";
 import EditFaultModel from "./FaultManagement/editFaultModel";
-import CloseFaultModal from "./FaultManagement/closeFaultModal";
 import AuthContext from "../store/auth-context";
-import DoneFaultModal from "./FaultManagement/doneFaultModal";
 import Icon from "../shared/components/FormElements/Icon";
 import NewRequestModal from "./FaultManagement/NewRequestModal";
+import ModalDialog from "../shared/components/Modals/ModalDialog";
 
 const FaultManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -153,10 +153,27 @@ const FaultManagement = (props) => {
                               />
                               {authCtx.user.team === "Customer service" ? (
                                 <>
-                                  <CloseFaultModal
+                                  <ModalDialog
+                                    type="fault"
                                     _id={fault._id}
-                                    updateFaults={updateFaults}
-                                  />
+                                    native="/faultManagement/closeFault"
+                                    update={updateFaults}
+                                    className="close"
+                                    btn_name="Close"
+                                    icon="lock"
+                                    icon_font="20px"
+                                    href="#closeModal"
+                                    header="Close Fault"
+                                  >
+                                    <Form.Group>
+                                      <Form.Label>
+                                        <strong>
+                                          Are you sure you want to close the
+                                          fault ?
+                                        </strong>
+                                      </Form.Label>
+                                    </Form.Group>
+                                  </ModalDialog>
                                   {/* {fault.team === "Customer service" ? (
                                   <Icon
                                     className="done_mark"
@@ -176,12 +193,30 @@ const FaultManagement = (props) => {
                                   <NewRequestModal
                                     products={products}
                                     number={fault.number}
+                                    updateFaults={updateFaults}
+                                    request={fault.request}
                                     team="Stock"
                                   />
-                                  <DoneFaultModal
+                                  <ModalDialog
+                                    type="fault"
                                     _id={fault._id}
-                                    updateFaults={updateFaults}
-                                  />
+                                    native="/faultManagement/doneFault"
+                                    update={updateFaults}
+                                    className="done"
+                                    btn_name="Done"
+                                    icon="check_circle_outline"
+                                    icon_font="21"
+                                    href="#doneModal"
+                                    header="Done Fault"
+                                  >
+                                    <Form.Group>
+                                      <Form.Label>
+                                        <strong>
+                                          Are you sure the fault has been done ?
+                                        </strong>
+                                      </Form.Label>
+                                    </Form.Group>
+                                  </ModalDialog>
                                 </>
                               )}
                             </td>

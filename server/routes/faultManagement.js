@@ -6,6 +6,7 @@ const { UserModel } = require("../models/userModel");
 const { ClientModel } = require("../models/clientModel");
 const { TeamModel } = require("../models/teamModel");
 const { ProductModel } = require("../models/productModel");
+const { RequestModel } = require("../models/requestModel");
 
 router.get("/", async (req, res) => {
   try {
@@ -17,25 +18,38 @@ router.get("/", async (req, res) => {
   }
 });
 
-// router.get("/NewFaultModel/newNumber", async (req, res) => {
-//   let data = await FaultModel.findOne({}, "-_id number").sort("-date_created");
-//   if (data) {
-//     res.json(data.number + 1);
-//   } else {
-//     res.json(data);
-//   }
-// });
-
-// Person.findOne({ 'name.last': 'Ghost' }, 'name occupation', function (err, person) {
-//   if (err) return handleError(err);
-//   // Prints "Space Ghost is a talk show host".
-//   console.log('%s %s is a %s.', person.name.first, person.name.last,
-//     person.occupation);
-// });
+router.post("/NewRequest", async (req, res) => {
+  // let validBody = validNewFault(req.body);
+  // if (validBody.error) {
+  //   console.log("blat")
+  //   return res.status(400).json(validBody.error.details);
+  // }
+  try {
+    let request = new RequestModel(req.body);
+    await request.save(); //שומר את המידע ב db
+    res.json({});
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({ msg: "Error" });
+  }
+});
 
 router.put("/clientID", async (req, res) => {
   let data = await UserModel.findOne({ id: req.body.id }, "-_id name surname");
   res.json(data);
+});
+
+router.patch("/updateFault", async (req, res) => {
+  try {
+    let fault = await FaultModel.findOne({ number: req.body.number });
+    fault[req.body.updated] = req.body.value;
+    await fault.save();
+    let faults = await FaultModel.find({}).lean();
+    data = await mergeFaultsAndUsers(faults);
+    res.json({ faults: data });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.post("/NewFaultModel", async (req, res) => {

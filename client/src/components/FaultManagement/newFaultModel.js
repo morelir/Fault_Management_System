@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
-import MessageModal from "../../shared/components/UIElements/messageModal";
+import MessageModal from "../../shared/components/Modals/messageModal";
 import styles from "./faultModel.module.css";
 import styleBtn from "./newFaultModel.module.css";
 import Axios from "axios";
@@ -24,7 +24,6 @@ const NewFaultModel = (props) => {
     description: "",
     teams: props.teams,
     formIsValid: false,
-    showCreatedMessage: false,
   });
   const [savingForm, setSavingForm] = useState(false);
 
@@ -47,6 +46,10 @@ const NewFaultModel = (props) => {
 
   const handleClose = () => {
     setShow(false);
+  };
+
+  const handleCloseMessage = () => {
+    setShowCreatedMessage(false);
   };
 
   const handleOpen = () => {
@@ -95,7 +98,6 @@ const NewFaultModel = (props) => {
     })
       .then((response) => {
         props.updateFaults(response.data.faults);
-
         handleClose();
         resetStates();
         setSavingForm(false);
@@ -103,10 +105,9 @@ const NewFaultModel = (props) => {
           return {
             ...prevState,
             number: response.data.faultNumber,
-            showCreatedMessage: true,
           };
         });
-        // setShowCreatedMessage(true);
+        setShowCreatedMessage(true);
       })
       .catch((err) => {
         console.log(err);
@@ -366,7 +367,11 @@ const NewFaultModel = (props) => {
         </Form>
       </Modal>
 
-      <MessageModal show={fault.showCreatedMessage} header="Fault has created!">
+      <MessageModal
+        show={showCreatedMessage}
+        handleClose={handleCloseMessage}
+        header="Fault has created!"
+      >
         <Form.Group>
           <Form.Label>
             <h4>

@@ -6,7 +6,6 @@ export const clientIdHandler = (e, setClient, props) => {
   if (value.length === 9) {
     //need to add if in the id is match
     let [user] = props.clients.filter((user) => user.id === parseInt(value));
-    console.log(user);
     if (user) {
       setClient((prevState) => {
         return {

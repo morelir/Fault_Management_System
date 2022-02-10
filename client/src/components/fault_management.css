@@ -126,7 +126,7 @@ table.table td a:hover {
 }
 
 table.table td a.edit {
-  color: #ffc107;
+  color: #f1b100;
 }
 
 table.table td a.edit:hover {
@@ -134,12 +134,22 @@ table.table td a.edit:hover {
 }
 
 table.table td a.request {
-  color: #ff6207;
+  color: #ff2c07;
 }
 
 table.table td a.request:hover {
   color: #0062ff;
 }
+
+table.table td a.request.invalid {
+  color: #ff2c0775;
+}
+table.table td a.request.invalid:hover {
+  color: #ff2c0775;
+  cursor:auto;
+}
+
+
 
 table.table td a.done {
   color: rgb(6, 175, 0);
@@ -162,6 +172,14 @@ table.table td a.pending {
 
 table.table td a.done_mark {
   color: rgb(6, 175, 0);
+}
+
+table.table td a.display{
+  color: #00aa2b; 
+}
+
+table.table td a.display:hover{
+  color: #0062ff; 
 }
 
 table.table td i {

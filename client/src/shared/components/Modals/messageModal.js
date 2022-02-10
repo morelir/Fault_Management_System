@@ -7,7 +7,7 @@ const MessageModal = (props) => {
   const [show, setShow] = useState(props.show);
 
   const handleClose = () => {
-    setShow(false);
+    props.handleClose(false);
   };
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const MessageModal = (props) => {
   }, [props.show]);
 
   return (
-    <Modal show={show} className={styles.modal}>
+    <Modal show={props.show} className={styles.modal}>
       <Modal.Header className={styles.modal_header}>
         <Modal.Title>
           <h3>

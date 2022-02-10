@@ -6,7 +6,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import Error from "../../../../shared/components/FormElements/error";
-import MessageModal from "../../../../shared/components/UIElements/messageModal";
+import MessageModal from "../../../../shared/components/Modals/messageModal";
 import AuthContext from "../../../../store/auth-context";
 import styles from "./UserModal.module.css";
 import styleBtn from "./CreateNewUserModal.module.css";
@@ -40,6 +40,10 @@ const CreateNewUserModal = (props) => {
 
   const handleOpen = () => {
     setShow(true);
+  };
+
+  const handleCloseMassage = () => {
+    setShowCreatedMessage(false);
   };
 
   const resetStates = () => {
@@ -94,9 +98,9 @@ const CreateNewUserModal = (props) => {
         console.log(response.data);
         props.updateUsers(response.data);
         handleClose();
-        resetStates();
         setSavingForm(false);
         setShowCreatedMessage(true);
+        resetStates();
       })
       .catch((err) => {
         console.log(err);
@@ -400,16 +404,17 @@ const CreateNewUserModal = (props) => {
         </Form>
       </Modal>
 
-      {/* <MessageModal show={showCreatedMessage} header="User has created!">
+      <MessageModal show={showCreatedMessage} handleClose={handleCloseMassage} header="User has been created!">
         <Form.Group>
           <Form.Label>
             <h4>
-              <strong>Fault No. : </strong>
-              {fault.number}
+              <strong>
+                {`The user ${user.email} has been creacted successfully!`}
+              </strong>
             </h4>
           </Form.Label>
         </Form.Group>
-      </MessageModal> */}
+      </MessageModal>
     </>
   );
 };
