@@ -110,7 +110,7 @@ table.table td a {
   outline: none !important;
 }
 
-table.table td.new_status {
+/* table.table td.new_status {
   min-width: 100px;
 }
 table.table td.In_treatment_status {
@@ -119,7 +119,7 @@ table.table td.In_treatment_status {
 table.table td.done_status {
   color: rgb(6, 175, 0);
   min-width: 100px;
-}
+} */
 
 table.table td a:hover {
   color: #2196f3;
@@ -157,6 +157,14 @@ table.table td a.done {
 
 table.table td a.done:hover {
   color: #0062ff;
+}
+
+table.table td a.done.invalid {
+  color: rgba(6, 175, 0, 0.589);
+}
+table.table td a.done.invalid:hover {
+  color: rgba(6, 175, 0, 0.589);
+  cursor:auto;
 }
 
 table.table td a.close {

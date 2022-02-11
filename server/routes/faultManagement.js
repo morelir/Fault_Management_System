@@ -44,9 +44,7 @@ router.patch("/updateFault", async (req, res) => {
     let fault = await FaultModel.findOne({ number: req.body.number });
     fault[req.body.updated] = req.body.value;
     await fault.save();
-    let faults = await FaultModel.find({}).lean();
-    data = await mergeFaultsAndUsers(faults);
-    res.json({ faults: data });
+    res.json({});
   } catch (err) {
     console.log(err);
   }
@@ -54,7 +52,6 @@ router.patch("/updateFault", async (req, res) => {
 
 router.post("/NewFaultModel", async (req, res) => {
   let validBody = validNewFault(req.body);
-  console.log(req.body);
   // if (validBody.error) {
   //   console.log("blat")
   //   return res.status(400).json(validBody.error.details);
@@ -65,7 +62,6 @@ router.post("/NewFaultModel", async (req, res) => {
     await fault.save(); //שומר את המידע ב db
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);
-    console.log(fault.number);
     res.json({ faults: data, faultNumber: fault.number });
   } catch (err) {
     console.log(err);
@@ -90,7 +86,6 @@ const mergeFaultsAndUsers = async (faults) => {
           { id: fault.clientID },
           "-_id name surname"
         ).lean();
-        console.log(client);
         if (fault.teamMemberID !== null) {
           let teamMember = await UserModel.findOne(
             { id: fault.teamMemberID },
@@ -120,7 +115,6 @@ const mergeFaultsAndUsers = async (faults) => {
 
 router.post("/EditFaultModel", async (req, res) => {
   let validBody = validNewFault(req.body);
-  console.log(req.body);
   // if (validBody.error) {
   //   console.log("blat")
   //   return res.status(400).json(validBody.error.details);

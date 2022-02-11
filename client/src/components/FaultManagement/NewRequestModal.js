@@ -69,7 +69,13 @@ const NewRequestModal = (props) => {
         updated: "request",
         value: true,
       });
-      props.updateFaults();
+      await Axios.patch(`/faultManagement/updateFault`, {
+        number: request.number,
+        updated: "status",
+        value: "Waiting for component",
+      });
+      let response = await Axios.get("/faultManagement");
+      props.updateFaults(response.data);
       handleClose();
       resetStates();
       setSavingForm(false);

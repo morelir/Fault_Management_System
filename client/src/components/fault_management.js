@@ -120,16 +120,11 @@ const FaultManagement = (props) => {
                             }
                           >
                             <td>{fault.number}</td>
-                            {fault.status === "In treatment" && (
-                              <td className="In_treatment_status">
-                                <strong>{fault.status} </strong>
-                              </td>
-                            )}
-                            {fault.status === "Done" && (
-                              <td className="done_status">
-                                <strong>{fault.status} </strong>
-                              </td>
-                            )}
+                            
+                            <td >
+                              <strong>{fault.status} </strong>
+                            </td>
+                            
                             <td>{displayDate(fault.date_created)}</td>
                             <td>{`${fault.clientName}, ${fault.clientSurname}`}</td>
                             <td>{fault.team}</td>
@@ -204,6 +199,7 @@ const FaultManagement = (props) => {
                                     update={updateFaults}
                                     className="done"
                                     btn_name="Done"
+                                    btn_disabled={fault.request}
                                     icon="check_circle_outline"
                                     icon_font="21"
                                     href="#doneModal"
