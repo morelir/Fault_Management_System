@@ -155,6 +155,7 @@ const FaultManagement = (props) => {
                                     update={updateFaults}
                                     className="close"
                                     btn_name="Close"
+                                    btn_disabled={fault.status!=="Done"}
                                     icon="lock"
                                     icon_font="20px"
                                     href="#closeModal"

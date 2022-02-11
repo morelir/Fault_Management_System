@@ -40,7 +40,7 @@ const ModalDialog = (props) => {
             className="material-icons"
             onClick={handleOpen}
             data-toggle="tooltip"
-            title={props.title}
+            title={props.header}
           >
             {/* &#xE872; */}
             <strong style={{ fontFamily: "none" }}>{props.btn_name} </strong>

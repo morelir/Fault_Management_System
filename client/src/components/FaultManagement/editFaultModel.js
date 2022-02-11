@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import AuthContext from "../../store/auth-context";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./faultModel.module.css";
 import Axios from "axios";
@@ -22,6 +23,7 @@ const EditFaultModel = (props) => {
     teams: [],
     formIsValid: true,
   });
+  const authCtx = useContext(AuthContext);
   const [savingForm, setSavingForm] = useState(false);
 
   const [client, setClient] = useState({
@@ -145,15 +147,19 @@ const EditFaultModel = (props) => {
 
   return (
     <>
-      <button className="button">
-        <a href="#editModal" className="edit" data-toggle="modal" >
+      <button className="button" disabled={authCtx.user.team !== fault.team}>
+        <a
+          href="#editModal"
+          className={`edit ${authCtx.user.team !== fault.team && "invalid"}`}
+          data-toggle="modal"
+        >
           <i
             className="material-icons icon-blue "
             onClick={handleOpen}
             data-toggle="tooltip"
             title="Edit"
           >
-            <strong style={{fontFamily:"none" }}>Edit </strong>
+            <strong style={{ fontFamily: "none" }}>Edit </strong>
             {/* &#xE254; */}
             <span style={{ fontSize: "20px" }}>mode</span>
           </i>
@@ -275,7 +281,7 @@ const EditFaultModel = (props) => {
                   type="text"
                   value={teamMember.id}
                   onChange={(e) => {
-                    teamMemberIdHandler(e, setFault,setTeamMember, props);
+                    teamMemberIdHandler(e, setFault, setTeamMember, props);
                   }}
                 />
               </Form.Group>

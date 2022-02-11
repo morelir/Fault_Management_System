@@ -133,6 +133,14 @@ table.table td a.edit:hover {
   color: #0062ff;
 }
 
+table.table td a.edit.invalid {
+  color: #f1b100a8;
+}
+table.table td a.edit.invalid:hover {
+  color: #f1b100ad;
+  cursor:auto;
+}
+
 table.table td a.request {
   color: #ff2c07;
 }
@@ -172,6 +180,14 @@ table.table td a.close {
 }
 table.table td a.close:hover {
   color: #0062ff;
+}
+
+table.table td a.close.invalid {
+  color: #ff4107a9;
+}
+table.table td a.close.invalid:hover {
+  color: #ff4107a9;
+  cursor:auto;
 }
 
 table.table td a.pending {
