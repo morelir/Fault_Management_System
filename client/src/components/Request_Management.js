@@ -10,6 +10,7 @@ import ModalDialog from "../shared/components/Modals/ModalDialog";
 const RequestManagement = (props) => {
   const authCtx = useContext(AuthContext);
   const [requests, setRequests] = useState([]);
+  const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const evenPos = (pos) => pos % 2 == 0;
@@ -18,6 +19,8 @@ const RequestManagement = (props) => {
     try {
       let response = await Axios.get("/requestManagement");
       setRequests(response.data);
+      response = await Axios.get(`faultManagement/users`);
+      setUsers(response.data);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
@@ -109,13 +112,8 @@ const RequestManagement = (props) => {
                             <td>
                               <DisplayRequestModal
                                 request={request}                               
-                                // teams={teams.filter(
-                                //   (team) =>
-                                //     team.name === "Technical service" ||
-                                //     team.name === "Customer service"
-                                // )}
-                                // users={users}
-                                // clients={clients}
+                                users={users}
+                                updateRequests={updateRequests}
                                 // updateFaults={updateFaults}
                               />
                               {authCtx.user.team === "Stock" ? (

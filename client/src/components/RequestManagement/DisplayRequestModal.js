@@ -18,8 +18,14 @@ const DisplayRequestModal = (props) => {
     number: props.request.number,
     team: props.request.team,
     note: props.request.note,
-    products:props.request.products,
+    products: props.request.products,
     status: props.request.status,
+  });
+  const [teamMember, setTeamMember] = useState({
+    id: props.request.teamMemberID,
+    name: props.request.teamMemberName,
+    surname: props.request.teamMemberSurname,
+    idIsValid: props.request.teamMemberID === null ? false : true,
   });
 
   const [savingForm, setSavingForm] = useState(false);
@@ -40,10 +46,40 @@ const DisplayRequestModal = (props) => {
         number: props.request.number,
         team: props.request.team,
         note: props.request.note,
-        products:props.request.products,
+        products: props.request.products,
         status: props.request.status,
       };
     });
+    setTeamMember((prevState) => {
+      return {
+        id: props.request.teamMemberID,
+        name: props.request.teamMemberName,
+        surname: props.request.teamMemberSurname,
+        idIsValid: props.request.teamMemberID === null ? false : true,
+      };
+    });
+  };
+
+  const submitSaveRequest = async (e) => {
+    try {
+      e.preventDefault();
+      setSavingForm(true);
+      await Axios.post(`requestManagement/EditRequestModal`, {
+        _id: props.request._id,
+        number: parseInt(request.number),
+        status: request.status,
+        team: request.team,
+        teamMemberID: parseInt(teamMember.id),
+        note: request.note,
+      });
+      let response = await Axios.get("/requestManagement");
+      props.updateRequests(response.data);
+      handleClose();
+      resetStates();
+      setSavingForm(false);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -62,7 +98,6 @@ const DisplayRequestModal = (props) => {
           </i>
         </a>
       </button>
-      
 
       <Modal
         show={show}
@@ -79,7 +114,7 @@ const DisplayRequestModal = (props) => {
             </h3>
           </Modal.Title>
         </Modal.Header>
-        <Form >
+        <Form onSubmit={submitSaveRequest}>
           <Modal.Body className={styles["modal-body"]}>
             <Row>
               <Form.Group as={Col} className={styles["form-group-sub-title"]}>
@@ -100,6 +135,35 @@ const DisplayRequestModal = (props) => {
                   <strong>Team</strong>
                 </Form.Label>
                 <Form.Control value={request.team} readOnly />
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Team member name</strong>
+                </Form.Label>
+                {teamMember.idIsValid ? (
+                  <Form.Control
+                    type="text"
+                    value={teamMember.name + ", " + teamMember.surname}
+                    readOnly
+                  />
+                ) : (
+                  <Form.Control value="" type="text" readOnly />
+                )}
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Team member ID</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={teamMember.id}
+                  onChange={(e) => {
+                    teamMemberIdHandler(e, request.team, setTeamMember, props);
+                  }}
+                />
               </Form.Group>
             </Row>
 
@@ -154,12 +218,12 @@ const DisplayRequestModal = (props) => {
               <Form.Group as={Col}>
                 <Form.Label>
                   <strong>Products Serial No.</strong>
-                </Form.Label>       
+                </Form.Label>
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>
                   <strong>model</strong>
-                </Form.Label> 
+                </Form.Label>
               </Form.Group>
             </Row>
             {request.products.map((product, index) => {
@@ -199,7 +263,6 @@ const DisplayRequestModal = (props) => {
                 </Row>
               );
             })}
-            
 
             <Form.Group size="sm" controlId="email">
               <Form.Label>

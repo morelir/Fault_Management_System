@@ -23,23 +23,20 @@ const EditFaultModel = (props) => {
     teams: [],
     formIsValid: true,
   });
-  const authCtx = useContext(AuthContext);
-  const [savingForm, setSavingForm] = useState(false);
-
   const [client, setClient] = useState({
     id: props.fault.clientID,
     name: props.fault.clientName,
     surname: props.fault.clientSurname,
     idIsValid: true,
   });
-
   const [teamMember, setTeamMember] = useState({
     id: props.fault.teamMemberID,
     name: props.fault.teamMemberName,
     surname: props.fault.teamMemberSurname,
     idIsValid: props.fault.teamMemberID === null ? false : true,
   });
-
+  const authCtx = useContext(AuthContext);
+  const [savingForm, setSavingForm] = useState(false);
   const [show, setShow] = useState(false);
 
   const handleClose = () => {
@@ -281,7 +278,7 @@ const EditFaultModel = (props) => {
                   type="text"
                   value={teamMember.id}
                   onChange={(e) => {
-                    teamMemberIdHandler(e, setFault, setTeamMember, props);
+                    teamMemberIdHandler(e, fault.team,setTeamMember, props);
                   }}
                 />
               </Form.Group>

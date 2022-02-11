@@ -19,14 +19,16 @@ export const clientIdHandler = (e, setClient, props) => {
   }
 };
 
-export const teamMemberIdHandler = (e,setFault,setTeamMember, props) => {
+export const teamMemberIdHandler = (e, team, setTeamMember, props) => {
   let value = e.target.value;
   setTeamMember((prevState) => {
     return { ...prevState, id: value, idIsValid: false };
   });
   if (value.length === 9) {
     //need to add if in the id is match
-    let [user] = props.users.filter((user) => user.id === parseInt(value));
+    let [user] = props.users.filter(
+      (user) => user.team === team && user.id === parseInt(value)
+    );
     if (user) {
       setTeamMember((prevState) => {
         return {
@@ -35,7 +37,7 @@ export const teamMemberIdHandler = (e,setFault,setTeamMember, props) => {
           surname: user.surname,
           idIsValid: true,
         };
-      });     
+      });
     }
   }
 };
@@ -48,7 +50,6 @@ export const teamHandler = (e, set, setTeamMember) => {
     return { ...prevState, id: "", name: "", surname: "", idIsValid: false };
   });
 };
-
 
 export const urgencyHandler = (e, setFault) => {
   setFault((prevState) => {

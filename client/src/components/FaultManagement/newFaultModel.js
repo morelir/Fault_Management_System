@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useContext, useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -25,22 +25,19 @@ const NewFaultModel = (props) => {
     teams: props.teams,
     formIsValid: false,
   });
-  const [savingForm, setSavingForm] = useState(false);
-
   const [client, setClient] = useState({
     id: "",
     name: "",
     surname: "",
     idIsValid: false,
   });
-
   const [teamMember, setTeamMember] = useState({
     id: "",
     name: "",
     surname: "",
     idIsValid: false,
   });
-
+  const [savingForm, setSavingForm] = useState(false);
   const [showCreatedMessage, setShowCreatedMessage] = useState(false);
   const [show, setShow] = useState(false);
 
@@ -258,7 +255,7 @@ const NewFaultModel = (props) => {
                     type="text"
                     value={teamMember.id}
                     onChange={(e) => {
-                      teamMemberIdHandler(e, setTeamMember, props);
+                      teamMemberIdHandler(e,fault.team, setTeamMember, props);
                     }}
                   />
                 ) : (
