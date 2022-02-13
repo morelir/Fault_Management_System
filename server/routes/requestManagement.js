@@ -5,6 +5,7 @@ const { UserModel } = require("../models/userModel");
 const { ClientModel } = require("../models/clientModel");
 const { TeamModel } = require("../models/teamModel");
 const { RequestModel } = require("../models/requestModel");
+const { Purchase_Request_Model } = require("../models/purchase_request_Model");
 
 router.get("/", async (req, res) => {
   try {
@@ -33,11 +34,40 @@ router.post("/EditRequestModal", async (req, res) => {
   }
 });
 
+router.post("/NewPurchaseRequest", async (req, res) => {
+  // let validBody = validNewFault(req.body);
+  // if (validBody.error) {
+  //   console.log("blat")
+  //   return res.status(400).json(validBody.error.details);
+  // }
+  try {
+    let purchaseRequest = new Purchase_Request_Model(req.body);
+    await purchaseRequest.save(); //שומר את המידע ב db
+    res.json({});
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({ msg: "Error" });
+  }
+});
+
 router.put("/closeRequest", async (req, res) => {
   try {
     request = await RequestModel.findOne({ _id: req.body._id });
     request.status = "Close";
     await request.save();
+    let requests = await RequestModel.find({}).lean();
+    data = await mergeRequestsAndUsers(requests);
+    res.json(data);
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.put("/closePurchaseRequest", async (req, res) => {
+  try {
+    purchaseRequest = await Purchase_Request_Model.findOne({ _id: req.body._id });
+    purchaseRequest.status = "Close";
+    await purchaseRequest.save();
     let requests = await RequestModel.find({}).lean();
     data = await mergeRequestsAndUsers(requests);
     res.json(data);
@@ -54,6 +84,17 @@ const updateRequest = (request, updateRequest) => {
   request.teamMemberID = updateRequest.teamMemberID;
   return request;
 };
+
+router.patch("/updateRequest", async (req, res) => {
+  try {
+    let request = await RequestModel.findOne({ number: req.body.number });
+    request[req.body.updated] = req.body.value;
+    await request.save();
+    res.json({});
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 const mergeRequestsAndUsers = async (requests) => {
   try {

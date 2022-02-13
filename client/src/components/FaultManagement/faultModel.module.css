@@ -30,13 +30,13 @@
 }
 
 .add_serial {
-  background-color: #0b5ed7;
-  border-color: #0b5ed7;
+  background-color: #0b5dd7dc;
+  border-color: #0b5dd7dc;
 }
 
 .add_serial:hover {
-  background-color: rgb(0, 36, 196);
-  border-color: rgb(0, 36, 196);
+  background-color: #0084ffdc;
+  border-color: #0084ffdc;
 }
 .add_serial.disabled,
 .add_serial:disabled {

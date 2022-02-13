@@ -24,15 +24,15 @@ const FaultManagement = (props) => {
 
   const getData = async () => {
     try {
-      let response = await Axios.get("/faultManagement");
+      let response = await Axios.get("arrays/faults");
       setFaults(response.data);
-      response = await Axios.get(`faultManagement/teams`);
+      response = await Axios.get(`arrays/teams`);
       setTeams(response.data);
-      response = await Axios.get(`faultManagement/users`);
+      response = await Axios.get(`arrays/users`);
       setUsers(response.data);
-      response = await Axios.get(`faultManagement/clients`);
+      response = await Axios.get(`arrays/clients`);
       setClients(response.data);
-      response = await Axios.get(`faultManagement/products`);
+      response = await Axios.get(`arrays/products`);
       setProducts(response.data);
       setIsLoading(false);
     } catch (err) {

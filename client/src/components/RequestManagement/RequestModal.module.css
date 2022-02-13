@@ -30,6 +30,27 @@
     text-align: center;
     background-color: #f7f7f7;
   }
+
+  .add_serial {
+    background-color: rgba(6, 55, 128, 0.877);
+    border-color: rgba(6, 55, 128, 0.877);
+  }
+  
+  .add_serial:hover {
+    background-color: rgba(26, 104, 221, 0.877);
+    border-color: rgba(26, 104, 221, 0.877);
+  }
+  .add_serial.disabled,
+  .add_serial:disabled {
+    background-color: #000000b6;
+    border-color:#000000b6;
+  }
+  
+  .add_serial:focus {
+    
+    outline: none ;
+    box-shadow: none ;
+  }
   
   .remove_serial {
     display: inline-block;

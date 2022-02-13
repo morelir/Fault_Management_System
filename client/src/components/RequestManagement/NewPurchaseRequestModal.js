@@ -6,10 +6,10 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import MessageModal from "../../shared/components/Modals/messageModal";
-import styles from "./faultModel.module.css";
+import styles from "./RequestModal.module.css";
 import Axios from "axios";
 
-const NewRequestModal = (props) => {
+const NewPurchaseRequestModal = (props) => {
   const [request, setRequest] = useState({
     number: props.number,
     team: props.team,
@@ -56,7 +56,7 @@ const NewRequestModal = (props) => {
     try {
       e.preventDefault();
       setSavingForm(true);
-      await Axios.post(`faultManagement/NewRequest`, {
+      await Axios.post(`requestManagement/NewPurchaseRequest`, {
         number: request.number,
         status: "In treatment",
         team: request.team,
@@ -64,18 +64,18 @@ const NewRequestModal = (props) => {
         products: products,
         note: request.note,
       });
-      await Axios.patch(`/faultManagement/updateFault`, {
+      await Axios.patch(`/requestManagement/updateRequest`, {
         number: request.number,
-        updated: "request",
+        updated: "existPurchaseRequest",
         value: true,
       });
-      await Axios.patch(`/faultManagement/updateFault`, {
+      await Axios.patch(`/requestManagement/updateRequest`, {
         number: request.number,
         updated: "status",
-        value: "Waiting for component",
+        value: "Waiting for component purchase",
       });
-      let response = await Axios.get("/faultManagement");
-      props.updateFaults(response.data);
+      let response = await Axios.get("/requestManagement");
+      props.updateRequests(response.data);
       handleClose();
       resetStates();
       setSavingForm(false);
@@ -88,8 +88,6 @@ const NewRequestModal = (props) => {
   const serial_handler = (e) => {
     let value = e.target.value;
     setSerial(value);
-    setSerialIsValid(false);
-    setModel("");
     let product = props.products.find(
       (product) => product.serialNumber === value
     );
@@ -126,7 +124,7 @@ const NewRequestModal = (props) => {
       <button className="button" disabled={props.request}>
         <a
           href="#requestModal"
-          className={`request ${props.request && "invalid"}`}
+          className={`purchase_request ${props.request && "invalid"}`}
           data-toggle="modal"
         >
           {props.request ? (
@@ -248,12 +246,27 @@ const NewRequestModal = (props) => {
                 <Form.Label>
                   <strong>Products Serial No.</strong>
                 </Form.Label>
-                <Form.Control
+                {/* <Form.Control
                   type="text"
                   value={serial}
                   onChange={serial_handler}
                   style={{ width: "196px" }}
-                ></Form.Control>
+                ></Form.Control> */}
+                <Form.Control
+                  as="select"
+                  value={serial}
+                  onChange={serial_handler}
+                  style={{ width: "196px" }}
+                >
+                  <option value="none" selected hidden>Select Serial No.</option>
+                  {props.products.map((product) => {
+                    return (
+                      <option key={product._id} value={product.serialNumber}>
+                        {product.serialNumber}
+                      </option>
+                    );
+                  })}
+                </Form.Control>
               </Form.Group>
               <Form.Group as={Col} style={{ marginRight: "50px" }}>
                 <Form.Label>
@@ -267,6 +280,7 @@ const NewRequestModal = (props) => {
                 />
               </Form.Group>
             </Row>
+
             {products.map((product, index) => {
               return (
                 <Row className="mb-3" key={index}>
@@ -403,13 +417,13 @@ const NewRequestModal = (props) => {
       <MessageModal
         show={showCreatedMessage}
         handleClose={handleCloseMessage}
-        header="Request has created!"
-        type="fault"
+        header="Purchase Request has created!"
+        type="request"
       >
         <Form.Group>
           <Form.Label>
             <h4>
-              <strong>Request No. : </strong>
+              <strong>Purchase Request No. : </strong>
               {request.number}
               {}
             </h4>
@@ -420,4 +434,4 @@ const NewRequestModal = (props) => {
   );
 };
 
-export default NewRequestModal;
+export default NewPurchaseRequestModal;

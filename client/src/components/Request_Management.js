@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
 import AuthContext from "../store/auth-context";
 import DisplayRequestModal from "./RequestManagement/DisplayRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
+import NewPurchaseRequestModal from "./RequestManagement/NewPurchaseRequestModal";
 
 const RequestManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -17,9 +18,13 @@ const RequestManagement = (props) => {
 
   const getData = async () => {
     try {
-      let response = await Axios.get("/requestManagement");
-      setRequests(response.data);
-      response = await Axios.get(`faultManagement/users`);
+      let response = await Axios.get("arrays/requests");
+      let requests=response.data
+      response = await Axios.get("arrays/purchaseRequests");
+      requests=[...requests,...response.data]
+      console.log(requests)
+      setRequests(requests);
+      response = await Axios.get(`arrays/users`);
       setUsers(response.data);
       setIsLoading(false);
     } catch (err) {
@@ -91,16 +96,9 @@ const RequestManagement = (props) => {
                             }
                           >
                             <td>{request.number}</td>
-                            {request.status === "In treatment" && (
-                              <td className="In_treatment_status">
-                                <strong>{request.status} </strong>
-                              </td>
-                            )}
-                            {request.status === "Done" && (
-                              <td className="done_status">
-                                <strong>{request.status} </strong>
-                              </td>
-                            )}
+                            <td>
+                              <strong>{request.status} </strong>
+                            </td>
                             <td>{displayDate(request.date_created)}</td>
                             <td>{request.team}</td>
                             {request.teamMemberID === null ? (
@@ -111,18 +109,20 @@ const RequestManagement = (props) => {
                             <td>{request.handling_duration}</td>
                             <td>
                               <DisplayRequestModal
-                                request={request}                               
+                                request={request}
                                 users={users}
                                 updateRequests={updateRequests}
                                 // updateFaults={updateFaults}
                               />
                               {authCtx.user.team === "Stock" ? (
                                 <>
-                                  {/* <NewRequestModal
-                                    //products={products}
+                                  <NewPurchaseRequestModal
+                                    products={request.products}
                                     number={request.number}
+                                    updateRequests={updateRequests}
+                                    request={request.existPurchaseRequest}
                                     team="Purchase"
-                                  /> */}
+                                  />
                                   <ModalDialog
                                     type="request"
                                     native="/requestManagement/closeRequest"
@@ -151,22 +151,24 @@ const RequestManagement = (props) => {
                                     products={products}
                                     number={fault.number}
                                     team="Stock"
-                                  />
-                                  <ModalDialog
-                                    _id={fault._id}
-                                    native="/faultManagement/doneFault"
-                                    update={updateFaults}
-                                    className="done"
-                                    btn_name="Done"
-                                    icon="check_circle_outline"
-                                    icon_font="21"
-                                    href="#doneModal"
-                                    header="Done Fault"
+                                  />*/}
+                                  {/* <ModalDialog
+                                    type="request"
+                                    native="/requestManagement/closePurchaseRequest"
+                                    _id={request._id}
+                                    update={updateRequests}
+                                    className="close"
+                                    btn_name="Close"
+                                    icon="lock"
+                                    icon_font="20px"
+                                    href="#closeModal"
+                                    header="Close Purchase Request"
                                   >
                                     <Form.Group>
                                       <Form.Label>
                                         <strong>
-                                          Are you sure the fault has been done ?
+                                          Are you sure you want to close the
+                                          request ?
                                         </strong>
                                       </Form.Label>
                                     </Form.Group>

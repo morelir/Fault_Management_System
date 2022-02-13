@@ -159,6 +159,8 @@ table.table td a.request.invalid:hover {
 
 
 
+
+
 table.table td a.done {
   color: rgb(6, 175, 0);
 }
@@ -199,11 +201,27 @@ table.table td a.done_mark {
 }
 
 table.table td a.display{
-  color: #00aa2b; 
+  color: #0030b4e1; 
 }
 
 table.table td a.display:hover{
-  color: #0062ff; 
+  color: #030e22;
+}
+
+table.table td a.purchase_request {
+  color: #00aa2b;
+}
+
+table.table td a.purchase_request:hover {
+  color: #0062ff;
+}
+
+table.table td a.purchase_request.invalid {
+  color: #00aa2b8e;
+}
+table.table td a.purchase_request.invalid:hover {
+  color: #00aa2b8e;
+  cursor:auto;
 }
 
 table.table td i {

@@ -39,7 +39,7 @@ router.put("/clientID", async (req, res) => {
   res.json(data);
 });
 
-router.patch("/updateFault", async (req, res) => {
+router.patch("/updateRequest", async (req, res) => {
   try {
     let fault = await FaultModel.findOne({ number: req.body.number });
     fault[req.body.updated] = req.body.value;
