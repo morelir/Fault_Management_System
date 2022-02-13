@@ -152,7 +152,7 @@ const RequestManagement = (props) => {
                                     number={fault.number}
                                     team="Stock"
                                   />*/}
-                                  {/* <ModalDialog
+                                  <ModalDialog
                                     type="request"
                                     native="/requestManagement/closePurchaseRequest"
                                     _id={request._id}
@@ -168,11 +168,11 @@ const RequestManagement = (props) => {
                                       <Form.Label>
                                         <strong>
                                           Are you sure you want to close the
-                                          request ?
+                                          purchase request ?
                                         </strong>
                                       </Form.Label>
                                     </Form.Group>
-                                  </ModalDialog> */}
+                                  </ModalDialog>
                                 </>
                               )}
                             </td>

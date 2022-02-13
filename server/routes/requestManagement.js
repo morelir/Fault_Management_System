@@ -65,11 +65,13 @@ router.put("/closeRequest", async (req, res) => {
 
 router.put("/closePurchaseRequest", async (req, res) => {
   try {
-    purchaseRequest = await Purchase_Request_Model.findOne({ _id: req.body._id });
+    purchaseRequest = await Purchase_Request_Model.findOne({
+      _id: req.body._id,
+    });
     purchaseRequest.status = "Close";
     await purchaseRequest.save();
-    let requests = await RequestModel.find({}).lean();
-    data = await mergeRequestsAndUsers(requests);
+    let purchaseRequests = await Purchase_Request_Model.find({}).lean();
+    data = await mergeRequestsAndUsers(purchaseRequests);
     res.json(data);
   } catch (err) {
     console.log(err);
