@@ -90,7 +90,6 @@ const EditFaultModel = (props) => {
       .then((response) => {
         props.updateFaults(response.data);
         handleClose();
-        resetStates();
         setSavingForm(false);
       })
       .catch((err) => {
@@ -341,6 +340,7 @@ const EditFaultModel = (props) => {
               variant="secondary"
               onClick={() => {
                 handleClose();
+                
                 resetStates();
               }}
               disabled={fault.savingForm}

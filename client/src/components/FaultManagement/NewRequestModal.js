@@ -404,12 +404,14 @@ const NewRequestModal = (props) => {
         show={showCreatedMessage}
         handleClose={handleCloseMessage}
         header="Request has created!"
+        type="fault"
       >
         <Form.Group>
           <Form.Label>
             <h4>
               <strong>Request No. : </strong>
               {request.number}
+              {}
             </h4>
           </Form.Label>
         </Form.Group>

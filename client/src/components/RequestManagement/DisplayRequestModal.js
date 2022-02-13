@@ -75,7 +75,6 @@ const DisplayRequestModal = (props) => {
       let response = await Axios.get("/requestManagement");
       props.updateRequests(response.data);
       handleClose();
-      resetStates();
       setSavingForm(false);
     } catch (err) {
       console.log(err);
