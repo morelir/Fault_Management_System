@@ -89,9 +89,9 @@ const DisplayRequestModal = (props) => {
             className="material-icons icon-blue "
             onClick={handleOpen}
             data-toggle="tooltip"
-            title="Edit"
+            title="Display"
           >
-            <strong style={{ fontFamily: "none" }}>Show </strong>
+            <strong style={{ fontFamily: "none" }}>Display </strong>
             {/* &#xE254; */}
             <span style={{ fontSize: "20px" }}>visibility</span>
           </i>

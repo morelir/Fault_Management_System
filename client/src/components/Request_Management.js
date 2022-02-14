@@ -19,10 +19,10 @@ const RequestManagement = (props) => {
   const getData = async () => {
     try {
       let response = await Axios.get("arrays/requests");
-      let requests=response.data
+      let requests = response.data;
       response = await Axios.get("arrays/purchaseRequests");
-      requests=[...requests,...response.data]
-      console.log(requests)
+      requests = [...requests, ...response.data];
+      console.log(requests);
       setRequests(requests);
       response = await Axios.get(`arrays/users`);
       setUsers(response.data);
@@ -61,9 +61,15 @@ const RequestManagement = (props) => {
             <div className={styles.table_title}>
               <div className="row">
                 <div className="col-sm-12">
-                  <h2>
-                    <strong>Request List</strong>
-                  </h2>
+                  {authCtx.user.team === "Stock" ? (
+                    <h2>
+                      <strong>Component Request List</strong>
+                    </h2>
+                  ) : (
+                    <h2>
+                      <strong>Purchase Request List</strong>
+                    </h2>
+                  )}
                 </div>
               </div>
             </div>
