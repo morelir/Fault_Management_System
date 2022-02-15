@@ -140,6 +140,7 @@ const updateFault = (fault, updateFault) => {
   fault.team = updateFault.team;
   fault.description = updateFault.description;
   fault.teamMemberID = updateFault.teamMemberID;
+  fault.urgencyLevel = updateFault.urgencyLevel;
   return fault;
 };
 

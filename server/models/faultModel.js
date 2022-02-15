@@ -8,6 +8,7 @@ const faultSchema = new mongoose.Schema({
   description: String,
   team: String,
   teamMemberID: Number,
+  urgencyLevel:String,
   request:{
     type: Boolean,
     default: false,

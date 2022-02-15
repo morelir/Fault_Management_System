@@ -9,6 +9,7 @@ import AuthContext from "../store/auth-context";
 import Icon from "../shared/components/FormElements/Icon";
 import NewRequestModal from "./FaultManagement/NewRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
+import * as utils from "./utils/functions"
 
 const FaultManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -48,16 +49,7 @@ const FaultManagement = (props) => {
     setFaults(faults);
   };
 
-  const displayDate = (dateFormat) => {
-    let date = new Date(dateFormat);
-    let month = date.getMonth() + 1;
-    let displayDate = `${date.getFullYear()}-${
-      month >= 10 ? month : "0" + month
-    }-${date.getDate() >= 10 ? date.getDate() : "0" + date.getDate()} ${
-      date.getHours() >= 10 ? date.getHours() : "0" + date.getHours()
-    }:${date.getMinutes() >= 10 ? date.getMinutes() : "0" + date.getMinutes()}`;
-    return displayDate;
-  };
+ 
 
   return (
     <main>
@@ -98,6 +90,7 @@ const FaultManagement = (props) => {
                   <th>Client name </th>
                   <th>Handler Team</th>
                   <th>Handler Team member</th>
+                  <th>Urgency level</th>
                   <th>Handling duration</th>
                   <th>Actions</th>
                 </tr>
@@ -120,12 +113,12 @@ const FaultManagement = (props) => {
                             }
                           >
                             <td>{fault.number}</td>
-                            
-                            <td >
+
+                            <td>
                               <strong>{fault.status} </strong>
                             </td>
-                            
-                            <td>{displayDate(fault.date_created)}</td>
+
+                            <td>{utils.displayDate(fault.date_created)}</td>
                             <td>{`${fault.clientName}, ${fault.clientSurname}`}</td>
                             <td>{fault.team}</td>
                             {fault.teamMemberID === null ? (
@@ -133,7 +126,12 @@ const FaultManagement = (props) => {
                             ) : (
                               <td>{`${fault.teamMemberName}, ${fault.teamMemberSurname}`}</td>
                             )}
-                            <td>{fault.handling_duration}</td>
+                            <td
+                              className={`urgencyLevel-${fault.urgencyLevel}`}
+                            >
+                              <strong>{fault.urgencyLevel}</strong>
+                            </td>
+                            <td>{utils.getTimeDuration(fault.date_created)}</td>
                             <td>
                               <EditFaultModel
                                 fault={fault}
@@ -155,7 +153,7 @@ const FaultManagement = (props) => {
                                     update={updateFaults}
                                     className="close"
                                     btn_name="Close"
-                                    btn_disabled={fault.status!=="Done"}
+                                    btn_disabled={fault.status !== "Done"}
                                     icon="lock"
                                     icon_font="20px"
                                     href="#closeModal"
@@ -170,19 +168,6 @@ const FaultManagement = (props) => {
                                       </Form.Label>
                                     </Form.Group>
                                   </ModalDialog>
-                                  {/* {fault.team === "Customer service" ? (
-                                  <Icon
-                                    className="done_mark"
-                                    icon="check_circle_outline"
-                                    title="done"
-                                  />
-                                  ) : (
-                                  <Icon
-                                    className="pending"
-                                    icon="pending"
-                                    title="pending"
-                                  />
-                                  )} */}
                                 </>
                               ) : (
                                 <>
@@ -223,7 +208,7 @@ const FaultManagement = (props) => {
                               evenPos(pos) ? "fault-even-pos" : "fault-odd-pos"
                             }
                           >
-                            <td colSpan="8" className="fault-description">
+                            <td colSpan="9" className="fault-description">
                               <span>{fault.description}</span>
                             </td>
                           </tr>
@@ -232,7 +217,7 @@ const FaultManagement = (props) => {
                     })
                 ) : (
                   <tr>
-                    <td colSpan="8">
+                    <td colSpan="9">
                       <Spinner
                         as="span"
                         animation="border"

@@ -33,7 +33,7 @@
 
 .table-title h2 {
   margin: 5px 0 0;
-  font-size: 24px;
+  font-size: 30px;
 }
 
 .table-title .btn-group {
@@ -120,6 +120,15 @@ table.table td.done_status {
   color: rgb(6, 175, 0);
   min-width: 100px;
 } */
+table.table td.urgencyLevel-Low {
+  color:#00aa2b
+}
+table.table td.urgencyLevel-Normal {
+  color:#0269ca
+}
+table.table td.urgencyLevel-High {
+  color:#cc2b03
+}
 
 table.table td a:hover {
   color: #2196f3;
@@ -419,5 +428,5 @@ table.table .avatar {
 }
 
 .container-max-width {
-  max-width: 1116px;
+  max-width: 1600px;
 }

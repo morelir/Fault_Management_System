@@ -7,6 +7,7 @@ import AuthContext from "../store/auth-context";
 import DisplayRequestModal from "./RequestManagement/DisplayRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
 import NewPurchaseRequestModal from "./RequestManagement/NewPurchaseRequestModal";
+import * as utils from "./utils/functions"
 
 const RequestManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -40,21 +41,12 @@ const RequestManagement = (props) => {
     setRequests(requests);
   };
 
-  const displayDate = (dateFormat) => {
-    let date = new Date(dateFormat);
-    let month = date.getMonth() + 1;
-    let displayDate = `${date.getFullYear()}-${
-      month >= 10 ? month : "0" + month
-    }-${date.getDate() >= 10 ? date.getDate() : "0" + date.getDate()} ${
-      date.getHours() >= 10 ? date.getHours() : "0" + date.getHours()
-    }:${date.getMinutes() >= 10 ? date.getMinutes() : "0" + date.getMinutes()}`;
-    return displayDate;
-  };
+
 
   return (
     <main>
       {/* className="container-xl" */}
-      <div className="container-xl container-max-width">
+      <div className={`container-xl ${styles["container-max-width"]}`}>
         {/* className="table-responsive" */}
         <div className={styles.table_responsive}>
           <div className={styles.table_wrapper}>
@@ -77,11 +69,10 @@ const RequestManagement = (props) => {
               <thead>
                 <tr>
                   <th>No.</th>
-                  <th>Status</th>
                   <th>Date created</th>
-                  <th>Handler Team</th>
+                  <th>Status</th>
+                  <th>Time Duration</th>
                   <th>Handler Team member</th>
-                  <th>Handling duration</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -102,17 +93,18 @@ const RequestManagement = (props) => {
                             }
                           >
                             <td>{request.number}</td>
+                            <td>{utils.displayDate(request.date_created)}</td>
                             <td>
                               <strong>{request.status} </strong>
                             </td>
-                            <td>{displayDate(request.date_created)}</td>
-                            <td>{request.team}</td>
+                            
+                            <td>{utils.getTimeDuration(request.date_created)}</td>
                             {request.teamMemberID === null ? (
                               <td></td>
                             ) : (
                               <td>{`${request.teamMemberName}, ${request.teamMemberSurname}`}</td>
                             )}
-                            <td>{request.handling_duration}</td>
+                            
                             <td>
                               <DisplayRequestModal
                                 request={request}

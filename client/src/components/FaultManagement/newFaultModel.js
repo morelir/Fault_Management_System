@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -19,7 +19,7 @@ const NewFaultModel = (props) => {
   const [fault, setFault] = useState({
     number: "",
     status: "New",
-    urgency: "Regular",
+    urgencyLevel: "Normal",
     team: props.teams[1].name,
     description: "",
     teams: props.teams,
@@ -91,6 +91,7 @@ const NewFaultModel = (props) => {
       clientID: parseInt(client.id),
       team: fault.team,
       teamMemberID: parseInt(teamMember.id),
+      urgencyLevel: fault.urgencyLevel,
       description: fault.description,
     })
       .then((response) => {
@@ -137,7 +138,7 @@ const NewFaultModel = (props) => {
         onClick={handleOpen}
         className={`btn  ${styleBtn.btn}`}
         data-toggle="modal"
-        style={{ fontSize: "16px", borderRadius: "6px", fontWeight: "600" }}
+        style={{ fontSize: "18px", borderRadius: "6px", fontWeight: "600" }}
       >
         <i style={{ marginTop: "4px" }} className="material-icons">
           &#xE147;
@@ -255,7 +256,7 @@ const NewFaultModel = (props) => {
                     type="text"
                     value={teamMember.id}
                     onChange={(e) => {
-                      teamMemberIdHandler(e,fault.team, setTeamMember, props);
+                      teamMemberIdHandler(e, fault.team, setTeamMember, props);
                     }}
                   />
                 ) : (
@@ -292,8 +293,8 @@ const NewFaultModel = (props) => {
                 >
                   <>
                     <option value={"Low"}>Low</option>
-                    <option value={"Regular"}>Regular</option>
-                    <option value={"High"}>Urgent</option>
+                    <option value={"Normal"}>Regular</option>
+                    <option value={"High"}>High</option>
                   </>
                 </Form.Control>
               </Form.Group>
@@ -306,12 +307,12 @@ const NewFaultModel = (props) => {
               </Form.Group>
             </Row>
 
-            <Form.Group size="lg" controlId="email">
+            <Form.Group size="lg" controlId="email" className={styles.textarea}>
               <Form.Label>
                 <strong>Description </strong>
               </Form.Label>
               <br />
-              <Form.Control
+              <Form.Control 
                 as="textarea"
                 value={fault.description}
                 onChange={(e) =>
@@ -321,13 +322,14 @@ const NewFaultModel = (props) => {
                 }
                 style={{ width: "100%", height: "200px" }}
               />
+              {/* <div className={styles.history}>asdasdasd</div> */}
             </Form.Group>
-
             <br />
             {/* <Form.Control
                 autoFocus
             /> */}
           </Modal.Body>
+          
 
           <Modal.Footer>
             <Button
