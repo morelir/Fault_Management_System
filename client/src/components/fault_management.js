@@ -9,7 +9,7 @@ import AuthContext from "../store/auth-context";
 import Icon from "../shared/components/FormElements/Icon";
 import NewRequestModal from "./FaultManagement/NewRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
-import * as utils from "./utils/functions"
+import { displayDate,getTimeDuration } from "../utils/functions"; 
 
 const FaultManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -118,7 +118,7 @@ const FaultManagement = (props) => {
                               <strong>{fault.status} </strong>
                             </td>
 
-                            <td>{utils.displayDate(fault.date_created)}</td>
+                            <td>{displayDate(fault.date_created)}</td>
                             <td>{`${fault.clientName}, ${fault.clientSurname}`}</td>
                             <td>{fault.team}</td>
                             {fault.teamMemberID === null ? (
@@ -131,7 +131,7 @@ const FaultManagement = (props) => {
                             >
                               <strong>{fault.urgencyLevel}</strong>
                             </td>
-                            <td>{utils.getTimeDuration(fault.date_created)}</td>
+                            <td>{getTimeDuration(fault.date_created)}</td>
                             <td>
                               <EditFaultModel
                                 fault={fault}

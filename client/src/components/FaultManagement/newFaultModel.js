@@ -285,7 +285,7 @@ const NewFaultModel = (props) => {
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  value={fault.urgency}
+                  value={fault.urgencyLevel}
                   as="select"
                   onChange={(e) => {
                     urgencyHandler(e, setFault);

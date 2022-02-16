@@ -7,7 +7,7 @@ import AuthContext from "../store/auth-context";
 import DisplayRequestModal from "./RequestManagement/DisplayRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
 import NewPurchaseRequestModal from "./RequestManagement/NewPurchaseRequestModal";
-import * as utils from "./utils/functions"
+import { displayDate,getTimeDuration } from "../utils/functions"; 
 
 const RequestManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -93,12 +93,12 @@ const RequestManagement = (props) => {
                             }
                           >
                             <td>{request.number}</td>
-                            <td>{utils.displayDate(request.date_created)}</td>
+                            <td>{displayDate(request.date_created)}</td>
                             <td>
                               <strong>{request.status} </strong>
                             </td>
                             
-                            <td>{utils.getTimeDuration(request.date_created)}</td>
+                            <td>{getTimeDuration(request.date_created)}</td>
                             {request.teamMemberID === null ? (
                               <td></td>
                             ) : (

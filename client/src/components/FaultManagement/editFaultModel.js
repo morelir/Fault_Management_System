@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
 import AuthContext from "../../store/auth-context";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./faultModel.module.css";
@@ -12,6 +13,9 @@ import {
   clientIdHandler,
   teamMemberIdHandler,
   teamHandler,
+  capitalizeFirstLetter,
+  displayDate,
+  urgencyHandler,
 } from "../../utils/functions";
 
 const EditFaultModel = (props) => {
@@ -20,6 +24,7 @@ const EditFaultModel = (props) => {
     status: props.fault.status,
     team: props.fault.team,
     description: props.fault.description,
+    urgencyLevel: props.fault.urgencyLevel,
     teams: [],
     formIsValid: true,
   });
@@ -85,6 +90,7 @@ const EditFaultModel = (props) => {
       clientID: parseInt(client.id),
       team: fault.team,
       teamMemberID: parseInt(teamMember.id),
+      urgencyLevel:fault.urgencyLevel,
       description: fault.description,
     })
       .then((response) => {
@@ -167,6 +173,7 @@ const EditFaultModel = (props) => {
         backdrop="static"
         keyboard={false}
         className={styles["modal"]}
+        dialogClassName={styles["modal-dialog"]}
       >
         {/* closeButton */}
         <Modal.Header className={styles["modal-header"]}>
@@ -277,7 +284,7 @@ const EditFaultModel = (props) => {
                   type="text"
                   value={teamMember.id}
                   onChange={(e) => {
-                    teamMemberIdHandler(e, fault.team,setTeamMember, props);
+                    teamMemberIdHandler(e, fault.team, setTeamMember, props);
                   }}
                 />
               </Form.Group>
@@ -303,7 +310,25 @@ const EditFaultModel = (props) => {
                 </Form.Label>
                 <Form.Control type="text" value={fault.number} readOnly />
               </Form.Group>
-
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Urgency level</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={fault.urgencyLevel}
+                  as="select"
+                  onChange={(e) => {
+                    urgencyHandler(e, setFault);
+                  }}
+                >
+                  <>
+                    <option value={"Low"}>Low</option>
+                    <option value={"Normal"}>Regular</option>
+                    <option value={"High"}>High</option>
+                  </>
+                </Form.Control>
+              </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>
                   <strong>Status</strong>
@@ -311,6 +336,46 @@ const EditFaultModel = (props) => {
                 <Form.Control type="text" value={fault.status} readOnly />
               </Form.Group>
             </Row>
+
+            <Form.Group size="lg" controlId="email">
+              <Form.Label>
+                <strong>Activity </strong>
+              </Form.Label>
+              <br />
+              <Card>
+                <Card.Body>
+                  {props.fault.activity.map((activity, pos) => {
+                    return (
+                      <React.Fragment key={pos}>
+                        <Card.Title>
+                          <strong>
+                            {activity.action} by{" "}
+                            {capitalizeFirstLetter(activity.user)} (
+                            {activity.id}) - {displayDate(activity.date)}
+                          </strong>
+                        </Card.Title>
+                        <Card.Text style={{ whiteSpace: "pre" }}>
+                          {activity.data}
+                        </Card.Text>
+                      </React.Fragment>
+                    );
+                  })}
+                </Card.Body>
+              </Card>
+              {/* <Form.Control
+                disabled
+                plaintext
+                as="textarea"
+                placeholder="asdasdads"
+                value={`${props.date} ${authCtx.user.name} ${authCtx.user.surname} - ${authCtx.user.id}`}
+                onChange={(e) =>
+                  setFault((prevState) => {
+                    return { ...prevState, description: e.target.value };
+                  })
+                }
+                style={{ width: "100%", height: "200px" }}
+              /> */}
+            </Form.Group>
 
             <Form.Group size="lg" controlId="email">
               <Form.Label>
@@ -340,7 +405,7 @@ const EditFaultModel = (props) => {
               variant="secondary"
               onClick={() => {
                 handleClose();
-                
+
                 resetStates();
               }}
               disabled={fault.savingForm}

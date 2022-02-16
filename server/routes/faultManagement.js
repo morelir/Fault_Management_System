@@ -121,8 +121,9 @@ router.post("/EditFaultModel", async (req, res) => {
   // }
   try {
     fault = await FaultModel.findOne({ _id: req.body._id });
-    // fault.team="Logisti" //שומר את המידע ב db
+    console.log(fault)
     fault = updateFault(fault, req.body);
+    console.log(fault)
     await fault.save();
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);

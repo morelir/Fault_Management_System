@@ -8,8 +8,8 @@ const faultSchema = new mongoose.Schema({
   description: String,
   team: String,
   teamMemberID: Number,
-  urgencyLevel:String,
-  request:{
+  urgencyLevel: String,
+  request: {
     type: Boolean,
     default: false,
   },
@@ -17,8 +17,14 @@ const faultSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  activity: [{
+    date: { type: Date, default: Date.now },
+    user: String,
+    id: String,
+    action: String,
+    data: String,
+  }],
 });
-
 
 exports.FaultModel = mongoose.model("faults", faultSchema);
 
@@ -41,4 +47,3 @@ exports.validNewFault = (_bodyData) => {
 //     return data;
 //   }
 // }
-
