@@ -121,7 +121,7 @@ const NewPurchaseRequestModal = (props) => {
 
   return (
     <>
-      <button className="button" disabled={props.request}>
+      <button className="button" onClick={handleOpen} disabled={props.request}>
         <a
           href="#requestModal"
           className={`purchase_request ${props.request && "invalid"}`}
@@ -129,8 +129,7 @@ const NewPurchaseRequestModal = (props) => {
         >
           {props.request ? (
             <i
-              className="material-icons icon-blue "
-              onClick={handleOpen}
+              className="material-icons icon-blue "           
               data-toggle="tooltip"
               title="Purchase Request Sent"
             >

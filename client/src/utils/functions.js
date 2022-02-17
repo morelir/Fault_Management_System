@@ -57,14 +57,15 @@ export const urgencyHandler = (e, setFault) => {
   });
 };
 
-export const capitalizeFirstLetter = (sentence) => {
-  let words = sentence.split(" ");
-  sentence = words
-    .map((word) => {
-      return word[0].toUpperCase() + word.substring(1);
-    })
-    .join(" ");
-  return sentence;
+export const capitalizeFirstLetter = (word) => {
+  // let words = sentence.split(" ");
+  // sentence = words
+  //   .map((word) => {
+  //     return word[0].toUpperCase() + word.substring(1);
+  //   })
+  //   .join(" ");
+  // return sentence;
+  return word.charAt(0).toUpperCase() + word.slice(1);
 };
 
 export const displayDate = (dateFormat) => {
@@ -85,7 +86,6 @@ export const getTimeDuration = (dateCreatedFormat) => {
     paramsNum = 2,
     count = 0;
   let difference = currDate - createdDate; //milliseconds
-
   let weeks = Math.floor(difference / (1000 * 60 * 60 * 24 * 7));
   if (weeks > 0 && count < paramsNum) {
     difference =
@@ -121,5 +121,6 @@ export const getTimeDuration = (dateCreatedFormat) => {
     count++;
     displayTimeDuration += ` ${min} min,`;
   }
+
   return displayTimeDuration.slice(0, -1); //remove last character ','
 };

@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
-const { FaultModel, validNewFault } = require("../models/faultModel");
+const { FaultModel, validNewFault,Activity } = require("../models/faultModel");
 const { UserModel } = require("../models/userModel");
 const { ClientModel } = require("../models/clientModel");
 const { TeamModel } = require("../models/teamModel");
@@ -17,6 +17,59 @@ router.get("/", async (req, res) => {
     console.log(err);
   }
 });
+
+router.post("/NewFaultModel", async (req, res) => {
+  let validBody = validNewFault(req.body);
+  // if (validBody.error) {
+  //   console.log("blat")
+  //   return res.status(400).json(validBody.error.details);
+  // }
+  try {
+    let fault = new FaultModel(req.body);
+    fault.number = await generateFaultNumber();
+    console.log(fault)
+    await fault.save(); //שומר את המידע ב db
+    let faults = await FaultModel.find({}).lean();
+    data = await mergeFaultsAndUsers(faults);
+    res.json({ faults: data, faultNumber: fault.number });
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({ msg: "Error" });
+  }
+});
+
+router.post("/EditFaultModel", async (req, res) => {
+  let validBody = validNewFault(req.body);
+  // if (validBody.error) {
+  //   console.log("blat")
+  //   return res.status(400).json(validBody.error.details);
+  // }
+  try {
+    fault = await FaultModel.findOne({ _id: req.body._id });
+    console.log(req.body)
+    fault = updateFault(fault, req.body);
+    console.log(fault)
+    await fault.save();
+    let faults = await FaultModel.find({}).lean();
+    data = await mergeFaultsAndUsers(faults);
+    res.json(data);
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({ msg: "Error" });
+  }
+});
+
+const updateFault = (fault, updateFault) => {
+  fault.number = updateFault.number;
+  fault.status = updateFault.status;
+  fault.clientID = updateFault.clientID;
+  fault.team = updateFault.team;
+  fault.description = updateFault.description;
+  fault.teamMemberID = updateFault.teamMemberID;
+  fault.urgencyLevel = updateFault.urgencyLevel;
+  fault.activity = updateFault.activity;
+  return fault;
+};
 
 router.post("/NewRequest", async (req, res) => {
   // let validBody = validNewFault(req.body);
@@ -50,24 +103,7 @@ router.patch("/updateRequest", async (req, res) => {
   }
 });
 
-router.post("/NewFaultModel", async (req, res) => {
-  let validBody = validNewFault(req.body);
-  // if (validBody.error) {
-  //   console.log("blat")
-  //   return res.status(400).json(validBody.error.details);
-  // }
-  try {
-    let fault = new FaultModel(req.body);
-    fault.number = await generateFaultNumber();
-    await fault.save(); //שומר את המידע ב db
-    let faults = await FaultModel.find({}).lean();
-    data = await mergeFaultsAndUsers(faults);
-    res.json({ faults: data, faultNumber: fault.number });
-  } catch (err) {
-    console.log(err);
-    res.status(401).json({ msg: "Error" });
-  }
-});
+
 
 const generateFaultNumber = async () => {
   let data = await FaultModel.findOne({}, "-_id number").sort("-date_created");
@@ -113,37 +149,7 @@ const mergeFaultsAndUsers = async (faults) => {
   }
 };
 
-router.post("/EditFaultModel", async (req, res) => {
-  let validBody = validNewFault(req.body);
-  // if (validBody.error) {
-  //   console.log("blat")
-  //   return res.status(400).json(validBody.error.details);
-  // }
-  try {
-    fault = await FaultModel.findOne({ _id: req.body._id });
-    console.log(fault)
-    fault = updateFault(fault, req.body);
-    console.log(fault)
-    await fault.save();
-    let faults = await FaultModel.find({}).lean();
-    data = await mergeFaultsAndUsers(faults);
-    res.json(data);
-  } catch (err) {
-    console.log(err);
-    res.status(401).json({ msg: "Error" });
-  }
-});
 
-const updateFault = (fault, updateFault) => {
-  fault.number = updateFault.number;
-  fault.status = updateFault.status;
-  fault.clientID = updateFault.clientID;
-  fault.team = updateFault.team;
-  fault.description = updateFault.description;
-  fault.teamMemberID = updateFault.teamMemberID;
-  fault.urgencyLevel = updateFault.urgencyLevel;
-  return fault;
-};
 
 router.put("/closeFault", async (req, res) => {
   try {

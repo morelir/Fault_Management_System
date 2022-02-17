@@ -13,9 +13,9 @@ import {
   clientIdHandler,
   teamMemberIdHandler,
   teamHandler,
-  capitalizeFirstLetter,
   displayDate,
   urgencyHandler,
+  capitalizeFirstLetter,
 } from "../../utils/functions";
 
 const EditFaultModel = (props) => {
@@ -26,7 +26,8 @@ const EditFaultModel = (props) => {
     description: props.fault.description,
     urgencyLevel: props.fault.urgencyLevel,
     teams: [],
-    formIsValid: true,
+    formIsValid: false,
+    activity: props.fault.activity,
   });
   const [client, setClient] = useState({
     id: props.fault.clientID,
@@ -40,6 +41,12 @@ const EditFaultModel = (props) => {
     surname: props.fault.teamMemberSurname,
     idIsValid: props.fault.teamMemberID === null ? false : true,
   });
+  let Activity = {
+    user: "",
+    id: "",
+    action: "",
+    data: "",
+  };
   const authCtx = useContext(AuthContext);
   const [savingForm, setSavingForm] = useState(false);
   const [show, setShow] = useState(false);
@@ -59,7 +66,8 @@ const EditFaultModel = (props) => {
         number: props.fault.number,
         description: props.fault.description,
         team: props.fault.team,
-        formIsValid: true,
+        formIsValid: false,
+        activity: props.fault.activity,
       };
     });
     setClient((prevState) => {
@@ -80,9 +88,48 @@ const EditFaultModel = (props) => {
     });
   };
 
+  const modifiedActivity = () => {
+    Activity.date = new Date();
+    Activity.user = `${capitalizeFirstLetter(
+      authCtx.user.name
+    )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+    Activity.id = authCtx.user.id.toString();
+    Activity.action = "Modified";
+    Activity.data += `\t`;
+    if (client.id !== props.fault.clientID) {
+      Activity.data += `-Client Fullname: ${capitalizeFirstLetter(
+        client.name
+      )} ${capitalizeFirstLetter(client.surname)}\n\t`;
+      Activity.data += `-Client ID: ${client.id.toString()}\n\t`;
+    }
+    if (fault.status !== props.fault.status)
+      Activity.data += `-Status: ${fault.status}\n\t`;
+    if (fault.team !== props.fault.team)
+      Activity.data += `-Handler Team: ${fault.team}\n\t`;
+    if (
+      props.fault.teamMemberID === null &&
+      teamMember.id !== props.fault.teamMemberID
+    ) {
+      Activity.data += `+Handler Team ID: ${teamMember.id.toString()}\n\t`;
+      Activity.data += `+Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
+    }else if (teamMember.id === "" && String(teamMember.id) !== String(props.fault.teamMemberID)){
+      Activity.data += `-Handler Team Member is been removed\n\t`;
+    } else if (teamMember.id !== props.fault.teamMemberID) {
+      Activity.data += `-Handler Team ID: ${teamMember.id.toString()}\n\t`;
+      Activity.data += `-Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
+    }
+    if (fault.urgencyLevel !== props.fault.urgencyLevel)
+      Activity.data += `-Urgency level: ${fault.urgencyLevel}\n\t`;
+    if (fault.description !== props.fault.description)
+      Activity.data += `-Description: ${fault.description}\n\t`;
+  };
+
   const submitSaveFault = (e) => {
     e.preventDefault();
     setSavingForm(true);
+    modifiedActivity();
+    console.log(Activity);
+    console.log([...fault.activity, Activity]);
     Axios.post(`faultManagement/EditFaultModel`, {
       _id: props.fault._id,
       number: parseInt(fault.number),
@@ -90,8 +137,9 @@ const EditFaultModel = (props) => {
       clientID: parseInt(client.id),
       team: fault.team,
       teamMemberID: parseInt(teamMember.id),
-      urgencyLevel:fault.urgencyLevel,
+      urgencyLevel: fault.urgencyLevel,
       description: fault.description,
+      activity: [...props.fault.activity, Activity],
     })
       .then((response) => {
         props.updateFaults(response.data);
@@ -122,7 +170,6 @@ const EditFaultModel = (props) => {
 
   useEffect(() => {
     orderTeamsByTeamHandler();
-    // console.log(fault.teams)
   }, []);
 
   useEffect(() => {
@@ -136,7 +183,11 @@ const EditFaultModel = (props) => {
             client.idIsValid &&
             (teamMember.idIsValid ||
               teamMember.id === null ||
-              teamMember.id.length === 0),
+              teamMember.id.length === 0) &&
+            (fault.description !== props.fault.description ||
+              String(client.id) !== String(props.fault.clientID) ||
+              String(teamMember.id) !== String(props.fault.teamMemberID) ||
+              fault.urgencyLevel !== props.fault.urgencyLevel),
         };
       });
     }, 250);
@@ -145,11 +196,15 @@ const EditFaultModel = (props) => {
       console.log("Clean-Up Timeout");
       clearTimeout(identifier);
     };
-  }, [fault.description, client.id, teamMember.id]);
+  }, [fault.description,fault.urgencyLevel, client.id, teamMember.id]);
 
   return (
     <>
-      <button className="button" disabled={authCtx.user.team !== fault.team}>
+      <button
+        className="button"
+        disabled={authCtx.user.team !== fault.team}
+        onClick={handleOpen}
+      >
         <a
           href="#editModal"
           className={`edit ${authCtx.user.team !== fault.team && "invalid"}`}
@@ -157,7 +212,6 @@ const EditFaultModel = (props) => {
         >
           <i
             className="material-icons icon-blue "
-            onClick={handleOpen}
             data-toggle="tooltip"
             title="Edit"
           >
@@ -324,7 +378,7 @@ const EditFaultModel = (props) => {
                 >
                   <>
                     <option value={"Low"}>Low</option>
-                    <option value={"Normal"}>Regular</option>
+                    <option value={"Normal"}>Normal</option>
                     <option value={"High"}>High</option>
                   </>
                 </Form.Control>
@@ -343,15 +397,14 @@ const EditFaultModel = (props) => {
               </Form.Label>
               <br />
               <Card>
-                <Card.Body>
+                <Card.Body style={{maxHeight:"200px",overflowY:"auto"}}>
                   {props.fault.activity.map((activity, pos) => {
                     return (
                       <React.Fragment key={pos}>
                         <Card.Title>
                           <strong>
-                            {activity.action} by{" "}
-                            {capitalizeFirstLetter(activity.user)} (
-                            {activity.id}) - {displayDate(activity.date)}
+                            {activity.action} by {activity.user} ({activity.id})
+                            - {displayDate(activity.date)}
                           </strong>
                         </Card.Title>
                         <Card.Text style={{ whiteSpace: "pre" }}>

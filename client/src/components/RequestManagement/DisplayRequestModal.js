@@ -83,11 +83,10 @@ const DisplayRequestModal = (props) => {
 
   return (
     <>
-      <button className="button">
+      <button className="button" onClick={handleOpen}>
         <a href="#DisplayModal" className="display" data-toggle="modal">
           <i
             className="material-icons icon-blue "
-            onClick={handleOpen}
             data-toggle="tooltip"
             title="Display"
           >

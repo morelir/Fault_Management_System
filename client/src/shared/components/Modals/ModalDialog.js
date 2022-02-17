@@ -34,11 +34,10 @@ const ModalDialog = (props) => {
   // #closeModal
   return (
     <>
-      <button className="button" disabled={props.btn_disabled} >
+      <button className="button" onClick={handleOpen} disabled={props.btn_disabled} >
         <a href={props.href} className={`${props.className} ${props.btn_disabled && "invalid"}`} data-toggle="modal">
           <i
             className="material-icons"
-            onClick={handleOpen}
             data-toggle="tooltip"
             title={props.header}
           >

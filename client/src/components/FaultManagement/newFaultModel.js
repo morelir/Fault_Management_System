@@ -6,6 +6,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import MessageModal from "../../shared/components/Modals/messageModal";
+import AuthContext from "../../store/auth-context";
 import styles from "./faultModel.module.css";
 import styleBtn from "./newFaultModel.module.css";
 import Axios from "axios";
@@ -14,7 +15,9 @@ import {
   teamMemberIdHandler,
   teamHandler,
   urgencyHandler,
+  capitalizeFirstLetter,
 } from "../../utils/functions";
+
 const NewFaultModel = (props) => {
   const [fault, setFault] = useState({
     number: "",
@@ -37,6 +40,13 @@ const NewFaultModel = (props) => {
     surname: "",
     idIsValid: false,
   });
+  let Activity = {
+    user: "",
+    id: "",
+    action: "",
+    data: "",
+  };
+  const authCtx = useContext(AuthContext);
   const [savingForm, setSavingForm] = useState(false);
   const [showCreatedMessage, setShowCreatedMessage] = useState(false);
   const [show, setShow] = useState(false);
@@ -83,9 +93,18 @@ const NewFaultModel = (props) => {
     });
   };
 
+  const createdActivity = () => {
+    Activity.user= `${capitalizeFirstLetter(authCtx.user.name)} ${capitalizeFirstLetter(authCtx.user.surname)}`
+    Activity.id= authCtx.user.id.toString();
+    Activity.action= "Created";
+    Activity.data= `\t-Client Fullname: ${capitalizeFirstLetter(client.name)} ${capitalizeFirstLetter(client.surname)}\n\t-Client ID: ${client.id.toString()}\n\t-Status: In treatment\n\t-Handler Team: ${fault.team}\n\t-Urgency level: ${fault.urgencyLevel}\n\t-Description: ${fault.description}\n\t`
+  };
+
   const submitNewFault = (e) => {
     e.preventDefault();
     setSavingForm(true);
+    createdActivity();
+    console.log(Activity)
     Axios.post(`faultManagement/NewFaultModel`, {
       status: "In treatment",
       clientID: parseInt(client.id),
@@ -93,6 +112,7 @@ const NewFaultModel = (props) => {
       teamMemberID: parseInt(teamMember.id),
       urgencyLevel: fault.urgencyLevel,
       description: fault.description,
+      activity:Activity,
     })
       .then((response) => {
         props.updateFaults(response.data.faults);
@@ -312,7 +332,7 @@ const NewFaultModel = (props) => {
                 <strong>Description </strong>
               </Form.Label>
               <br />
-              <Form.Control 
+              <Form.Control
                 as="textarea"
                 value={fault.description}
                 onChange={(e) =>
@@ -329,7 +349,6 @@ const NewFaultModel = (props) => {
                 autoFocus
             /> */}
           </Modal.Body>
-          
 
           <Modal.Footer>
             <Button
