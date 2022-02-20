@@ -27,7 +27,6 @@ router.post("/NewFaultModel", async (req, res) => {
   try {
     let fault = new FaultModel(req.body);
     fault.number = await generateFaultNumber();
-    console.log(fault)
     await fault.save(); //שומר את המידע ב db
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);
@@ -46,9 +45,7 @@ router.post("/EditFaultModel", async (req, res) => {
   // }
   try {
     fault = await FaultModel.findOne({ _id: req.body._id });
-    console.log(req.body)
     fault = updateFault(fault, req.body);
-    console.log(fault)
     await fault.save();
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);
@@ -92,9 +89,15 @@ router.put("/clientID", async (req, res) => {
   res.json(data);
 });
 
-router.patch("/updateRequest", async (req, res) => {
+router.patch("/updateFault", async (req, res) => {
   try {
     let fault = await FaultModel.findOne({ number: req.body.number });
+    req.body.updates.map((update,pos)=>{
+      if(update==="activity")
+        fault[update].push(req.body.values[pos]);
+      else
+        fault[update] = req.body.values[pos];
+    })
     fault[req.body.updated] = req.body.value;
     await fault.save();
     res.json({});
@@ -155,6 +158,7 @@ router.put("/closeFault", async (req, res) => {
   try {
     fault = await FaultModel.findOne({ _id: req.body._id });
     fault.status = "Close";
+    fault.activity=[...fault.activity,req.body.activity]
     await fault.save();
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);
@@ -169,6 +173,7 @@ router.put("/doneFault", async (req, res) => {
     fault = await FaultModel.findOne({ _id: req.body._id });
     fault.team = "Customer service";
     fault.status = "Done";
+    fault.activity=[...fault.activity,req.body.activity]
     fault.teamMemberID = null;
     await fault.save();
     let faults = await FaultModel.find({}).lean();

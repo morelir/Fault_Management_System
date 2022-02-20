@@ -165,7 +165,7 @@ const NewPurchaseRequestModal = (props) => {
         <Modal.Header className={styles["modal-header"]}>
           <Modal.Title>
             <h3>
-              <strong>New Request</strong>
+              <strong>New Purchase Request</strong>
             </h3>
           </Modal.Title>
         </Modal.Header>

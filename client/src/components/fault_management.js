@@ -9,7 +9,7 @@ import AuthContext from "../store/auth-context";
 import Icon from "../shared/components/FormElements/Icon";
 import NewRequestModal from "./FaultManagement/NewRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
-import { displayDate,getTimeDuration } from "../utils/functions"; 
+import { displayDate,getTimeDuration,activity } from "../utils/functions"; 
 
 const FaultManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -149,6 +149,8 @@ const FaultManagement = (props) => {
                                   <ModalDialog
                                     type="fault"
                                     _id={fault._id}
+                                    authCtx={authCtx}
+                                    Activity={activity}
                                     native="/faultManagement/closeFault"
                                     update={updateFaults}
                                     className="close"
@@ -176,11 +178,14 @@ const FaultManagement = (props) => {
                                     number={fault.number}
                                     updateFaults={updateFaults}
                                     request={fault.request}
+                                    urgencyLevel={fault.urgencyLevel}
                                     team="Stock"
                                   />
                                   <ModalDialog
                                     type="fault"
                                     _id={fault._id}
+                                    authCtx={authCtx}
+                                    Activity={activity}
                                     native="/faultManagement/doneFault"
                                     update={updateFaults}
                                     className="done"

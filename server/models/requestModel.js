@@ -1,10 +1,19 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 
+let Activity= {
+  date: { type: Date, default: Date.now },
+  user: String,
+  id: String,
+  action: String,
+  data: String,
+};
+
 const requestSchema = new mongoose.Schema({
   number: Number,
   products: [],
   status: String,
+  urgencyLevel: String,
   team: String,
   teamMemberID: Number,
   note:String,
@@ -16,6 +25,7 @@ const requestSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  activity: [Activity],
 });
 
 exports.RequestModel = mongoose.model("requests", requestSchema);

@@ -3,6 +3,11 @@
   border-radius: 16px;
 }
 
+.modal-dialog{
+  max-width: 630px;
+
+}
+
 .modal-header {
   color: white;
   background: rgba(4, 34, 78, 0.877);

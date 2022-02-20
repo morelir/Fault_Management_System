@@ -16,6 +16,7 @@ import {
   displayDate,
   urgencyHandler,
   capitalizeFirstLetter,
+  modifiedActivity,
 } from "../../utils/functions";
 
 const EditFaultModel = (props) => {
@@ -88,48 +89,46 @@ const EditFaultModel = (props) => {
     });
   };
 
-  const modifiedActivity = () => {
-    Activity.date = new Date();
-    Activity.user = `${capitalizeFirstLetter(
-      authCtx.user.name
-    )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
-    Activity.id = authCtx.user.id.toString();
-    Activity.action = "Modified";
-    Activity.data += `\t`;
-    if (client.id !== props.fault.clientID) {
-      Activity.data += `-Client Fullname: ${capitalizeFirstLetter(
-        client.name
-      )} ${capitalizeFirstLetter(client.surname)}\n\t`;
-      Activity.data += `-Client ID: ${client.id.toString()}\n\t`;
-    }
-    if (fault.status !== props.fault.status)
-      Activity.data += `-Status: ${fault.status}\n\t`;
-    if (fault.team !== props.fault.team)
-      Activity.data += `-Handler Team: ${fault.team}\n\t`;
-    if (
-      props.fault.teamMemberID === null &&
-      teamMember.id !== props.fault.teamMemberID
-    ) {
-      Activity.data += `+Handler Team ID: ${teamMember.id.toString()}\n\t`;
-      Activity.data += `+Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
-    }else if (teamMember.id === "" && String(teamMember.id) !== String(props.fault.teamMemberID)){
-      Activity.data += `-Handler Team Member is been removed\n\t`;
-    } else if (teamMember.id !== props.fault.teamMemberID) {
-      Activity.data += `-Handler Team ID: ${teamMember.id.toString()}\n\t`;
-      Activity.data += `-Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
-    }
-    if (fault.urgencyLevel !== props.fault.urgencyLevel)
-      Activity.data += `-Urgency level: ${fault.urgencyLevel}\n\t`;
-    if (fault.description !== props.fault.description)
-      Activity.data += `-Description: ${fault.description}\n\t`;
-  };
+  // const modifiedActivity = () => {
+  //   Activity.date = new Date();
+  //   Activity.user = `${capitalizeFirstLetter(
+  //     authCtx.user.name
+  //   )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+  //   Activity.id = authCtx.user.id.toString();
+  //   Activity.action = "Modified";
+  //   Activity.data += `\t`;
+  //   if (client.id !== props.fault.clientID) {
+  //     Activity.data += `-Client Fullname: ${capitalizeFirstLetter(
+  //       client.name
+  //     )} ${capitalizeFirstLetter(client.surname)}\n\t`;
+  //     Activity.data += `-Client ID: ${client.id.toString()}\n\t`;
+  //   }
+  //   if (fault.status !== props.fault.status)
+  //     Activity.data += `-Status: ${fault.status}\n\t`;
+  //   if (fault.team !== props.fault.team)
+  //     Activity.data += `-Handler Team: ${fault.team}\n\t`;
+  //   if (
+  //     props.fault.teamMemberID === null &&
+  //     teamMember.id !== props.fault.teamMemberID
+  //   ) {
+  //     Activity.data += `+Handler Team ID: ${teamMember.id.toString()}\n\t`;
+  //     Activity.data += `+Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
+  //   }else if (teamMember.id === "" && String(teamMember.id) !== String(props.fault.teamMemberID)){
+  //     Activity.data += `-Handler Team Member is been removed\n\t`;
+  //   } else if (teamMember.id !== props.fault.teamMemberID) {
+  //     Activity.data += `-Handler Team ID: ${teamMember.id.toString()}\n\t`;
+  //     Activity.data += `-Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
+  //   }
+  //   if (fault.urgencyLevel !== props.fault.urgencyLevel)
+  //     Activity.data += `-Urgency level: ${fault.urgencyLevel}\n\t`;
+  //   if (fault.description !== props.fault.description)
+  //     Activity.data += `-Description: ${fault.description}\n\t`;
+  // };
 
   const submitSaveFault = (e) => {
     e.preventDefault();
     setSavingForm(true);
-    modifiedActivity();
-    console.log(Activity);
-    console.log([...fault.activity, Activity]);
+    modifiedActivity(authCtx,props,fault,client,teamMember,Activity);
     Axios.post(`faultManagement/EditFaultModel`, {
       _id: props.fault._id,
       number: parseInt(fault.number),
@@ -415,19 +414,6 @@ const EditFaultModel = (props) => {
                   })}
                 </Card.Body>
               </Card>
-              {/* <Form.Control
-                disabled
-                plaintext
-                as="textarea"
-                placeholder="asdasdads"
-                value={`${props.date} ${authCtx.user.name} ${authCtx.user.surname} - ${authCtx.user.id}`}
-                onChange={(e) =>
-                  setFault((prevState) => {
-                    return { ...prevState, description: e.target.value };
-                  })
-                }
-                style={{ width: "100%", height: "200px" }}
-              /> */}
             </Form.Group>
 
             <Form.Group size="lg" controlId="email">

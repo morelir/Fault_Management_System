@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -8,6 +8,8 @@ import Spinner from "react-bootstrap/Spinner";
 import MessageModal from "../../shared/components/Modals/messageModal";
 import styles from "./faultModel.module.css";
 import Axios from "axios";
+import AuthContext from "../../store/auth-context";
+import { capitalizeFirstLetter } from "../../utils/functions";
 
 const NewRequestModal = (props) => {
   const [request, setRequest] = useState({
@@ -15,8 +17,10 @@ const NewRequestModal = (props) => {
     team: props.team,
     note: "",
     status: "New",
+    urgencyLevel: props.urgencyLevel,
   });
 
+  const authCtx = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [serial, setSerial] = useState("");
   const [model, setModel] = useState("");
@@ -52,10 +56,49 @@ const NewRequestModal = (props) => {
     setSerialIsValid(false);
   };
 
+  const faultUpdateActivity = () => {
+    let Activity = {};
+    Activity.date = new Date();
+    Activity.user = `${capitalizeFirstLetter(
+      authCtx.user.name
+    )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+    Activity.id = authCtx.user.id.toString();
+    Activity.action = "Component request has been created";
+    Activity.data = `\t-Status: Waiting for component\\s\n\t`;
+    Activity.data += `-Request handler team: ${request.team}\n\t`;
+    Activity.data += `-Requested component\\s:\n\t\t`;
+    products.map((product) => {
+      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
+    });
+    return Activity;
+  };
+
+  const requestCreatedActivity = () => {
+    let Activity = {};
+    Activity.date = new Date();
+    Activity.user = `${capitalizeFirstLetter(
+      authCtx.user.name
+    )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+    Activity.id = authCtx.user.id.toString();
+    Activity.action = "Created";
+    Activity.data = `\t-Handler Team: ${
+      request.team
+    }\n\t-Status: In treatment\n\t-Urgency level: ${request.urgencyLevel}\n\t`;
+    if(request.note !== "")
+      Activity.data+= `-Note: ${request.note}\n\t`
+    Activity.data += `-Requested component\\s:\n\t\t`;
+    products.map((product) => {
+      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
+    });
+    return Activity;
+  };
+
   const submitNewRequest = async (e) => {
     try {
       e.preventDefault();
       setSavingForm(true);
+      let faultActivity = faultUpdateActivity();
+      let requestActivity = requestCreatedActivity();
       await Axios.post(`faultManagement/NewRequest`, {
         number: request.number,
         status: "In treatment",
@@ -63,16 +106,12 @@ const NewRequestModal = (props) => {
         teamMemberID: null,
         products: products,
         note: request.note,
+        activity: requestActivity,
       });
       await Axios.patch(`/faultManagement/updateFault`, {
         number: request.number,
-        updated: "request",
-        value: true,
-      });
-      await Axios.patch(`/faultManagement/updateFault`, {
-        number: request.number,
-        updated: "status",
-        value: "Waiting for component",
+        updates: ["request", "status", "activity"],
+        values: [true, "Waiting for component", faultActivity],
       });
       let response = await Axios.get("/faultManagement");
       props.updateFaults(response.data);
@@ -168,7 +207,7 @@ const NewRequestModal = (props) => {
         <Modal.Header className={styles["modal-header"]}>
           <Modal.Title>
             <h3>
-              <strong>New Request</strong>
+              <strong>New Component Request</strong>
             </h3>
           </Modal.Title>
         </Modal.Header>
@@ -240,6 +279,16 @@ const NewRequestModal = (props) => {
                   <strong>Status</strong>
                 </Form.Label>
                 <Form.Control type="text" value={request.status} readOnly />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Urgency Level</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={request.urgencyLevel}
+                  readOnly
+                />
               </Form.Group>
             </Row>
 

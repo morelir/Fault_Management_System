@@ -4,6 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./RequestModal.module.css";
 import Axios from "axios";
@@ -11,6 +12,7 @@ import {
   clientIdHandler,
   teamMemberIdHandler,
   teamHandler,
+  displayDate,
 } from "../../utils/functions";
 
 const DisplayRequestModal = (props) => {
@@ -103,6 +105,7 @@ const DisplayRequestModal = (props) => {
         backdrop="static"
         keyboard={false}
         className={styles["modal"]}
+        dialogClassName={styles["modal-dialog"]}
       >
         {/* closeButton */}
         <Modal.Header className={styles["modal-header"]}>
@@ -261,6 +264,32 @@ const DisplayRequestModal = (props) => {
                 </Row>
               );
             })}
+
+            <Form.Group size="lg" controlId="email">
+              <Form.Label>
+                <strong>Activity </strong>
+              </Form.Label>
+              <br />
+              <Card>
+                <Card.Body style={{maxHeight:"200px",overflowY:"auto"}}>
+                  {props.request.activity.map((activity, pos) => {
+                    return (
+                      <React.Fragment key={pos}>
+                        <Card.Title>
+                          <strong>
+                            {activity.action} by {activity.user} ({activity.id})
+                            - {displayDate(activity.date)}
+                          </strong>
+                        </Card.Title>
+                        <Card.Text style={{ whiteSpace: "pre" }}>
+                          {activity.data}
+                        </Card.Text>
+                      </React.Fragment>
+                    );
+                  })}
+                </Card.Body>
+              </Card>
+            </Form.Group>
 
             <Form.Group size="sm" controlId="email">
               <Form.Label>

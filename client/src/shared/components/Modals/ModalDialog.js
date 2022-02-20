@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./ModalDialog.module.css";
 import Axios from "axios";
+import {modifiedActivity} from "../../../utils/functions"
 
 const ModalDialog = (props) => {
   const [show, setShow] = useState(false);
-
   const [savingForm, setSavingForm] = useState(false);
 
   const handleClose = () => {
@@ -18,11 +18,14 @@ const ModalDialog = (props) => {
     setShow(true);
   };
 
-  const handleCloseFault = async () => {
+  const handleStatus = async () => {
     try {
       setSavingForm(true);
+      let activity=props.Activity(props.authCtx,props.type,props.className)
+      console.log(activity)
       const response = await Axios.put(props.native, {
         _id: props._id,
+        activity:activity,
       });
       props.update(response.data);
       setSavingForm(false);
@@ -55,7 +58,7 @@ const ModalDialog = (props) => {
         keyboard={false}
         className={styles["modal"]}
       >
-        {/* closeButton Close Fault*/}
+
         <Modal.Header className={`${styles["modal-header"]} ${styles[`modal-header-${props.type}`]} `}>
           <Modal.Title>
             <h3>
@@ -77,7 +80,7 @@ const ModalDialog = (props) => {
             No
           </Button>
           {!savingForm ? (
-            <Button variant="primary" type="submit" onClick={handleCloseFault}>
+            <Button variant="primary" type="submit" onClick={handleStatus}>
               Yes
             </Button>
           ) : (
