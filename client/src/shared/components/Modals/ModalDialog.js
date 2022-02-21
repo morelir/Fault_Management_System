@@ -22,7 +22,6 @@ const ModalDialog = (props) => {
     try {
       setSavingForm(true);
       let activity=props.Activity(props.authCtx,props.type,props.className)
-      console.log(activity)
       const response = await Axios.put(props.native, {
         _id: props._id,
         activity:activity,

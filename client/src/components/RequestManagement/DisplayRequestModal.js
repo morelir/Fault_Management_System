@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -7,12 +7,13 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./RequestModal.module.css";
+import AuthContext from "../../store/auth-context";
 import Axios from "axios";
 import {
-  clientIdHandler,
   teamMemberIdHandler,
-  teamHandler,
   displayDate,
+  capitalizeFirstLetter,
+  urgencyHandler,
 } from "../../utils/functions";
 
 const DisplayRequestModal = (props) => {
@@ -22,14 +23,17 @@ const DisplayRequestModal = (props) => {
     note: props.request.note,
     products: props.request.products,
     status: props.request.status,
+    urgencyLevel: props.request.urgencyLevel,
+    activity: props.request.activity,
+    formIsValid: false,
   });
   const [teamMember, setTeamMember] = useState({
-    id: props.request.teamMemberID,
+    id: props.request.teamMemberID == null ? "" : props.request.teamMemberID.toString(),
     name: props.request.teamMemberName,
     surname: props.request.teamMemberSurname,
     idIsValid: props.request.teamMemberID === null ? false : true,
   });
-
+  const authCtx = useContext(AuthContext);
   const [savingForm, setSavingForm] = useState(false);
   const [showCreatedMessage, setShowCreatedMessage] = useState(false);
   const [show, setShow] = useState(false);
@@ -54,7 +58,10 @@ const DisplayRequestModal = (props) => {
     });
     setTeamMember((prevState) => {
       return {
-        id: props.request.teamMemberID,
+        id:
+          props.request.teamMemberID === null
+            ? ""
+            : props.request.teamMemberID.toString(),
         name: props.request.teamMemberName,
         surname: props.request.teamMemberSurname,
         idIsValid: props.request.teamMemberID === null ? false : true,
@@ -62,10 +69,47 @@ const DisplayRequestModal = (props) => {
     });
   };
 
+  const modifiedActivity = () => {
+    let Activity = {};
+    Activity.date = new Date();
+    Activity.user = `${capitalizeFirstLetter(
+      authCtx.user.name
+    )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+    Activity.id = authCtx.user.id.toString();
+    Activity.action = "Modified";
+    Activity.data = `\t`;
+    if (request.team !== props.request.team)
+      Activity.data += `-Handler Team: ${request.team}\n\t`;
+    if (request.status !== props.request.status)
+      Activity.data += `-Status: ${request.status}\n\t`;
+    if (
+      teamMember.id !==
+      (props.request.teamMemberID == null
+        ? ""
+        : props.request.teamMemberID.toString())
+    ) {
+      if (props.request.teamMemberID === null) {
+        Activity.data += `+Handler Team ID: ${teamMember.id}\n\t`;
+        Activity.data += `+Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
+      } else if (teamMember.id === "") {
+        Activity.data += `-Handler Team Member is been removed.\n\t`;
+      } else {
+        Activity.data += `-Handler Team ID: ${teamMember.id}\n\t`;
+        Activity.data += `-Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
+      }
+    }
+    if (request.urgencyLevel !== props.request.urgencyLevel)
+      Activity.data += `-Urgency level: ${request.urgencyLevel}\n\t`;
+    if (request.note !== props.request.note)
+      Activity.data += `-Note: ${request.note}\n\t`;
+    return Activity;
+  };
+
   const submitSaveRequest = async (e) => {
     try {
       e.preventDefault();
       setSavingForm(true);
+      let activity = modifiedActivity();
       await Axios.post(`requestManagement/EditRequestModal`, {
         _id: props.request._id,
         number: parseInt(request.number),
@@ -73,6 +117,8 @@ const DisplayRequestModal = (props) => {
         team: request.team,
         teamMemberID: parseInt(teamMember.id),
         note: request.note,
+        urgencyLevel: request.urgencyLevel,
+        activity: [...props.request.activity, activity],
       });
       let response = await Axios.get("/requestManagement");
       props.updateRequests(response.data);
@@ -82,6 +128,31 @@ const DisplayRequestModal = (props) => {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    const identifier = setTimeout(() => {
+      console.log("checking form validity");
+      setRequest((prevState) => {
+        return {
+          ...prevState,
+          formIsValid:
+            (teamMember.idIsValid ||
+              teamMember.id === null ||
+              teamMember.id.length === 0) &&
+            (teamMember.id !==
+              (props.request.teamMemberID == null
+                ? ""
+                : props.request.teamMemberID.toString()) ||
+              request.urgencyLevel !== props.request.urgencyLevel),
+        };
+      });
+    }, 250);
+
+    return () => {
+      console.log("Clean-Up Timeout");
+      clearTimeout(identifier);
+    };
+  }, [request.urgencyLevel, teamMember.id]);
 
   return (
     <>
@@ -182,30 +253,30 @@ const DisplayRequestModal = (props) => {
             </Row>
 
             <Row className="mb-3">
-              {/* <Form.Group as={Col}>
-            <Form.Label>
-              <strong>Urgency level</strong>
-            </Form.Label>
-            <Form.Control
-              type="text"
-              value={fault.urgency}
-              as="select"
-              onChange={(e) => {
-                urgencyHandler(e, setFault);
-              }}
-            >
-              <>
-                <option value={"Low"}>Low</option>
-                <option value={"Regular"}>Regular</option>
-                <option value={"High"}>Urgent</option>
-              </>
-            </Form.Control>
-          </Form.Group> */}
               <Form.Group as={Col}>
                 <Form.Label>
                   <strong>No.</strong>
                 </Form.Label>
                 <Form.Control type="text" value={request.number} readOnly />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Urgency level</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={request.urgencyLevel}
+                  as="select"
+                  onChange={(e) => {
+                    urgencyHandler(e, setRequest);
+                  }}
+                >
+                  <>
+                    <option value={"Low"}>Low</option>
+                    <option value={"Normal"}>Normal</option>
+                    <option value={"High"}>High</option>
+                  </>
+                </Form.Control>
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>
@@ -271,7 +342,7 @@ const DisplayRequestModal = (props) => {
               </Form.Label>
               <br />
               <Card>
-                <Card.Body style={{maxHeight:"200px",overflowY:"auto"}}>
+                <Card.Body style={{ maxHeight: "200px", overflowY: "auto" }}>
                   {props.request.activity.map((activity, pos) => {
                     return (
                       <React.Fragment key={pos}>
@@ -329,7 +400,7 @@ const DisplayRequestModal = (props) => {
               <Button
                 variant="primary"
                 type="submit"
-                disabled={request.products.length === 0}
+                disabled={!request.formIsValid}
               >
                 Save
               </Button>

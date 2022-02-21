@@ -37,7 +37,7 @@ const EditFaultModel = (props) => {
     idIsValid: true,
   });
   const [teamMember, setTeamMember] = useState({
-    id: props.fault.teamMemberID,
+    id: props.fault.teamMemberID === null ? "" : props.fault.teamMemberID.toString(),
     name: props.fault.teamMemberName,
     surname: props.fault.teamMemberSurname,
     idIsValid: props.fault.teamMemberID === null ? false : true,
@@ -128,7 +128,7 @@ const EditFaultModel = (props) => {
   const submitSaveFault = (e) => {
     e.preventDefault();
     setSavingForm(true);
-    modifiedActivity(authCtx,props,fault,client,teamMember,Activity);
+    modifiedActivity(authCtx, props, fault, client, teamMember, Activity);
     Axios.post(`faultManagement/EditFaultModel`, {
       _id: props.fault._id,
       number: parseInt(fault.number),
@@ -185,7 +185,10 @@ const EditFaultModel = (props) => {
               teamMember.id.length === 0) &&
             (fault.description !== props.fault.description ||
               String(client.id) !== String(props.fault.clientID) ||
-              String(teamMember.id) !== String(props.fault.teamMemberID) ||
+              teamMember.id !==
+                (props.fault.teamMemberID == null
+                  ? ""
+                  : props.fault.teamMemberID.toString()) ||
               fault.urgencyLevel !== props.fault.urgencyLevel),
         };
       });
@@ -195,7 +198,7 @@ const EditFaultModel = (props) => {
       console.log("Clean-Up Timeout");
       clearTimeout(identifier);
     };
-  }, [fault.description,fault.urgencyLevel, client.id, teamMember.id]);
+  }, [fault.description, fault.urgencyLevel, client.id, teamMember.id]);
 
   return (
     <>
@@ -363,6 +366,7 @@ const EditFaultModel = (props) => {
                 </Form.Label>
                 <Form.Control type="text" value={fault.number} readOnly />
               </Form.Group>
+
               <Form.Group as={Col}>
                 <Form.Label>
                   <strong>Urgency level</strong>
@@ -396,7 +400,7 @@ const EditFaultModel = (props) => {
               </Form.Label>
               <br />
               <Card>
-                <Card.Body style={{maxHeight:"200px",overflowY:"auto"}}>
+                <Card.Body style={{ maxHeight: "200px", overflowY: "auto" }}>
                   {props.fault.activity.map((activity, pos) => {
                     return (
                       <React.Fragment key={pos}>

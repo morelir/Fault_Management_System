@@ -76,6 +76,8 @@ router.post("/NewRequest", async (req, res) => {
   // }
   try {
     let request = new RequestModel(req.body);
+    let deleted=await RequestModel.deleteOne({number:request.number});
+    console.log(deleted)
     await request.save(); //שומר את המידע ב db
     res.json({});
   } catch (err) {

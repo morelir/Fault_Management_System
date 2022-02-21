@@ -106,6 +106,7 @@ const NewRequestModal = (props) => {
         teamMemberID: null,
         products: products,
         note: request.note,
+        urgencyLevel:request.urgencyLevel,
         activity: requestActivity,
       });
       await Axios.patch(`/faultManagement/updateFault`, {

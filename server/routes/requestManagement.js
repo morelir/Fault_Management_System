@@ -5,6 +5,7 @@ const { UserModel } = require("../models/userModel");
 const { ClientModel } = require("../models/clientModel");
 const { TeamModel } = require("../models/teamModel");
 const { RequestModel } = require("../models/requestModel");
+const { FaultModel } = require("../models/faultModel");
 const { Purchase_Request_Model } = require("../models/purchase_request_Model");
 
 router.get("/", async (req, res) => {
@@ -34,6 +35,17 @@ router.post("/EditRequestModal", async (req, res) => {
   }
 });
 
+const updateRequest = (request, updateRequest) => {
+  request.number = updateRequest.number;
+  request.status = updateRequest.status;
+  request.team = updateRequest.team;
+  request.note = updateRequest.note;
+  request.teamMemberID = updateRequest.teamMemberID;
+  request.urgencyLevel = updateRequest.urgencyLevel;
+  request.activity = updateRequest.activity;
+  return request;
+};
+
 router.post("/NewPurchaseRequest", async (req, res) => {
   // let validBody = validNewFault(req.body);
   // if (validBody.error) {
@@ -54,7 +66,14 @@ router.put("/closeRequest", async (req, res) => {
   try {
     request = await RequestModel.findOne({ _id: req.body._id });
     request.status = "Close";
+    request.activity = [...request.activity, req.body.activity.requestActivity];
+    let faultNumber = request.number;
     await request.save();
+    fault = await FaultModel.findOne({ number: faultNumber });
+    fault.status = "In treatment";
+    fault.request = false;
+    fault.activity = [...fault.activity, req.body.activity.faultActivity];
+    await fault.save();
     let requests = await RequestModel.find({}).lean();
     data = await mergeRequestsAndUsers(requests);
     res.json(data);
@@ -77,15 +96,6 @@ router.put("/closePurchaseRequest", async (req, res) => {
     console.log(err);
   }
 });
-
-const updateRequest = (request, updateRequest) => {
-  request.number = updateRequest.number;
-  request.status = updateRequest.status;
-  request.team = updateRequest.team;
-  request.note = updateRequest.note;
-  request.teamMemberID = updateRequest.teamMemberID;
-  return request;
-};
 
 router.patch("/updateRequest", async (req, res) => {
   try {

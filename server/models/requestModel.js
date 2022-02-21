@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 
-let Activity= {
+let Activity = {
   date: { type: Date, default: Date.now },
   user: String,
   id: String,
@@ -16,8 +16,8 @@ const requestSchema = new mongoose.Schema({
   urgencyLevel: String,
   team: String,
   teamMemberID: Number,
-  note:String,
-  existPurchaseRequest:{
+  note: String,
+  existPurchaseRequest: {
     type: Boolean,
     default: false,
   },

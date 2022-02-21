@@ -7,7 +7,7 @@ import AuthContext from "../store/auth-context";
 import DisplayRequestModal from "./RequestManagement/DisplayRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
 import NewPurchaseRequestModal from "./RequestManagement/NewPurchaseRequestModal";
-import { displayDate,getTimeDuration } from "../utils/functions"; 
+import { displayDate,getTimeDuration,requestActivity} from "../utils/functions"; 
 
 const RequestManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -23,7 +23,6 @@ const RequestManagement = (props) => {
       let requests = response.data;
       response = await Axios.get("arrays/purchaseRequests");
       requests = [...requests, ...response.data];
-      console.log(requests);
       setRequests(requests);
       response = await Axios.get(`arrays/users`);
       setUsers(response.data);
@@ -71,6 +70,7 @@ const RequestManagement = (props) => {
                   <th>No.</th>
                   <th>Date created</th>
                   <th>Status</th>
+                  <th>Urgency level</th>
                   <th>Time Duration</th>
                   <th>Handler Team member</th>
                   <th>Actions</th>
@@ -97,7 +97,11 @@ const RequestManagement = (props) => {
                             <td>
                               <strong>{request.status} </strong>
                             </td>
-                            
+                            <td
+                              className={`urgencyLevel-${request.urgencyLevel}`}
+                            >
+                              <strong>{request.urgencyLevel}</strong>
+                            </td>
                             <td>{getTimeDuration(request.date_created)}</td>
                             {request.teamMemberID === null ? (
                               <td></td>
@@ -123,11 +127,14 @@ const RequestManagement = (props) => {
                                   />
                                   <ModalDialog
                                     type="request"
-                                    native="/requestManagement/closeRequest"
                                     _id={request._id}
+                                    authCtx={authCtx}
+                                    Activity={requestActivity}
+                                    native="/requestManagement/closeRequest"
                                     update={updateRequests}
                                     className="close"
                                     btn_name="Close"
+                                    btn_disabled={request.status === "Waiting for component purchase"}
                                     icon="lock"
                                     icon_font="20px"
                                     href="#closeModal"

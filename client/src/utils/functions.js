@@ -51,8 +51,8 @@ export const teamHandler = (e, set, setTeamMember) => {
   });
 };
 
-export const urgencyHandler = (e, setFault) => {
-  setFault((prevState) => {
+export const urgencyHandler = (e, set) => {
+  set((prevState) => {
     return { ...prevState, urgencyLevel: e.target.value };
   });
 };
@@ -114,7 +114,7 @@ export const getTimeDuration = (dateCreatedFormat) => {
     displayTimeDuration += ` ${hours} hours,`;
   }
   let min = Math.floor(difference / (1000 * 60));
-  if (min > 0 && count < paramsNum) {
+  if ((min > 0 && count < paramsNum) || count == 0) {
     difference =
       (difference / (1000 * 60) - Math.floor(difference / (1000 * 60))) *
       (1000 * 60);
@@ -132,7 +132,14 @@ let Activity = {
   data: "",
 };
 
-export const modifiedActivity = (authCtx,props,fault,client,teamMember,Activity) => {
+export const modifiedActivity = (
+  authCtx,
+  props,
+  fault,
+  client,
+  teamMember,
+  Activity
+) => {
   Activity.date = new Date();
   Activity.user = `${capitalizeFirstLetter(
     authCtx.user.name
@@ -151,16 +158,20 @@ export const modifiedActivity = (authCtx,props,fault,client,teamMember,Activity)
   if (fault.team !== props.fault.team)
     Activity.data += `-Handler Team: ${fault.team}\n\t`;
   if (
-    props.fault.teamMemberID === null &&
-    teamMember.id !== props.fault.teamMemberID
+    teamMember.id !==
+    (props.fault.teamMemberID == null
+      ? ""
+      : props.fault.teamMemberID.toString())
   ) {
-    Activity.data += `+Handler Team ID: ${teamMember.id.toString()}\n\t`;
-    Activity.data += `+Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
-  }else if (teamMember.id === "" && String(teamMember.id) !== String(props.fault.teamMemberID)){
-    Activity.data += `-Handler Team Member is been removed.\n\t`;
-  } else if (teamMember.id !== props.fault.teamMemberID) {
-    Activity.data += `-Handler Team ID: ${teamMember.id.toString()}\n\t`;
-    Activity.data += `-Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
+    if (props.fault.teamMemberID === null) {
+      Activity.data += `+Handler Team ID: ${teamMember.id}\n\t`;
+      Activity.data += `+Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
+    } else if (teamMember.id === "") {
+      Activity.data += `-Handler Team Member is been removed.\n\t`;
+    } else {
+      Activity.data += `-Handler Team ID: ${teamMember.id}\n\t`;
+      Activity.data += `-Handler Team Member: ${teamMember.name} ${teamMember.surname}\n\t`;
+    }
   }
   if (fault.urgencyLevel !== props.fault.urgencyLevel)
     Activity.data += `-Urgency level: ${fault.urgencyLevel}\n\t`;
@@ -168,8 +179,7 @@ export const modifiedActivity = (authCtx,props,fault,client,teamMember,Activity)
     Activity.data += `-Description: ${fault.description}\n\t`;
 };
 
-
-export const activity=(authCtx,type,action)=>{
+export const faultActivity = (authCtx, type, action) => {
   Activity.date = new Date();
   Activity.user = `${capitalizeFirstLetter(
     authCtx.user.name
@@ -177,6 +187,34 @@ export const activity=(authCtx,type,action)=>{
   Activity.id = authCtx.user.id.toString();
   Activity.action = capitalizeFirstLetter(action);
   Activity.data += `\t-Status: ${capitalizeFirstLetter(action)}.\n\t`;
-  Activity.data += `-The ${capitalizeFirstLetter(type)} has been ${action}.\n\t`;
-  return Activity
-}
+  Activity.data += `-The ${capitalizeFirstLetter(
+    type
+  )} has been ${action}.\n\t`;
+  return Activity;
+};
+
+export const requestActivity = (authCtx, type, action) => {
+  let requestActivity={}
+  requestActivity.date = new Date();
+  requestActivity.user = `${capitalizeFirstLetter(
+    authCtx.user.name
+  )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+  requestActivity.id = authCtx.user.id.toString();
+  requestActivity.action = capitalizeFirstLetter(action);
+  requestActivity.data = `\t-Status: ${capitalizeFirstLetter(action)}.\n\t`;
+  requestActivity.data += `-The ${capitalizeFirstLetter(
+    type
+  )} has been ${action}.\n\t`;
+  let faultActivity={}
+  faultActivity.date = new Date();
+  faultActivity.user = `${capitalizeFirstLetter(
+    authCtx.user.name
+  )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+  faultActivity.id = authCtx.user.id.toString();
+  faultActivity.action = capitalizeFirstLetter(action);
+  faultActivity.data = `\t-Status: In treatment.\n\t`;
+  faultActivity.data += `-The ${capitalizeFirstLetter(
+    type
+  )} has been processed.\n\t`;
+  return {requestActivity,faultActivity};
+};
