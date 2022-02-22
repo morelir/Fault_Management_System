@@ -7,7 +7,7 @@ import AuthContext from "../store/auth-context";
 import DisplayRequestModal from "./RequestManagement/DisplayRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
 import NewPurchaseRequestModal from "./RequestManagement/NewPurchaseRequestModal";
-import { displayDate,getTimeDuration,requestActivity} from "../utils/functions"; 
+import { displayDate,getTimeDuration,requestActivity,closePurchaseRequestActivity} from "../utils/functions"; 
 
 const RequestManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -119,10 +119,11 @@ const RequestManagement = (props) => {
                               {authCtx.user.team === "Stock" ? (
                                 <>
                                   <NewPurchaseRequestModal
-                                    products={request.products}
-                                    number={request.number}
+                                    // products={request.products}
+                                    // number={request.number}
+                                    // request={request.existPurchaseRequest}
+                                    request={request}
                                     updateRequests={updateRequests}
-                                    request={request.existPurchaseRequest}
                                     team="Purchase"
                                   />
                                   <ModalDialog
@@ -159,8 +160,10 @@ const RequestManagement = (props) => {
                                   />*/}
                                   <ModalDialog
                                     type="request"
-                                    native="/requestManagement/closePurchaseRequest"
                                     _id={request._id}
+                                    authCtx={authCtx}
+                                    Activity={closePurchaseRequestActivity}
+                                    native="/requestManagement/closePurchaseRequest"
                                     update={updateRequests}
                                     className="close"
                                     btn_name="Close"

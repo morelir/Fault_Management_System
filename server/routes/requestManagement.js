@@ -54,6 +54,7 @@ router.post("/NewPurchaseRequest", async (req, res) => {
   // }
   try {
     let purchaseRequest = new Purchase_Request_Model(req.body);
+    await Purchase_Request_Model.deleteOne({number:request.number});
     await purchaseRequest.save(); //שומר את המידע ב db
     res.json({});
   } catch (err) {
@@ -64,12 +65,12 @@ router.post("/NewPurchaseRequest", async (req, res) => {
 
 router.put("/closeRequest", async (req, res) => {
   try {
-    request = await RequestModel.findOne({ _id: req.body._id });
+    let request = await RequestModel.findOne({ _id: req.body._id });
     request.status = "Close";
     request.activity = [...request.activity, req.body.activity.requestActivity];
     let faultNumber = request.number;
     await request.save();
-    fault = await FaultModel.findOne({ number: faultNumber });
+    let fault = await FaultModel.findOne({ number: faultNumber });
     fault.status = "In treatment";
     fault.request = false;
     fault.activity = [...fault.activity, req.body.activity.faultActivity];
@@ -84,11 +85,18 @@ router.put("/closeRequest", async (req, res) => {
 
 router.put("/closePurchaseRequest", async (req, res) => {
   try {
-    purchaseRequest = await Purchase_Request_Model.findOne({
+    let purchaseRequest = await Purchase_Request_Model.findOne({
       _id: req.body._id,
     });
     purchaseRequest.status = "Close";
+    purchaseRequest.activity=[...purchaseRequest.activity, req.body.activity.purchaseRequestActivity];
+    let purchaseRequestNumber = purchaseRequest.number;
     await purchaseRequest.save();
+    let request = await RequestModel.findOne({ number:purchaseRequestNumber });
+    request.status = "In treatment";
+    request.existPurchaseRequest = false;
+    request.activity = [...request.activity, req.body.activity.requestActivity];
+    await request.save();
     let purchaseRequests = await Purchase_Request_Model.find({}).lean();
     data = await mergeRequestsAndUsers(purchaseRequests);
     res.json(data);
@@ -100,7 +108,12 @@ router.put("/closePurchaseRequest", async (req, res) => {
 router.patch("/updateRequest", async (req, res) => {
   try {
     let request = await RequestModel.findOne({ number: req.body.number });
-    request[req.body.updated] = req.body.value;
+    req.body.updates.map((update,pos)=>{
+      if(update==="activity")
+        request[update].push(req.body.values[pos]);
+      else
+      request[update] = req.body.values[pos];
+    })
     await request.save();
     res.json({});
   } catch (err) {

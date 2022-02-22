@@ -76,8 +76,7 @@ router.post("/NewRequest", async (req, res) => {
   // }
   try {
     let request = new RequestModel(req.body);
-    let deleted=await RequestModel.deleteOne({number:request.number});
-    console.log(deleted)
+    await RequestModel.deleteOne({number:request.number});
     await request.save(); //שומר את המידע ב db
     res.json({});
   } catch (err) {
@@ -100,7 +99,6 @@ router.patch("/updateFault", async (req, res) => {
       else
         fault[update] = req.body.values[pos];
     })
-    fault[req.body.updated] = req.body.value;
     await fault.save();
     res.json({});
   } catch (err) {

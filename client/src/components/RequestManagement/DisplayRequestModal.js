@@ -24,11 +24,13 @@ const DisplayRequestModal = (props) => {
     products: props.request.products,
     status: props.request.status,
     urgencyLevel: props.request.urgencyLevel,
-    activity: props.request.activity,
     formIsValid: false,
   });
   const [teamMember, setTeamMember] = useState({
-    id: props.request.teamMemberID == null ? "" : props.request.teamMemberID.toString(),
+    id:
+      props.request.teamMemberID == null
+        ? ""
+        : props.request.teamMemberID.toString(),
     name: props.request.teamMemberName,
     surname: props.request.teamMemberSurname,
     idIsValid: props.request.teamMemberID === null ? false : true,
@@ -54,6 +56,7 @@ const DisplayRequestModal = (props) => {
         note: props.request.note,
         products: props.request.products,
         status: props.request.status,
+        urgencyLevel: props.request.urgencyLevel,
       };
     });
     setTeamMember((prevState) => {
@@ -139,10 +142,11 @@ const DisplayRequestModal = (props) => {
             (teamMember.idIsValid ||
               teamMember.id === null ||
               teamMember.id.length === 0) &&
-            (teamMember.id !==
-              (props.request.teamMemberID == null
-                ? ""
-                : props.request.teamMemberID.toString()) ||
+            (request.note !== props.request.note ||
+              teamMember.id !==
+                (props.request.teamMemberID == null
+                  ? ""
+                  : props.request.teamMemberID.toString()) ||
               request.urgencyLevel !== props.request.urgencyLevel),
         };
       });
@@ -152,7 +156,7 @@ const DisplayRequestModal = (props) => {
       console.log("Clean-Up Timeout");
       clearTimeout(identifier);
     };
-  }, [request.urgencyLevel, teamMember.id]);
+  }, [request.note,request.urgencyLevel, teamMember.id]);
 
   return (
     <>

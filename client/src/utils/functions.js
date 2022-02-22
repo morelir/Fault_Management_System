@@ -194,7 +194,7 @@ export const faultActivity = (authCtx, type, action) => {
 };
 
 export const requestActivity = (authCtx, type, action) => {
-  let requestActivity={}
+  let requestActivity = {};
   requestActivity.date = new Date();
   requestActivity.user = `${capitalizeFirstLetter(
     authCtx.user.name
@@ -205,7 +205,7 @@ export const requestActivity = (authCtx, type, action) => {
   requestActivity.data += `-The ${capitalizeFirstLetter(
     type
   )} has been ${action}.\n\t`;
-  let faultActivity={}
+  let faultActivity = {};
   faultActivity.date = new Date();
   faultActivity.user = `${capitalizeFirstLetter(
     authCtx.user.name
@@ -216,5 +216,29 @@ export const requestActivity = (authCtx, type, action) => {
   faultActivity.data += `-The ${capitalizeFirstLetter(
     type
   )} has been processed.\n\t`;
-  return {requestActivity,faultActivity};
+  return { requestActivity, faultActivity };
+};
+
+export const closePurchaseRequestActivity = (authCtx, type, action) => {
+  let purchaseRequestActivity = {};
+  purchaseRequestActivity.date = new Date();
+  purchaseRequestActivity.user = `${capitalizeFirstLetter(
+    authCtx.user.name
+  )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+  purchaseRequestActivity.id = authCtx.user.id.toString();
+  purchaseRequestActivity.action = "closed";
+  purchaseRequestActivity.data = `\t-Status: ${capitalizeFirstLetter(
+    action
+  )}.\n\t`;
+  purchaseRequestActivity.data += `-The Purchase Request has been closed.\n\t`;
+  let requestActivity = {};
+  requestActivity.date = new Date();
+  requestActivity.user = `${capitalizeFirstLetter(
+    authCtx.user.name
+  )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+  requestActivity.id = authCtx.user.id.toString();
+  requestActivity.action = "closed";
+  requestActivity.data = `\t-Status: In treatment.\n\t`;
+  requestActivity.data += `-The Purchase Request has been processed.\n\t`;
+  return { purchaseRequestActivity, requestActivity };
 };

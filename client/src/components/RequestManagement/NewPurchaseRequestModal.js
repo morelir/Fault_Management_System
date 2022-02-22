@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -7,16 +7,24 @@ import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
 import MessageModal from "../../shared/components/Modals/messageModal";
 import styles from "./RequestModal.module.css";
+import AuthContext from "../../store/auth-context";
 import Axios from "axios";
+import {
+  teamMemberIdHandler,
+  displayDate,
+  capitalizeFirstLetter,
+  urgencyHandler,
+} from "../../utils/functions";
 
 const NewPurchaseRequestModal = (props) => {
   const [request, setRequest] = useState({
-    number: props.number,
+    number: props.request.number,
     team: props.team,
     note: "",
     status: "New",
+    urgencyLevel:props.request.urgencyLevel,
   });
-
+  const authCtx = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [serial, setSerial] = useState("");
   const [model, setModel] = useState("");
@@ -40,10 +48,11 @@ const NewPurchaseRequestModal = (props) => {
   const resetStates = () => {
     setRequest((prevState) => {
       return {
-        number: props.number,
+        number: props.request.number,
         team: props.team,
         note: "",
         status: "New",
+        urgencyLevel:props.request.urgencyLevel,
       };
     });
     setProducts([]);
@@ -52,10 +61,46 @@ const NewPurchaseRequestModal = (props) => {
     setSerialIsValid(false);
   };
 
+  const updateComponentRequestActivity = () => {
+    let Activity = {};
+    Activity.date = new Date();
+    Activity.user = `${capitalizeFirstLetter(
+      authCtx.user.name
+    )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+    Activity.id = authCtx.user.id.toString();
+    Activity.action = "Purchase request has been created";
+    Activity.data = `\t-Status: Waiting for purchase component\\s\n\t`;
+    Activity.data += `-Purchase request handler team: ${request.team}\n\t`;
+    Activity.data += `-Purchase request component\\s:\n\t\t`;
+    products.map((product) => {
+      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
+    });
+    return Activity;
+  };
+
+  const updatePurchaseRequestActivity = () => {
+    let Activity = {};
+    Activity.date = new Date();
+    Activity.user = `${capitalizeFirstLetter(
+      authCtx.user.name
+    )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+    Activity.id = authCtx.user.id.toString();
+    Activity.action = "Created";
+    Activity.data = `\t-Handler Team: ${request.team}\n\t-Status: In treatment\n\t-Urgency level: ${request.urgencyLevel}\n\t`;
+    if (request.note !== "") Activity.data += `-Note: ${request.note}\n\t`;
+    Activity.data += `-Purchase request component\\s:\n\t\t`;
+    products.map((product) => {
+      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
+    });
+    return Activity;
+  };
+
   const submitNewRequest = async (e) => {
     try {
       e.preventDefault();
       setSavingForm(true);
+      let componentRequestActivity = updateComponentRequestActivity();
+      let purchaseRequestActivity = updatePurchaseRequestActivity();
       await Axios.post(`requestManagement/NewPurchaseRequest`, {
         number: request.number,
         status: "In treatment",
@@ -63,17 +108,15 @@ const NewPurchaseRequestModal = (props) => {
         teamMemberID: null,
         products: products,
         note: request.note,
+        urgencyLevel:request.urgencyLevel,
+        activity: purchaseRequestActivity,
       });
       await Axios.patch(`/requestManagement/updateRequest`, {
         number: request.number,
-        updated: "existPurchaseRequest",
-        value: true,
+        updates: ["existPurchaseRequest", "status", "activity"],
+        values: [true, "Waiting for component purchase", componentRequestActivity],
       });
-      await Axios.patch(`/requestManagement/updateRequest`, {
-        number: request.number,
-        updated: "status",
-        value: "Waiting for component purchase",
-      });
+      
       let response = await Axios.get("/requestManagement");
       props.updateRequests(response.data);
       handleClose();
@@ -88,7 +131,7 @@ const NewPurchaseRequestModal = (props) => {
   const serial_handler = (e) => {
     let value = e.target.value;
     setSerial(value);
-    let product = props.products.find(
+    let product = props.request.products.find(
       (product) => product.serialNumber === value
     );
     if (product) {
@@ -99,7 +142,7 @@ const NewPurchaseRequestModal = (props) => {
 
   const add_serial = () => {
     let copyArr = products.slice();
-    let [product] = props.products.filter(
+    let [product] = props.request.products.filter(
       (product) => product.serialNumber === serial
     );
     if (product) {
@@ -121,15 +164,19 @@ const NewPurchaseRequestModal = (props) => {
 
   return (
     <>
-      <button className="button" onClick={handleOpen} disabled={props.request}>
+      <button
+        className="button"
+        onClick={handleOpen}
+        disabled={props.request.existPurchaseRequest}
+      >
         <a
           href="#requestModal"
-          className={`purchase_request ${props.request && "invalid"}`}
+          className={`purchase_request ${props.request.existPurchaseRequest && "invalid"}`}
           data-toggle="modal"
         >
-          {props.request ? (
+          {props.request.existPurchaseRequest ? (
             <i
-              className="material-icons icon-blue "           
+              className="material-icons icon-blue "
               data-toggle="tooltip"
               title="Purchase Request Sent"
             >
@@ -257,8 +304,10 @@ const NewPurchaseRequestModal = (props) => {
                   onChange={serial_handler}
                   style={{ width: "196px" }}
                 >
-                  <option value="none" selected hidden>Select Serial No.</option>
-                  {props.products.map((product) => {
+                  <option value="none" selected hidden>
+                    Select Serial No.
+                  </option>
+                  {props.request.products.map((product) => {
                     return (
                       <option key={product._id} value={product.serialNumber}>
                         {product.serialNumber}
