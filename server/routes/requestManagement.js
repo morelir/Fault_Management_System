@@ -54,7 +54,7 @@ router.post("/NewPurchaseRequest", async (req, res) => {
   // }
   try {
     let purchaseRequest = new Purchase_Request_Model(req.body);
-    await Purchase_Request_Model.deleteOne({number:request.number});
+    await Purchase_Request_Model.deleteOne({number:purchaseRequest.number});
     await purchaseRequest.save(); //שומר את המידע ב db
     res.json({});
   } catch (err) {

@@ -13,7 +13,6 @@ const { ProductModel } = require("../models/productModel");
 router.get("/faults", async (req, res) => {
   faults = await FaultModel.find().lean();
   let data = await mergeFaultsAndUsers(faults);
-  console.log(data)
   res.json(data);
 });
 
