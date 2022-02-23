@@ -13,6 +13,7 @@ const { ProductModel } = require("../models/productModel");
 router.get("/faults", async (req, res) => {
   faults = await FaultModel.find().lean();
   let data = await mergeFaultsAndUsers(faults);
+  console.log(data)
   res.json(data);
 });
 
@@ -54,17 +55,18 @@ const mergeFaultsAndUsers = async (faults) => {
       faults.map(async (fault) => {
         let client = await ClientModel.findOne(
           { id: fault.clientID },
-          "-_id name surname"
+          "-_id name surname phoneNumber"
         ).lean();
         if (fault.teamMemberID !== null) {
           let teamMember = await UserModel.findOne(
             { id: fault.teamMemberID },
-            "-_id name surname"
+            "-_id name surname phoneNumber"
           ).lean();
           return {
             ...fault,
             clientName: client.name,
             clientSurname: client.surname,
+            clientPhoneNumber:client.phoneNumber,
             teamMemberName: teamMember.name,
             teamMemberSurname: teamMember.surname,
           };
@@ -73,6 +75,7 @@ const mergeFaultsAndUsers = async (faults) => {
           ...fault,
           clientName: client.name,
           clientSurname: client.surname,
+          clientPhoneNumber:client.phoneNumber,
         };
       })
     );

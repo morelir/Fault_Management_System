@@ -37,7 +37,10 @@ const EditFaultModel = (props) => {
     idIsValid: true,
   });
   const [teamMember, setTeamMember] = useState({
-    id: props.fault.teamMemberID === null ? "" : props.fault.teamMemberID.toString(),
+    id:
+      props.fault.teamMemberID === null
+        ? ""
+        : props.fault.teamMemberID.toString(),
     name: props.fault.teamMemberName,
     surname: props.fault.teamMemberSurname,
     idIsValid: props.fault.teamMemberID === null ? false : true,
@@ -255,6 +258,19 @@ const EditFaultModel = (props) => {
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
+                  <strong>Client ID</strong>
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  value={client.id}
+                  onChange={(e) => {
+                    clientIdHandler(e, setClient, props);
+                  }}
+                />
+              </Form.Group>
+
+              <Form.Group as={Col}>
+                <Form.Label>
                   <strong>Client name</strong>
                 </Form.Label>
                 {client.idIsValid ? (
@@ -267,16 +283,15 @@ const EditFaultModel = (props) => {
                   <Form.Control value="" type="text" readOnly />
                 )}
               </Form.Group>
+
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Client ID</strong>
+                  <strong>Phone</strong>
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  value={client.id}
-                  onChange={(e) => {
-                    clientIdHandler(e, setClient, props);
-                  }}
+                  value={props.fault.clientPhoneNumber}
+                  readOnly
                 />
               </Form.Group>
             </Row>

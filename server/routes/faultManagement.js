@@ -134,6 +134,7 @@ const mergeFaultsAndUsers = async (faults) => {
             ...fault,
             clientName: client.name,
             clientSurname: client.surname,
+            clientPhoneNumber:client.phoneNumber,
             teamMemberName: teamMember.name,
             teamMemberSurname: teamMember.surname,
           };
@@ -142,6 +143,7 @@ const mergeFaultsAndUsers = async (faults) => {
           ...fault,
           clientName: client.name,
           clientSurname: client.surname,
+          clientPhoneNumber:client.phoneNumber,
         };
       })
     );
