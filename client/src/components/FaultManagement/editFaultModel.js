@@ -34,6 +34,7 @@ const EditFaultModel = (props) => {
     id: props.fault.clientID,
     name: props.fault.clientName,
     surname: props.fault.clientSurname,
+    phone:props.fault.clientPhoneNumber,
     idIsValid: true,
   });
   const [teamMember, setTeamMember] = useState({
@@ -252,11 +253,15 @@ const EditFaultModel = (props) => {
                 <Form.Label>
                   <strong>Phone</strong>
                 </Form.Label>
+                {client.idIsValid ? (
                 <Form.Control
                   type="text"
-                  value={props.fault.clientPhoneNumber}
+                  value={client.phone}
                   readOnly
                 />
+                ) : (
+                  <Form.Control value="" type="text" readOnly />
+                )}
               </Form.Group>
             </Row>
 

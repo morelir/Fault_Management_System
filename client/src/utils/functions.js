@@ -12,6 +12,7 @@ export const clientIdHandler = (e, setClient, props) => {
           ...prevState,
           name: user.name,
           surname: user.surname,
+          phone:user.phoneNumber,
           idIsValid: true,
         };
       });
