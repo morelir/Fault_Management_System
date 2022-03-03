@@ -7,7 +7,13 @@ import AuthContext from "../store/auth-context";
 import DisplayRequestModal from "./RequestManagement/DisplayRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
 import NewPurchaseRequestModal from "./RequestManagement/NewPurchaseRequestModal";
-import { displayDate,getTimeDuration,requestActivity,closePurchaseRequestActivity} from "../utils/functions"; 
+import Order from "./RequestManagement/Order";
+import {
+  displayDate,
+  getTimeDuration,
+  requestActivity,
+  closePurchaseRequestActivity,
+} from "../utils/functions";
 
 const RequestManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -39,8 +45,6 @@ const RequestManagement = (props) => {
   const updateRequests = (requests) => {
     setRequests(requests);
   };
-
-
 
   return (
     <main>
@@ -108,7 +112,7 @@ const RequestManagement = (props) => {
                             ) : (
                               <td>{`${request.teamMemberName}, ${request.teamMemberSurname}`}</td>
                             )}
-                            
+
                             <td>
                               <DisplayRequestModal
                                 request={request}
@@ -119,9 +123,6 @@ const RequestManagement = (props) => {
                               {authCtx.user.team === "Stock" ? (
                                 <>
                                   <NewPurchaseRequestModal
-                                    // products={request.products}
-                                    // number={request.number}
-                                    // request={request.existPurchaseRequest}
                                     request={request}
                                     updateRequests={updateRequests}
                                     team="Purchase"
@@ -135,11 +136,14 @@ const RequestManagement = (props) => {
                                     update={updateRequests}
                                     className="close"
                                     btn_name="Close"
-                                    btn_disabled={request.status === "Waiting for component purchase"}
+                                    btn_disabled={
+                                      request.status ===
+                                      "Waiting for component purchase"
+                                    }
                                     icon="lock"
                                     icon_font="20px"
                                     href="#closeModal"
-                                    header="Close Request"
+                                    header="Close request"
                                   >
                                     <Form.Group>
                                       <Form.Label>
@@ -153,11 +157,11 @@ const RequestManagement = (props) => {
                                 </>
                               ) : (
                                 <>
-                                  {/* <NewRequestModal
-                                    products={products}
-                                    number={fault.number}
-                                    team="Stock"
-                                  />*/}
+                                  <Order
+                                    request={request}
+                                    updateRequests={updateRequests}
+                                    team="Purchase"
+                                  />
                                   <ModalDialog
                                     type="request"
                                     _id={request._id}
@@ -170,7 +174,7 @@ const RequestManagement = (props) => {
                                     icon="lock"
                                     icon_font="20px"
                                     href="#closeModal"
-                                    header="Close Purchase Request"
+                                    header="Close purchase request"
                                   >
                                     <Form.Group>
                                       <Form.Label>

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -8,6 +8,7 @@ import Spinner from "react-bootstrap/Spinner";
 import MessageModal from "../../shared/components/Modals/messageModal";
 import styles from "./RequestModal.module.css";
 import AuthContext from "../../store/auth-context";
+import { send } from "emailjs-com";
 import Axios from "axios";
 import {
   teamMemberIdHandler,
@@ -16,22 +17,34 @@ import {
   urgencyHandler,
 } from "../../utils/functions";
 
-const NewPurchaseRequestModal = (props) => {
+const Order = (props) => {
   const [request, setRequest] = useState({
     number: props.request.number,
     team: props.team,
     note: "",
     status: "New",
-    urgencyLevel:props.request.urgencyLevel,
+    urgencyLevel: props.request.urgencyLevel,
+  });
+
+  const [toSend, setToSend] = useState({
+    from_name: "Purchase team",
+    to_email: "webappsce@gmail.com",
+    message: "",
+    to_name: "",
+    reply_to: "",
   });
   const authCtx = useContext(AuthContext);
-  const [products, setProducts] = useState([]);
+  const [choosenProducts, setChoosenProducts] = useState(
+    props.request.products
+  );
+  const [notChoosenProducts, setNotChoosenProducts] = useState([]);
   const [serial, setSerial] = useState("");
   const [model, setModel] = useState("");
   const [serialIsValid, setSerialIsValid] = useState(false);
   const [savingForm, setSavingForm] = useState(false);
   const [showCreatedMessage, setShowCreatedMessage] = useState(false);
   const [show, setShow] = useState(false);
+  const form = useRef();
 
   const handleClose = () => {
     setShow(false);
@@ -52,10 +65,20 @@ const NewPurchaseRequestModal = (props) => {
         team: props.team,
         note: "",
         status: "New",
-        urgencyLevel:props.request.urgencyLevel,
+        urgencyLevel: props.request.urgencyLevel,
       };
     });
-    setProducts([]);
+    setToSend((prevState) => {
+      return {
+        from_name: "Purchase team",
+        to_email: "webappsce@gmail.com",
+        message: "",
+        to_name: "",
+        reply_to: "",
+      };
+    });
+    setChoosenProducts(props.request.products);
+    setNotChoosenProducts([]);
     setModel("");
     setSerial("");
     setSerialIsValid(false);
@@ -72,7 +95,7 @@ const NewPurchaseRequestModal = (props) => {
     Activity.data = `\t-Status: Waiting for purchase component\\s\n\t`;
     Activity.data += `-Purchase request handler team: ${request.team}\n\t`;
     Activity.data += `-Purchase request component\\s:\n\t\t`;
-    products.map((product) => {
+    choosenProducts.map((product) => {
       Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
     });
     return Activity;
@@ -89,36 +112,55 @@ const NewPurchaseRequestModal = (props) => {
     Activity.data = `\t-Handler Team: ${request.team}\n\t-Status: In treatment\n\t-Urgency level: ${request.urgencyLevel}\n\t`;
     if (request.note !== "") Activity.data += `-Note: ${request.note}\n\t`;
     Activity.data += `-Purchase request component\\s:\n\t\t`;
-    products.map((product) => {
+    choosenProducts.map((product) => {
       Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
     });
     return Activity;
   };
 
-  const submitNewRequest = async (e) => {
+  const sendEmail = async (e) => {
     try {
       e.preventDefault();
       setSavingForm(true);
-      let componentRequestActivity = updateComponentRequestActivity();
-      let purchaseRequestActivity = updatePurchaseRequestActivity();
-      await Axios.post(`requestManagement/NewPurchaseRequest`, {
-        number: request.number,
-        status: "In treatment",
-        team: request.team,
-        teamMemberID: null,
-        products: products,
-        note: request.note,
-        urgencyLevel:request.urgencyLevel,
-        activity: purchaseRequestActivity,
+      //   let componentRequestActivity = updateComponentRequestActivity();
+      //   let purchaseRequestActivity = updatePurchaseRequestActivity();
+      //   await Axios.post(`requestManagement/NewPurchaseRequest`, {
+      //     number: request.number,
+      //     status: "In treatment",
+      //     team: request.team,
+      //     teamMemberID: null,
+      //     products: choosenProducts,
+      //     note: request.note,
+      //     urgencyLevel: request.urgencyLevel,
+      //     activity: purchaseRequestActivity,
+      //   });
+      //   await Axios.patch(`/requestManagement/updateRequest`, {
+      //     number: request.number,
+      //     updates: ["existPurchaseRequest", "status", "activity"],
+      //     values: [
+      //       true,
+      //       "Waiting for component purchase",
+      //       componentRequestActivity,
+      //     ],
+      //   });
+      //   let response = await Axios.get("/requestManagement");
+      //   props.updateRequests(response.data);
+      let data = "<h3>Order components:</h3>";
+      data += "<ul>";
+      choosenProducts.map((product) => {
+        data += `<li> Serial No.: ${product.serialNumber}${"\t"} Model: ${
+          product.name
+        } ${product.type} </li>`;
       });
-      await Axios.patch(`/requestManagement/updateRequest`, {
-        number: request.number,
-        updates: ["existPurchaseRequest", "status", "activity"],
-        values: [true, "Waiting for component purchase", componentRequestActivity],
-      });
-      
-      let response = await Axios.get("/requestManagement");
-      props.updateRequests(response.data);
+      data += "</ul>";
+
+      await send(
+        "service_nufcz9l",
+        "template_dbvv02n",
+        { ...toSend, data: data },
+        "HNGMfPAmoequ8VK_l"
+      );
+
       handleClose();
       resetStates();
       setSavingForm(false);
@@ -131,7 +173,7 @@ const NewPurchaseRequestModal = (props) => {
   const serial_handler = (e) => {
     let value = e.target.value;
     setSerial(value);
-    let product = props.request.products.find(
+    let product = notChoosenProducts.find(
       (product) => product.serialNumber === value
     );
     if (product) {
@@ -141,13 +183,21 @@ const NewPurchaseRequestModal = (props) => {
   };
 
   const add_serial = () => {
-    let copyArr = products.slice();
-    let [product] = props.request.products.filter(
+    let copyChoosenProducts = choosenProducts.slice();
+    let index = notChoosenProducts.findIndex(
       (product) => product.serialNumber === serial
     );
+    let product = notChoosenProducts[index];
+    // let [product] = notChoosenProducts.filter(
+    //   (product) => product.serialNumber === serial
+    // );
+
     if (product) {
-      copyArr.push(product);
-      setProducts([...copyArr]);
+      let copyNotChoosenProducts = notChoosenProducts.slice();
+      copyNotChoosenProducts.splice(index, 1);
+      setNotChoosenProducts(copyNotChoosenProducts);
+      copyChoosenProducts.push(product);
+      setChoosenProducts([...copyChoosenProducts]);
       setSerial("");
       setModel("");
       setSerialIsValid(false);
@@ -155,11 +205,16 @@ const NewPurchaseRequestModal = (props) => {
   };
 
   const remove_serial = (index) => {
-    let copyArr = products.slice();
-    copyArr.splice(index, 1);
-    console.log(index);
-    console.log(copyArr);
-    setProducts([...copyArr]);
+    let copyChoosenProducts = choosenProducts.slice();
+    let copyNotChoosenProducts = notChoosenProducts.slice();
+    copyNotChoosenProducts.push(copyChoosenProducts[index]);
+    setNotChoosenProducts(copyNotChoosenProducts);
+    copyChoosenProducts.splice(index, 1);
+    setChoosenProducts([...copyChoosenProducts]);
+  };
+
+  const handleChange = (e) => {
+    setToSend({ ...toSend, [e.target.name]: e.target.value });
   };
 
   return (
@@ -171,14 +226,16 @@ const NewPurchaseRequestModal = (props) => {
       >
         <a
           href="#requestModal"
-          className={`purchase_request ${props.request.existPurchaseRequest && "invalid"}`}
+          className={`purchase_request ${
+            props.request.existPurchaseRequest && "invalid"
+          }`}
           data-toggle="modal"
         >
           {props.request.existPurchaseRequest ? (
             <i
               className="material-icons icon-blue "
               data-toggle="tooltip"
-              title="Purchase request Sent"
+              title="Component\s is been ordered"
             >
               <strong style={{ fontFamily: "none" }}>Sent</strong>
               <span style={{ fontSize: "21px" }}>grading</span>
@@ -188,10 +245,10 @@ const NewPurchaseRequestModal = (props) => {
               className="material-icons icon-blue "
               onClick={handleOpen}
               data-toggle="tooltip"
-              title="Purchase request"
+              title="Order"
             >
               <>
-                <strong style={{ fontFamily: "none" }}>Request</strong>
+                <strong style={{ fontFamily: "none" }}>Order</strong>
                 <span style={{ fontSize: "21px" }}>note_add</span>
               </>
             </i>
@@ -212,92 +269,18 @@ const NewPurchaseRequestModal = (props) => {
         <Modal.Header className={styles["modal-header"]}>
           <Modal.Title>
             <h3>
-              <strong>New Purchase Request</strong>
+              <strong>Order Form</strong>
             </h3>
           </Modal.Title>
         </Modal.Header>
-        <Form onSubmit={submitNewRequest}>
+        <Form ref={form} onSubmit={sendEmail}>
           <Modal.Body className={styles["modal-body"]}>
-            <Row>
-              <Form.Group as={Col} className={styles["form-group-sub-title"]}>
-                <Form.Label
-                  style={{ textDecoration: "underline", textAlign: "center" }}
-                >
-                  <h4>
-                    <strong>Handler details</strong>
-                    {/*--------------Handler Details----------------*/}
-                  </h4>
-                </Form.Label>
-              </Form.Group>
-            </Row>
-
-            <Row className="mb-3">
-              <Form.Group as={Col}>
-                <Form.Label>
-                  <strong>Team</strong>
-                </Form.Label>
-                <Form.Control value={request.team} readOnly />
-              </Form.Group>
-            </Row>
-
-            <Row>
-              <Form.Group as={Col} className={styles["form-group-sub-title"]}>
-                <Form.Label
-                  style={{ textDecoration: "underline", textAlign: "center" }}
-                >
-                  <h4>
-                    <strong>Request details</strong>
-                    {/*--------------Request Details----------------*/}
-                  </h4>
-                </Form.Label>
-              </Form.Group>
-            </Row>
-
-            <Row className="mb-3">
-              {/* <Form.Group as={Col}>
-                <Form.Label>
-                  <strong>Urgency level</strong>
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  value={fault.urgency}
-                  as="select"
-                  onChange={(e) => {
-                    urgencyHandler(e, setFault);
-                  }}
-                >
-                  <>
-                    <option value={"Low"}>Low</option>
-                    <option value={"Regular"}>Regular</option>
-                    <option value={"High"}>Urgent</option>
-                  </>
-                </Form.Control>
-              </Form.Group> */}
-              <Form.Group as={Col}>
-                <Form.Label>
-                  <strong>No.</strong>
-                </Form.Label>
-                <Form.Control type="text" value={request.number} readOnly />
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>
-                  <strong>Status</strong>
-                </Form.Label>
-                <Form.Control type="text" value={request.status} readOnly />
-              </Form.Group>
-            </Row>
-
+            <br />
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
                   <strong>Products Serial No.</strong>
                 </Form.Label>
-                {/* <Form.Control
-                  type="text"
-                  value={serial}
-                  onChange={serial_handler}
-                  style={{ width: "196px" }}
-                ></Form.Control> */}
                 <Form.Control
                   as="select"
                   value={serial}
@@ -307,7 +290,7 @@ const NewPurchaseRequestModal = (props) => {
                   <option value="none" selected hidden>
                     Select Serial No.
                   </option>
-                  {props.request.products.map((product) => {
+                  {notChoosenProducts.map((product) => {
                     return (
                       <option key={product._id} value={product.serialNumber}>
                         {product.serialNumber}
@@ -329,7 +312,7 @@ const NewPurchaseRequestModal = (props) => {
               </Form.Group>
             </Row>
 
-            {products.map((product, index) => {
+            {choosenProducts.map((product, index) => {
               return (
                 <Row className="mb-3" key={index}>
                   <Form.Group as={Col}>
@@ -387,37 +370,56 @@ const NewPurchaseRequestModal = (props) => {
 
                     <span style={{ fontSize: "21px" }}>control_point</span>
                   </i>
-                  {/* <a href="#addSerial" data-toggle="modal">
-                    <i
-                      className="material-icons icon-blue"
-                      data-toggle="tooltip"
-                      title="add serial"
-                    >
-                      <strong style={{ fontFamily: "none", fontSize: "20px" }}>
-                        Add S.N.{" "}
-                      </strong>
-
-                      <span style={{ fontSize: "21px" }}>control_point</span>
-                    </i>
-                  </a> */}
                 </Button>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Name</strong>
+                </Form.Label>
+                <Form.Control
+                  value={toSend.from_name}
+                  onChange={handleChange}
+                  name="from_name"
+                  placeholder="email sender name"
+                  type="text"
+                  required
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
+                  <strong>Email</strong>
+                </Form.Label>
+                <Form.Control
+                  value={toSend.to_email}
+                  onChange={handleChange}
+                  name="to_email"
+                  placeholder="to email"
+                  type="email"
+                  required
+                />
               </Form.Group>
             </Row>
 
             <Form.Group size="sm" controlId="email">
               <Form.Label>
-                <strong>Note </strong>
+                <strong>Message </strong>
               </Form.Label>
               <br />
               <Form.Control
+                name="message"
                 as="textarea"
                 rows={1}
-                value={request.note}
-                onChange={(e) =>
-                  setRequest((prevState) => {
-                    return { ...prevState, note: e.target.value };
-                  })
-                }
+                value={toSend.message}
+                onChange={handleChange}
+                required
+                // onChange={(e) =>
+                //   setRequest((prevState) => {
+                //     return { ...prevState, note: e.target.value };
+                //   })
+                // }
               />
             </Form.Group>
 
@@ -425,6 +427,15 @@ const NewPurchaseRequestModal = (props) => {
             {/* <Form.Control
                 autoFocus
             /> */}
+
+            {/* <input type="hidden" name="contact_number" />
+            <label>Name</label>
+            <input type="text" name="from_name" />
+            <label>Email</label>
+            <input type="email" name="from_email" />
+            <label>Message</label>
+            <textarea name="message" />
+            <input type="submit" value="Send" /> */}
           </Modal.Body>
 
           <Modal.Footer>
@@ -442,9 +453,9 @@ const NewPurchaseRequestModal = (props) => {
               <Button
                 variant="primary"
                 type="submit"
-                disabled={products.length === 0}
+                disabled={choosenProducts.length === 0}
               >
-                Save
+                Send
               </Button>
             ) : (
               <Button variant="primary" disabled>
@@ -455,7 +466,7 @@ const NewPurchaseRequestModal = (props) => {
                   role="status"
                   aria-hidden="true"
                 />
-                <span> Saving...</span>
+                <span> Sending...</span>
               </Button>
             )}
           </Modal.Footer>
@@ -465,15 +476,13 @@ const NewPurchaseRequestModal = (props) => {
       <MessageModal
         show={showCreatedMessage}
         handleClose={handleCloseMessage}
-        header="Purchase Request has created!"
+        header="Message"
         type="request"
       >
         <Form.Group>
           <Form.Label>
             <h4>
-              <strong>Purchase Request No. : </strong>
-              {request.number}
-              {}
+              <strong>The order has been sent </strong>
             </h4>
           </Form.Label>
         </Form.Group>
@@ -482,4 +491,4 @@ const NewPurchaseRequestModal = (props) => {
   );
 };
 
-export default NewPurchaseRequestModal;
+export default Order;

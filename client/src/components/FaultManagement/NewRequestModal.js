@@ -174,7 +174,7 @@ const NewRequestModal = (props) => {
               className="material-icons icon-blue "
               onClick={handleOpen}
               data-toggle="tooltip"
-              title="Purchase Request Sent"
+              title="Component request sent"
             >
               <strong style={{ fontFamily: "none" }}>Sent</strong>
               <span style={{ fontSize: "21px" }}>grading</span>
@@ -184,7 +184,7 @@ const NewRequestModal = (props) => {
               className="material-icons icon-blue "
               onClick={handleOpen}
               data-toggle="tooltip"
-              title="New Purchase Request"
+              title="Component request"
             >
               <>
                 <strong style={{ fontFamily: "none" }}>Request</strong>
