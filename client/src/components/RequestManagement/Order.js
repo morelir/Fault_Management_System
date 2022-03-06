@@ -84,83 +84,51 @@ const Order = (props) => {
     setSerialIsValid(false);
   };
 
-  const updateComponentRequestActivity = () => {
+  const OrderActivity = () => {
     let Activity = {};
     Activity.date = new Date();
     Activity.user = `${capitalizeFirstLetter(
       authCtx.user.name
     )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
     Activity.id = authCtx.user.id.toString();
-    Activity.action = "Purchase request has been created";
-    Activity.data = `\t-Status: Waiting for purchase component\\s\n\t`;
-    Activity.data += `-Purchase request handler team: ${request.team}\n\t`;
-    Activity.data += `-Purchase request component\\s:\n\t\t`;
+    Activity.action = "Component order has been sent";
+    Activity.data = `\t-Status: Waiting for component order\\s\n\t`;
+    Activity.data += `-Order components\\s:\n\t\t`;
     choosenProducts.map((product) => {
       Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
     });
     return Activity;
   };
 
-  const updatePurchaseRequestActivity = () => {
-    let Activity = {};
-    Activity.date = new Date();
-    Activity.user = `${capitalizeFirstLetter(
-      authCtx.user.name
-    )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
-    Activity.id = authCtx.user.id.toString();
-    Activity.action = "Created";
-    Activity.data = `\t-Handler Team: ${request.team}\n\t-Status: In treatment\n\t-Urgency level: ${request.urgencyLevel}\n\t`;
-    if (request.note !== "") Activity.data += `-Note: ${request.note}\n\t`;
-    Activity.data += `-Purchase request component\\s:\n\t\t`;
+  const createOrderComponentsDetails = () => {
+    let orderComponent = "<h3>Order components:</h3>";
+    orderComponent += "<ul>";
     choosenProducts.map((product) => {
-      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
+      orderComponent += `<li> Serial No.: ${product.serialNumber} , Model: ${product.name} ${product.type} </li>`;
     });
-    return Activity;
+    orderComponent += "</ul>";
+    return orderComponent;
   };
 
   const sendEmail = async (e) => {
     try {
       e.preventDefault();
       setSavingForm(true);
-      //   let componentRequestActivity = updateComponentRequestActivity();
-      //   let purchaseRequestActivity = updatePurchaseRequestActivity();
-      //   await Axios.post(`requestManagement/NewPurchaseRequest`, {
-      //     number: request.number,
-      //     status: "In treatment",
-      //     team: request.team,
-      //     teamMemberID: null,
-      //     products: choosenProducts,
-      //     note: request.note,
-      //     urgencyLevel: request.urgencyLevel,
-      //     activity: purchaseRequestActivity,
-      //   });
-      //   await Axios.patch(`/requestManagement/updateRequest`, {
-      //     number: request.number,
-      //     updates: ["existPurchaseRequest", "status", "activity"],
-      //     values: [
-      //       true,
-      //       "Waiting for component purchase",
-      //       componentRequestActivity,
-      //     ],
-      //   });
-      //   let response = await Axios.get("/requestManagement");
-      //   props.updateRequests(response.data);
-      let data = "<h3>Order components:</h3>";
-      data += "<ul>";
-      choosenProducts.map((product) => {
-        data += `<li> Serial No.: ${product.serialNumber}${"\t"} Model: ${
-          product.name
-        } ${product.type} </li>`;
-      });
-      data += "</ul>";
-
+      let orderDetails = createOrderComponentsDetails();
       await send(
         "service_nufcz9l",
         "template_dbvv02n",
-        { ...toSend, data: data },
+        { ...toSend, orderDetails: orderDetails },
         "HNGMfPAmoequ8VK_l"
       );
-
+      let orderActivity = OrderActivity();
+      await Axios.patch(`/requestManagement/updatePurchaseRequest`, {
+        number: request.number,
+        updates: ["existPurchaseRequest", "status", "activity"],
+        values: [true, "Waiting for component order", orderActivity],
+      });
+      let response = await Axios.get("/arrays/purchaseRequests");
+      props.updateRequests(response.data);
       handleClose();
       resetStates();
       setSavingForm(false);

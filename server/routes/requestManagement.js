@@ -121,6 +121,22 @@ router.patch("/updateRequest", async (req, res) => {
   }
 });
 
+router.patch("/updatePurchaseRequest", async (req, res) => {
+  try {
+    let request = await Purchase_Request_Model.findOne({ number: req.body.number });
+    req.body.updates.map((update,pos)=>{
+      if(update==="activity")
+        request[update].push(req.body.values[pos]);
+      else
+      request[update] = req.body.values[pos];
+    })
+    await request.save();
+    res.json({});
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 const mergeRequestsAndUsers = async (requests) => {
   try {
     let data = await Promise.all(
