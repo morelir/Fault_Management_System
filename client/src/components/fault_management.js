@@ -30,10 +30,8 @@ const FaultManagement = (props) => {
   const [products, setProducts] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => {
-    if(!isOpen)
-      setIsOpen(true);
-    else
-      setIsOpen(false);
+    if (!isOpen) setIsOpen(true);
+    else setIsOpen(false);
   };
   const [isLoading, setIsLoading] = useState(true);
 
@@ -95,6 +93,7 @@ const FaultManagement = (props) => {
                             updateFaults={updateFaults}
                           />
                         </div>
+
                         <a className="col-sm-1 btn" style={{ marginLeft: "0" }}>
                           <BsFilterRight
                             onClick={handleOpen}
@@ -103,12 +102,14 @@ const FaultManagement = (props) => {
                         </a>
                       </>
                     ) : (
-                      <a className="col-sm-1">
-                        <BsFilterRight
-                          onClick={handleOpen}
-                          style={{ fontSize: "25px" }}
-                        />
-                      </a>
+                      <div className="col-sm-10">
+                        <a className="btn">
+                          <BsFilterRight
+                            onClick={handleOpen}
+                            style={{ fontSize: "25px" }}
+                          />
+                        </a>
+                      </div>
                     )}
                   </>
                 )}
@@ -137,7 +138,7 @@ const FaultManagement = (props) => {
                       </Form.Control>
                     </th>
                     <th>
-                      <Form.Control type="date" ></Form.Control>
+                      <Form.Control type="date"></Form.Control>
                     </th>
                     <th>
                       <Form.Control></Form.Control>
@@ -155,9 +156,15 @@ const FaultManagement = (props) => {
                       <Form.Control></Form.Control>
                     </th>
                     <th>
-                      <Button style={{background:"#38a5ff",borderColor:"#38a5ff"}} variant="primary" type="submit">
-                        Search{" "} 
-                        <BiSearchAlt/>
+                      <Button
+                        style={{
+                          background: "#38a5ff",
+                          borderColor: "#38a5ff",
+                        }}
+                        variant="primary"
+                        type="submit"
+                      >
+                        Search <BiSearchAlt />
                       </Button>
                     </th>
                   </tr>
