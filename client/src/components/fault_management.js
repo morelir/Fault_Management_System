@@ -3,13 +3,23 @@ import Axios from "axios";
 import "./fault_management.css";
 import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 import NewFaultModel from "./FaultManagement/newFaultModel";
 import EditFaultModel from "./FaultManagement/editFaultModel";
 import AuthContext from "../store/auth-context";
 import Icon from "../shared/components/FormElements/Icon";
 import NewRequestModal from "./FaultManagement/NewRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
-import { displayDate,getTimeDuration,faultActivity } from "../utils/functions"; 
+import { CSSTransition } from "react-transition-group";
+import { Collapse } from "react-collapse";
+import { IconContext } from "react-icons";
+import { BsFilterRight } from "react-icons/bs";
+import { BiSearchAlt } from "react-icons/bi";
+import {
+  displayDate,
+  getTimeDuration,
+  faultActivity,
+} from "../utils/functions";
 
 const FaultManagement = (props) => {
   const authCtx = useContext(AuthContext);
@@ -18,7 +28,13 @@ const FaultManagement = (props) => {
   const [users, setUsers] = useState([]);
   const [clients, setClients] = useState([]);
   const [products, setProducts] = useState([]);
-
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOpen = () => {
+    if(!isOpen)
+      setIsOpen(true);
+    else
+      setIsOpen(false);
+  };
   const [isLoading, setIsLoading] = useState(true);
 
   const evenPos = (pos) => pos % 2 == 0;
@@ -49,8 +65,6 @@ const FaultManagement = (props) => {
     setFaults(faults);
   };
 
- 
-
   return (
     <main>
       {/* className="container-xl" */}
@@ -65,24 +79,90 @@ const FaultManagement = (props) => {
                     <strong>Fault List</strong>
                   </h2>
                 </div>
-                {authCtx.user.team === "Customer service" && !isLoading && (
-                  <div className="col-sm-10">
-                    <NewFaultModel
-                      teams={teams.filter(
-                        (team) =>
-                          team.name === "Technical service" ||
-                          team.name === "Customer service"
-                      )}
-                      users={users}
-                      clients={clients}
-                      updateFaults={updateFaults}
-                    />
-                  </div>
+                {!isLoading && (
+                  <>
+                    {authCtx.user.team === "Customer service" ? (
+                      <>
+                        <div className="col-sm-9">
+                          <NewFaultModel
+                            teams={teams.filter(
+                              (team) =>
+                                team.name === "Technical service" ||
+                                team.name === "Customer service"
+                            )}
+                            users={users}
+                            clients={clients}
+                            updateFaults={updateFaults}
+                          />
+                        </div>
+                        <a className="col-sm-1 btn" style={{ marginLeft: "0" }}>
+                          <BsFilterRight
+                            onClick={handleOpen}
+                            style={{ fontSize: "25px" }}
+                          />
+                        </a>
+                      </>
+                    ) : (
+                      <a className="col-sm-1">
+                        <BsFilterRight
+                          onClick={handleOpen}
+                          style={{ fontSize: "25px" }}
+                        />
+                      </a>
+                    )}
+                  </>
                 )}
               </div>
             </div>
             <table className="table table-striped table-hover">
               <thead>
+                <CSSTransition
+                  in={isOpen}
+                  timeout={200}
+                  classNames="slide-in-up"
+                  mountOnEnter
+                  unmountOnExit
+                >
+                  <tr>
+                    <th>
+                      <Form.Control placeholder="Fault No."></Form.Control>
+                    </th>
+                    <th>
+                      <Form.Control as="select" placeholder="Status">
+                        <option value="In treatment">In treatment</option>
+                        <option value="Waiting for component">
+                          Waiting for component
+                        </option>
+                        <option value="Close">Close</option>
+                      </Form.Control>
+                    </th>
+                    <th>
+                      <Form.Control type="date" ></Form.Control>
+                    </th>
+                    <th>
+                      <Form.Control></Form.Control>
+                    </th>
+                    <th>
+                      <Form.Control></Form.Control>
+                    </th>
+                    <th>
+                      <Form.Control></Form.Control>
+                    </th>
+                    <th>
+                      <Form.Control></Form.Control>
+                    </th>
+                    <th>
+                      <Form.Control></Form.Control>
+                    </th>
+                    <th>
+                      <Button style={{background:"#38a5ff",borderColor:"#38a5ff"}} variant="primary" type="submit">
+                        Search{" "} 
+                        <BiSearchAlt/>
+                      </Button>
+                    </th>
+                  </tr>
+                </CSSTransition>
+
                 <tr>
                   <th>No.</th>
                   <th>Status</th>
