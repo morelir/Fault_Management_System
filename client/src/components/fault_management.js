@@ -6,13 +6,11 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import NewFaultModel from "./FaultManagement/newFaultModel";
 import EditFaultModel from "./FaultManagement/editFaultModel";
+import FaultsFilter from "./FaultManagement/FaultsFilter";
 import AuthContext from "../store/auth-context";
-import Icon from "../shared/components/FormElements/Icon";
 import NewRequestModal from "./FaultManagement/NewRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
 import { CSSTransition } from "react-transition-group";
-import { Collapse } from "react-collapse";
-import { IconContext } from "react-icons";
 import { BsFilterRight } from "react-icons/bs";
 import { BiSearchAlt } from "react-icons/bi";
 import {
@@ -116,60 +114,8 @@ const FaultManagement = (props) => {
               </div>
             </div>
             <table className="table table-striped table-hover">
+              <FaultsFilter users={users} clients={clients} isOpen={isOpen} />
               <thead>
-                <CSSTransition
-                  in={isOpen}
-                  timeout={200}
-                  classNames="slide-in-up"
-                  mountOnEnter
-                  unmountOnExit
-                >
-                  <tr>
-                    <th>
-                      <Form.Control placeholder="Fault No."></Form.Control>
-                    </th>
-                    <th>
-                      <Form.Control as="select" placeholder="Status">
-                        <option value="In treatment">In treatment</option>
-                        <option value="Waiting for component">
-                          Waiting for component
-                        </option>
-                        <option value="Close">Close</option>
-                      </Form.Control>
-                    </th>
-                    <th>
-                      <Form.Control type="date"></Form.Control>
-                    </th>
-                    <th>
-                      <Form.Control></Form.Control>
-                    </th>
-                    <th>
-                      <Form.Control></Form.Control>
-                    </th>
-                    <th>
-                      <Form.Control></Form.Control>
-                    </th>
-                    <th>
-                      <Form.Control></Form.Control>
-                    </th>
-                    <th>
-                      <Form.Control></Form.Control>
-                    </th>
-                    <th>
-                      <Button
-                        style={{
-                          background: "#38a5ff",
-                          borderColor: "#38a5ff",
-                        }}
-                        variant="primary"
-                        type="submit"
-                      >
-                        Search <BiSearchAlt />
-                      </Button>
-                    </th>
-                  </tr>
-                </CSSTransition>
-
                 <tr>
                   <th>No.</th>
                   <th>Status</th>
