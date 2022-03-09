@@ -164,11 +164,11 @@ table.table td a.edit:hover {
 }
 
 table.table td a.edit.invalid {
-  color: #f1b100a8;
+  color: #979797;
 }
 table.table td a.edit.invalid:hover {
-  color: #f1b100ad;
-  cursor:auto;
+  color: #979797;
+  cursor: not-allowed;
 }
 
 table.table td a.request {
@@ -180,15 +180,12 @@ table.table td a.request:hover {
 }
 
 table.table td a.request.invalid {
-  color: #ff2c0775;
+  color: #979797;
 }
 table.table td a.request.invalid:hover {
-  color: #ff2c0775;
-  cursor:auto;
+  color: #979797;
+  cursor: not-allowed;
 }
-
-
-
 
 
 table.table td a.done {
@@ -200,11 +197,11 @@ table.table td a.done:hover {
 }
 
 table.table td a.done.invalid {
-  color: rgba(6, 175, 0, 0.589);
+  color: #979797;
 }
 table.table td a.done.invalid:hover {
-  color: rgba(6, 175, 0, 0.589);
-  cursor:auto;
+  color: #979797;
+  cursor: not-allowed;
 }
 
 table.table td a.close {
@@ -215,11 +212,11 @@ table.table td a.close:hover {
 }
 
 table.table td a.close.invalid {
-  color: #ff4107a9;
+  color: #979797;
 }
 table.table td a.close.invalid:hover {
-  color: #ff4107a9;
-  cursor:auto;
+  color: #979797;
+  cursor: not-allowed;
 }
 
 table.table td a.pending {
@@ -247,11 +244,11 @@ table.table td a.purchase_request:hover {
 }
 
 table.table td a.purchase_request.invalid {
-  color: #00aa2b8e;
+  color: #979797;
 }
 table.table td a.purchase_request.invalid:hover {
-  color: #00aa2b8e;
-  cursor:auto;
+  color: #979797;
+  cursor: not-allowed;
 }
 
 table.table td i {

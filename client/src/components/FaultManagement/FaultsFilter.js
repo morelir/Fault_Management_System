@@ -1,9 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+//import Button from "react-bootstrap/Button";
 import { BiSearchAlt } from "react-icons/bi";
 import { CSSTransition } from "react-transition-group";
 import { clientIdHandler } from "../../utils/functions";
+import Button from "../../shared/components/FormElements/Button";
 
 const FaultsFilter = (props) => {
   const [filter, setFilter] = useState({
@@ -193,15 +194,22 @@ const FaultsFilter = (props) => {
             </th>
 
             <th>
-              <Button
+              {/* <Button
                 disabled={!formIsValid}
                 style={{
-                  background: "#485159",
-                  borderColor: "#485159",
+                  background: "#38a5ff",
+                  borderColor: "#38a5ff",
                   marginTop: "30px",
                 }}
                 variant="primary"
                 type="submit"
+              >
+                Search <BiSearchAlt />
+              </Button> */}
+              <Button
+                style={{ marginTop: "30px" }}
+                type="submit"
+                disabled={!formIsValid}
               >
                 Search <BiSearchAlt />
               </Button>

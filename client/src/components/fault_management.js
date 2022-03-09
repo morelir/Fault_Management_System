@@ -81,11 +81,6 @@ const FaultManagement = (props) => {
                       <>
                         <div className="col-sm-9">
                           <NewFaultModel
-                            teams={teams.filter(
-                              (team) =>
-                                team.name === "Technical service" ||
-                                team.name === "Customer service"
-                            )}
                             users={users}
                             clients={clients}
                             updateFaults={updateFaults}

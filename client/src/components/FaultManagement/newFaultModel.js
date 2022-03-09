@@ -23,7 +23,7 @@ const NewFaultModel = (props) => {
     number: "",
     status: "New",
     urgencyLevel: "Normal",
-    team: props.teams[1].name,
+    team: "Technical service",
     description: "",
     teams: props.teams,
     formIsValid: false,
@@ -32,6 +32,7 @@ const NewFaultModel = (props) => {
     id: "",
     name: "",
     surname: "",
+    phone: "",
     idIsValid: false,
   });
   const [teamMember, setTeamMember] = useState({
@@ -94,17 +95,27 @@ const NewFaultModel = (props) => {
   };
 
   const createdActivity = () => {
-    Activity.user= `${capitalizeFirstLetter(authCtx.user.name)} ${capitalizeFirstLetter(authCtx.user.surname)}`
-    Activity.id= authCtx.user.id.toString();
-    Activity.action= "Created";
-    Activity.data= `\t-Client Fullname: ${capitalizeFirstLetter(client.name)} ${capitalizeFirstLetter(client.surname)}\n\t-Client ID: ${client.id.toString()}\n\t-Status: In treatment\n\t-Handler Team: ${fault.team}\n\t-Urgency level: ${fault.urgencyLevel}\n\t-Description: ${fault.description}\n\t`
+    Activity.user = `${capitalizeFirstLetter(
+      authCtx.user.name
+    )} ${capitalizeFirstLetter(authCtx.user.surname)}`;
+    Activity.id = authCtx.user.id.toString();
+    Activity.action = "Created";
+    Activity.data = `\t-Client Fullname: ${capitalizeFirstLetter(
+      client.name
+    )} ${capitalizeFirstLetter(
+      client.surname
+    )}\n\t-Client ID: ${client.id.toString()}\n\t-Status: In treatment\n\t-Handler Team: ${
+      fault.team
+    }\n\t-Urgency level: ${fault.urgencyLevel}\n\t-Description: ${
+      fault.description
+    }\n\t`;
   };
 
   const submitNewFault = (e) => {
     e.preventDefault();
     setSavingForm(true);
     createdActivity();
-    console.log(Activity)
+    console.log(Activity);
     Axios.post(`faultManagement/NewFaultModel`, {
       status: "In treatment",
       clientID: parseInt(client.id),
@@ -112,7 +123,7 @@ const NewFaultModel = (props) => {
       teamMemberID: parseInt(teamMember.id),
       urgencyLevel: fault.urgencyLevel,
       description: fault.description,
-      activity:Activity,
+      activity: Activity,
     })
       .then((response) => {
         props.updateFaults(response.data.faults);
@@ -197,6 +208,19 @@ const NewFaultModel = (props) => {
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
+                  <strong>Client ID</strong>
+                </Form.Label>
+
+                <Form.Control
+                  type="text"
+                  value={client.id}
+                  onChange={(e) => {
+                    clientIdHandler(e, setClient, props);
+                  }}
+                />
+              </Form.Group>
+              <Form.Group as={Col}>
+                <Form.Label>
                   <strong>Client name</strong>
                 </Form.Label>
                 {client.idIsValid ? (
@@ -209,18 +233,16 @@ const NewFaultModel = (props) => {
                   <Form.Control value="" type="text" readOnly />
                 )}
               </Form.Group>
+
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Client ID</strong>
+                  <strong>Phone</strong>
                 </Form.Label>
-
-                <Form.Control
-                  type="text"
-                  value={client.id}
-                  onChange={(e) => {
-                    clientIdHandler(e, setClient, props);
-                  }}
-                />
+                {client.idIsValid ? (
+                  <Form.Control type="text" value={client.phone} readOnly />
+                ) : (
+                  <Form.Control value="" type="text" readOnly />
+                )}
               </Form.Group>
             </Row>
 

@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import './Button.css';
+import styles from './Button.module.css';
 
 const Button = props => {
   if (props.href) {
     return (
       <a
-        className={`button button--${props.size || 'default'} ${props.inverse &&
-          'button--inverse'} ${props.danger && 'button--danger'}`}
+        className={`${styles[`button button--`]}${props.size || 'default'} ${props.inverse &&
+          styles['button--inverse']} ${props.danger && styles['button--danger']}`}
         href={props.href}
       >
         {props.children}
@@ -20,20 +20,22 @@ const Button = props => {
       <Link
         to={props.to}
         exact={props.exact}
-        className={`button button--${props.size || 'default'} ${props.inverse &&
-          'button--inverse'} ${props.danger && 'button--danger'}`}
+        className={`${styles[`button button--`]}${props.size || 'default'} ${props.inverse &&
+          styles['button--inverse']} ${props.danger && styles['button--danger']}`}
       >
         {props.children}
       </Link>
     );
   }
+  console.log(props.size)
   return (
     <button
-      className={`button button--${props.size || 'default'} ${props.inverse &&
-        'button--inverse'} ${props.danger && 'button--danger'}`}
+      className={`${styles[`button`]} ${props.size && styles[`button--${props.size}`]} ${props.inverse &&
+        styles['button--inverse']} ${props.danger && styles['button--danger']}`}
       type={props.type}
       onClick={props.onClick}
       disabled={props.disabled}
+      style={props.style}
     >
       {props.children}
     </button>

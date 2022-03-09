@@ -80,6 +80,7 @@ const EditFaultModel = (props) => {
         id: props.fault.clientID,
         name: props.fault.clientName,
         surname: props.fault.clientSurname,
+        phone:props.fault.clientPhoneNumber,
         idIsValid: true,
       };
     });
