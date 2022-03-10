@@ -1,3 +1,20 @@
+export const defaultFilter=(array,userTeam)=>{
+  return array.filter(
+    (item) =>
+      item.status !== "Close" &&
+      (item.team === userTeam ||
+        userTeam === "Customer service")
+  )
+}
+
+export const teamFilter=(array,userTeam)=>{
+  return array.filter(
+    (item) =>
+      (item.team === userTeam ||
+        userTeam === "Customer service")
+  )
+}
+
 export const clientIdHandler = (e, setClient, props) => {
   let value = e.target.value;
   setClient((prevState) => {

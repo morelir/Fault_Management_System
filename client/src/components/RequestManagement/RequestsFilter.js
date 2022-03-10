@@ -4,12 +4,13 @@ import Form from "react-bootstrap/Form";
 import { BiSearchAlt } from "react-icons/bi";
 import { HiOutlineRefresh } from "react-icons/hi";
 import { CSSTransition } from "react-transition-group";
-//import {  } from "../../utils/functions";
+//import { clientIdHandler } from "../../utils/functions";
 import Button from "../../shared/components/FormElements/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { defaultFilter } from "../../utils/functions";
 
-const FaultsFilter = (props) => {
+const RequestsFilter = (props) => {
   const [filter, setFilter] = useState({
     number: "",
     status: "",
@@ -17,11 +18,7 @@ const FaultsFilter = (props) => {
     handler_team: "",
     urgency_level: "",
   });
-  const [client, setClient] = useState({
-    display: "",
-    id: "",
-    idIsValid: true,
-  });
+
   const [teamMember, setTeamMember] = useState({
     display: "",
     id: "",
@@ -62,8 +59,8 @@ const FaultsFilter = (props) => {
   };
 
   const handleSearch = () => {
-    props.updateFaults(
-      props.faults.filter((item) => {
+    props.updateRequests(
+      props.requests.filter((item) => {
         return (
           (filter.number !== ""
             ? item.number.toString() === filter.number
@@ -78,7 +75,6 @@ const FaultsFilter = (props) => {
           (filter.from_date_created !== ""
             ? item.date_created >= filter.from_date_created
             : true) &&
-          (client.id !== "" ? item.clientID.toString() == client.id : true) &&
           (teamMember.id !== ""
             ? item.teamMemberID.toString() == teamMember.id
             : true)
@@ -100,10 +96,8 @@ const FaultsFilter = (props) => {
           filter.from_date_created !== "" ||
           filter.handler_team !== "" ||
           filter.urgency_level !== "" ||
-          client.id !== "" ||
           teamMember.id !== "") &&
-          teamMember.idIsValid &&
-          client.idIsValid
+          teamMember.idIsValid
       );
     }, 250);
 
@@ -111,7 +105,7 @@ const FaultsFilter = (props) => {
       console.log("Clean-Up Timeout");
       clearTimeout(identifier);
     };
-  }, [teamMember.id, client.id, filter]);
+  }, [teamMember.id, filter]);
 
   return (
     <thead>
@@ -162,22 +156,6 @@ const FaultsFilter = (props) => {
               </Form.Group>
 
               <Form.Group as={Col}>
-                <Form.Label>Client ID</Form.Label>
-                <Form.Control
-                  value={client.display}
-                  onChange={(e) => {
-                    handlerID(
-                      e,
-                      setClient,
-                      props.clients,
-                      client.idIsValid,
-                      client.display
-                    );
-                  }}
-                />
-              </Form.Group>
-
-              <Form.Group as={Col}>
                 <Form.Label>Handler team</Form.Label>
                 <Form.Control
                   as="select"
@@ -187,7 +165,7 @@ const FaultsFilter = (props) => {
                 >
                   <option value="" selected></option>
                   <option value={"Customer service"}>Customer service</option>
-                  <option value={"Technical service"}>Technical service</option>
+                  <option value={"Technical service"}>Regular</option>
                 </Form.Control>
               </Form.Group>
 
@@ -222,10 +200,7 @@ const FaultsFilter = (props) => {
                 </Form.Control>
               </Form.Group>
 
-              <Form.Group
-                as={Col}
-                style={{ marginTop: "30px" }}
-              >
+              <Form.Group as={Col} style={{ marginTop: "30px" }}>
                 <Button
                   type="submit"
                   disabled={!formIsValid}
@@ -233,7 +208,7 @@ const FaultsFilter = (props) => {
                 >
                   Search <BiSearchAlt />
                 </Button>
-                <Button color="black" onClick={props.resetFaults}>
+                <Button color="black" onClick={props.resetRequests}>
                   Reset <HiOutlineRefresh />
                 </Button>
               </Form.Group>
@@ -245,4 +220,4 @@ const FaultsFilter = (props) => {
   );
 };
 
-export default FaultsFilter;
+export default RequestsFilter;

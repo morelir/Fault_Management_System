@@ -1,6 +1,6 @@
 .button {
   font: inherit;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.8rem;
   /* border: 1px solid #38a5ff; */
   border:none;
   border-radius: 6px;
@@ -59,4 +59,14 @@
 
 .button--big {
   font-size: 1.5rem;
+}
+
+.button--color--black{
+  background-color:rgb(54, 62, 70)
+}
+
+.button--color--black:hover,
+.button--color--black:active {
+  background: rgba(54, 62, 70, 0.685);
+  border-color: rgba(54, 62, 70, 0.685);
 }

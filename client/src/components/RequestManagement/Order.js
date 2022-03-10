@@ -15,6 +15,7 @@ import {
   displayDate,
   capitalizeFirstLetter,
   urgencyHandler,
+  defaultFilter,
 } from "../../utils/functions";
 
 const Order = (props) => {
@@ -128,7 +129,7 @@ const Order = (props) => {
         values: [true, "Waiting for component order", orderActivity],
       });
       let response = await Axios.get("/arrays/purchaseRequests");
-      props.updateRequests(response.data);
+      props.updateRequests(defaultFilter(response.data,authCtx.user.team));
       handleClose();
       resetStates();
       setSavingForm(false);

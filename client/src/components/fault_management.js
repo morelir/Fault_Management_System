@@ -10,35 +10,37 @@ import FaultsFilter from "./FaultManagement/FaultsFilter";
 import AuthContext from "../store/auth-context";
 import NewRequestModal from "./FaultManagement/NewRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
-import { CSSTransition } from "react-transition-group";
 import { BsFilterRight } from "react-icons/bs";
-import { BiSearchAlt } from "react-icons/bi";
 import {
   displayDate,
   getTimeDuration,
   faultActivity,
+  defaultFilter,
+  teamFilter
 } from "../utils/functions";
 
 const FaultManagement = (props) => {
   const authCtx = useContext(AuthContext);
+  const [allFaults, setAllFaults] = useState([]);
   const [faults, setFaults] = useState([]);
   const [teams, setTeams] = useState([]);
   const [users, setUsers] = useState([]);
   const [clients, setClients] = useState([]);
   const [products, setProducts] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
   const handleOpen = () => {
     if (!isOpen) setIsOpen(true);
     else setIsOpen(false);
   };
-  const [isLoading, setIsLoading] = useState(true);
 
   const evenPos = (pos) => pos % 2 == 0;
 
   const getData = async () => {
     try {
       let response = await Axios.get("arrays/faults");
-      setFaults(response.data);
+      setAllFaults(response.data);
+      setFaults(defaultFilter(response.data, authCtx.user.team));
       response = await Axios.get(`arrays/teams`);
       setTeams(response.data);
       response = await Axios.get(`arrays/users`);
@@ -58,7 +60,11 @@ const FaultManagement = (props) => {
   }, []);
 
   const updateFaults = (faults) => {
-    setFaults(faults);
+    setFaults(teamFilter(faults, authCtx.user.team));
+  };
+
+  const resetFaults = () => {
+    setFaults(defaultFilter(allFaults, authCtx.user.team));
   };
 
   return (
@@ -87,7 +93,10 @@ const FaultManagement = (props) => {
                           />
                         </div>
 
-                        <a className="col-sm-1 btn" style={{ marginLeft: "0" }}>
+                        <a
+                          className="col-sm-1 btn"
+                          style={{ marginLeft: "0" }}
+                        >
                           <BsFilterRight
                             onClick={handleOpen}
                             style={{ fontSize: "25px" }}
@@ -109,7 +118,14 @@ const FaultManagement = (props) => {
               </div>
             </div>
             <table className="table table-striped table-hover">
-              <FaultsFilter users={users} clients={clients} isOpen={isOpen} />
+              <FaultsFilter
+                faults={allFaults}
+                users={users}
+                clients={clients}
+                isOpen={isOpen}
+                updateFaults={updateFaults}
+                resetFaults={resetFaults}
+              />
               <thead>
                 <tr>
                   <th>No.</th>
@@ -125,14 +141,14 @@ const FaultManagement = (props) => {
               </thead>
               <tbody>
                 {!isLoading ? (
-                  faults
-                    .filter(
-                      (fault) =>
-                        fault.status !== "Close" &&
-                        (fault.team === authCtx.user.team ||
-                          authCtx.user.team === "Customer service")
-                    )
-                    .map((fault, pos) => {
+                  faults.length === 0 ? (
+                    <tr id={"fault-even-pos"}> 
+                      <td colSpan="9">
+                        <strong>Not Found</strong>
+                      </td>
+                    </tr>
+                  ) : (
+                    faults.map((fault, pos) => {
                       return (
                         <React.Fragment key={fault.number}>
                           <tr
@@ -248,6 +264,7 @@ const FaultManagement = (props) => {
                         </React.Fragment>
                       );
                     })
+                  )
                 ) : (
                   <tr>
                     <td colSpan="9">

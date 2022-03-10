@@ -17,6 +17,7 @@ import {
   urgencyHandler,
   capitalizeFirstLetter,
   modifiedActivity,
+  defaultFilter,
 } from "../../utils/functions";
 
 const EditFaultModel = (props) => {
@@ -110,7 +111,7 @@ const EditFaultModel = (props) => {
       activity: [...props.fault.activity, Activity],
     })
       .then((response) => {
-        props.updateFaults(response.data);
+        props.updateFaults(defaultFilter(response.data,authCtx.user.team));
         handleClose();
         setSavingForm(false);
       })

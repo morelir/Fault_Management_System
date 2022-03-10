@@ -7,19 +7,29 @@ import AuthContext from "../store/auth-context";
 import DisplayRequestModal from "./RequestManagement/DisplayRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
 import NewPurchaseRequestModal from "./RequestManagement/NewPurchaseRequestModal";
+import RequestsFilter from "./RequestManagement/RequestsFilter";
 import Order from "./RequestManagement/Order";
+import { BsFilterRight } from "react-icons/bs";
 import {
   displayDate,
   getTimeDuration,
   requestActivity,
   closePurchaseRequestActivity,
+  defaultFilter,
+  teamFilter,
 } from "../utils/functions";
 
 const RequestManagement = (props) => {
   const authCtx = useContext(AuthContext);
+  const [allRequests, setAllRequests] = useState([]);
   const [requests, setRequests] = useState([]);
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
+  const handleOpen = () => {
+    if (!isOpen) setIsOpen(true);
+    else setIsOpen(false);
+  };
 
   const evenPos = (pos) => pos % 2 == 0;
 
@@ -29,7 +39,8 @@ const RequestManagement = (props) => {
       let requests = response.data;
       response = await Axios.get("arrays/purchaseRequests");
       requests = [...requests, ...response.data];
-      setRequests(requests);
+      setAllRequests(requests);
+      setRequests(defaultFilter(requests, authCtx.user.team));
       response = await Axios.get(`arrays/users`);
       setUsers(response.data);
       setIsLoading(false);
@@ -43,7 +54,11 @@ const RequestManagement = (props) => {
   }, []);
 
   const updateRequests = (requests) => {
-    setRequests(requests);
+    setRequests(teamFilter(requests, authCtx.user.team));
+  };
+
+  const resetRequests = () => {
+    setRequests(defaultFilter(allRequests, authCtx.user.team));
   };
 
   return (
@@ -55,7 +70,7 @@ const RequestManagement = (props) => {
           <div className={styles.table_wrapper}>
             <div className={styles.table_title}>
               <div className="row">
-                <div className="col-sm-12">
+                <div className="col-sm-2">
                   {authCtx.user.team === "Stock" ? (
                     <h2>
                       <strong>Component Request List</strong>
@@ -66,9 +81,26 @@ const RequestManagement = (props) => {
                     </h2>
                   )}
                 </div>
+                {!isLoading && (
+                  <div className="col-sm-10">
+                    <a className={`btn ${styles.btn}`} style={{marginTop:"30px"}} >
+                      <BsFilterRight
+                        onClick={handleOpen}
+                        style={{ fontSize: "25px" }}
+                      />
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
             <table className="table table-striped table-hover">
+              <RequestsFilter
+                requests={allRequests}
+                users={users}
+                isOpen={isOpen}
+                updateRequests={updateRequests}
+                resetRequests={resetRequests}
+              />
               <thead>
                 <tr>
                   <th>No.</th>
@@ -82,13 +114,14 @@ const RequestManagement = (props) => {
               </thead>
               <tbody>
                 {!isLoading ? (
-                  requests
-                    .filter(
-                      (request) =>
-                        request.status !== "Close" &&
-                        request.team === authCtx.user.team
-                    )
-                    .map((request, pos) => {
+                  requests.length === 0 ? (
+                    <tr id={"fault-even-pos"}>
+                      <td colSpan="9">
+                        <strong>Not Found</strong>
+                      </td>
+                    </tr>
+                  ) : (
+                    requests.map((request, pos) => {
                       return (
                         <React.Fragment key={request.number}>
                           <tr
@@ -201,6 +234,7 @@ const RequestManagement = (props) => {
                         </React.Fragment>
                       );
                     })
+                  )
                 ) : (
                   <tr>
                     <td colSpan="8">

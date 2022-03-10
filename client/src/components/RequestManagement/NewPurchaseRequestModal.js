@@ -14,6 +14,7 @@ import {
   displayDate,
   capitalizeFirstLetter,
   urgencyHandler,
+  defaultFilter,
 } from "../../utils/functions";
 
 const NewPurchaseRequestModal = (props) => {
@@ -22,7 +23,7 @@ const NewPurchaseRequestModal = (props) => {
     team: props.team,
     note: "",
     status: "New",
-    urgencyLevel:props.request.urgencyLevel,
+    urgencyLevel: props.request.urgencyLevel,
   });
   const authCtx = useContext(AuthContext);
   const [products, setProducts] = useState([]);
@@ -52,7 +53,7 @@ const NewPurchaseRequestModal = (props) => {
         team: props.team,
         note: "",
         status: "New",
-        urgencyLevel:props.request.urgencyLevel,
+        urgencyLevel: props.request.urgencyLevel,
       };
     });
     setProducts([]);
@@ -108,17 +109,21 @@ const NewPurchaseRequestModal = (props) => {
         teamMemberID: null,
         products: products,
         note: request.note,
-        urgencyLevel:request.urgencyLevel,
+        urgencyLevel: request.urgencyLevel,
         activity: purchaseRequestActivity,
       });
       await Axios.patch(`/requestManagement/updateRequest`, {
         number: request.number,
         updates: ["existPurchaseRequest", "status", "activity"],
-        values: [true, "Waiting for component purchase", componentRequestActivity],
+        values: [
+          true,
+          "Waiting for component purchase",
+          componentRequestActivity,
+        ],
       });
-      
+
       let response = await Axios.get("/requestManagement");
-      props.updateRequests(response.data);
+      props.updateRequests(defaultFilter(response.data, authCtx.user.team));
       handleClose();
       resetStates();
       setSavingForm(false);
@@ -171,7 +176,9 @@ const NewPurchaseRequestModal = (props) => {
       >
         <a
           href="#requestModal"
-          className={`purchase_request ${props.request.existPurchaseRequest && "invalid"}`}
+          className={`purchase_request ${
+            props.request.existPurchaseRequest && "invalid"
+          }`}
           data-toggle="modal"
         >
           {props.request.existPurchaseRequest ? (

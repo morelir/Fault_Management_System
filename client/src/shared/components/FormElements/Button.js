@@ -27,11 +27,10 @@ const Button = props => {
       </Link>
     );
   }
-  console.log(props.size)
   return (
     <button
       className={`${styles[`button`]} ${props.size && styles[`button--${props.size}`]} ${props.inverse &&
-        styles['button--inverse']} ${props.danger && styles['button--danger']}`}
+        styles['button--inverse']} ${props.danger && styles['button--danger']} ${props.color && styles[`button--color--${props.color}`]} `} 
       type={props.type}
       onClick={props.onClick}
       disabled={props.disabled}

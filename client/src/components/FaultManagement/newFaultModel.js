@@ -16,6 +16,7 @@ import {
   teamHandler,
   urgencyHandler,
   capitalizeFirstLetter,
+  defaultFilter,
 } from "../../utils/functions";
 
 const NewFaultModel = (props) => {
@@ -126,7 +127,7 @@ const NewFaultModel = (props) => {
       activity: Activity,
     })
       .then((response) => {
-        props.updateFaults(response.data.faults);
+        props.updateFaults(defaultFilter(response.data.faults,authCtx.user.team));
         handleClose();
         resetStates();
         setSavingForm(false);

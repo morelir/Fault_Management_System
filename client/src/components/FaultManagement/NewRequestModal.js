@@ -9,7 +9,7 @@ import MessageModal from "../../shared/components/Modals/messageModal";
 import styles from "./faultModel.module.css";
 import Axios from "axios";
 import AuthContext from "../../store/auth-context";
-import { capitalizeFirstLetter } from "../../utils/functions";
+import { capitalizeFirstLetter,defaultFilter } from "../../utils/functions";
 
 const NewRequestModal = (props) => {
   const [request, setRequest] = useState({
@@ -115,7 +115,7 @@ const NewRequestModal = (props) => {
         values: [true, "Waiting for component", faultActivity],
       });
       let response = await Axios.get("/faultManagement");
-      props.updateFaults(response.data);
+      props.updateFaults(defaultFilter(response.data,authCtx.user.team));
       handleClose();
       resetStates();
       setSavingForm(false);

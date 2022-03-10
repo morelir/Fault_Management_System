@@ -13,7 +13,7 @@ import {
   teamMemberIdHandler,
   displayDate,
   capitalizeFirstLetter,
-  urgencyHandler,
+  urgencyHandler,defaultFilter
 } from "../../utils/functions";
 
 const DisplayRequestModal = (props) => {
@@ -124,7 +124,7 @@ const DisplayRequestModal = (props) => {
         activity: [...props.request.activity, activity],
       });
       let response = await Axios.get("/requestManagement");
-      props.updateRequests(response.data);
+      props.updateRequests(defaultFilter(response.data,authCtx.user.team));
       handleClose();
       setSavingForm(false);
     } catch (err) {
