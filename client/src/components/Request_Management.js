@@ -25,7 +25,7 @@ const RequestManagement = (props) => {
   const [requests, setRequests] = useState([]);
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => {
     if (!isOpen) setIsOpen(true);
     else setIsOpen(false);
@@ -44,6 +44,7 @@ const RequestManagement = (props) => {
       response = await Axios.get(`arrays/users`);
       setUsers(response.data);
       setIsLoading(false);
+      setIsOpen(true);
     } catch (err) {
       console.log(err);
     }

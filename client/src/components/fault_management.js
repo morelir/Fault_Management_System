@@ -28,7 +28,7 @@ const FaultManagement = (props) => {
   const [clients, setClients] = useState([]);
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const handleOpen = () => {
     if (!isOpen) setIsOpen(true);
     else setIsOpen(false);
@@ -50,6 +50,7 @@ const FaultManagement = (props) => {
       response = await Axios.get(`arrays/products`);
       setProducts(response.data);
       setIsLoading(false);
+      setIsOpen(true);
     } catch (err) {
       console.log(err);
     }
