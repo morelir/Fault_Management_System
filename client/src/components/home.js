@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import AuthContext from "../store/auth-context";
-import image from "../images/Internet_Business_Technology_HD_Wallpaper_11_1920x1440.jpg"
+// import image from "../images/Costumer service.jpg"
+import video1 from "../images/crm2.mp4"
 
 // this.props.location.login.user.email
 const Home = (props) => {
@@ -10,9 +11,12 @@ const Home = (props) => {
 
   return (
     <div>
+      {/* <video src={video1} autoPlay loop/> */}
       {/* <img
         src={image}
         alt="FMS wallpaper"
+        height={300}
+        width={500}
       /> */}
     </div>
   );

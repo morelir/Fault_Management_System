@@ -11,12 +11,13 @@ import AuthContext from "../store/auth-context";
 import NewRequestModal from "./FaultManagement/NewRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
 import { BsFilterRight } from "react-icons/bs";
+import image from "../images/Costumer service.jpg";
 import {
   displayDate,
   getTimeDuration,
   faultActivity,
   defaultFilter,
-  teamFilter
+  teamFilter,
 } from "../utils/functions";
 
 const FaultManagement = (props) => {
@@ -77,16 +78,24 @@ const FaultManagement = (props) => {
           <div className="table-wrapper">
             <div className="table-title">
               <div className="row">
+                {/* style={{position:"absolute",right:"-100px",top:"40px"}} */}
                 <div className="col-sm-2">
                   <h2>
                     <strong>Fault List</strong>
                   </h2>
                 </div>
+
                 {!isLoading && (
                   <>
+                    {/* <img
+                      className="col-sm-1"
+                      src={image}
+                      height={50}
+                      width={30}
+                    /> */}
                     {authCtx.user.team === "Customer service" ? (
                       <>
-                        <div className="col-sm-9">
+                        <div className="col-sm-8">
                           <NewFaultModel
                             users={users}
                             clients={clients}
@@ -94,10 +103,7 @@ const FaultManagement = (props) => {
                           />
                         </div>
 
-                        <a
-                          className="col-sm-1 btn"
-                          style={{ marginLeft: "0" }}
-                        >
+                        <a className="col-sm-1 btn" style={{ marginLeft: "0" }}>
                           <BsFilterRight
                             onClick={handleOpen}
                             style={{ fontSize: "25px" }}
@@ -143,7 +149,7 @@ const FaultManagement = (props) => {
               <tbody>
                 {!isLoading ? (
                   faults.length === 0 ? (
-                    <tr id={"fault-even-pos"}> 
+                    <tr id={"fault-even-pos"}>
                       <td colSpan="9">
                         <strong>Not Found</strong>
                       </td>

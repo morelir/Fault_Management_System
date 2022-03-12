@@ -25,7 +25,6 @@
   transition: all 300ms;
 }
 
-
 .table-responsive {
   margin: 30px 0;
 }
@@ -142,13 +141,13 @@ table.table td.done_status {
   min-width: 100px;
 } */
 table.table td.urgencyLevel-Low {
-  color:#00aa2b
+  color: #00aa2b;
 }
 table.table td.urgencyLevel-Normal {
-  color:#0269ca
+  color: #0269ca;
 }
 table.table td.urgencyLevel-High {
-  color:#cc2b03
+  color: #cc2b03;
 }
 
 table.table td a:hover {
@@ -186,7 +185,6 @@ table.table td a.request.invalid:hover {
   color: #979797;
   cursor: not-allowed;
 }
-
 
 table.table td a.done {
   color: rgb(6, 175, 0);
@@ -227,11 +225,11 @@ table.table td a.done_mark {
   color: rgb(6, 175, 0);
 }
 
-table.table td a.display{
-  color: #0030b4e1; 
+table.table td a.display {
+  color: #0030b4e1;
 }
 
-table.table td a.display:hover{
+table.table td a.display:hover {
   color: #030e22;
 }
 
@@ -418,6 +416,9 @@ table.table .avatar {
 
 .col-sm-2 {
   width: 16.66666667%;
+}
+.col-sm-8 {
+  width: 66.33333333%;
 }
 
 .col-sm-10 {
