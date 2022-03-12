@@ -90,8 +90,9 @@ const FaultManagement = (props) => {
                     {/* <img
                       className="col-sm-1"
                       src={image}
-                      height={50}
+                      height={150}
                       width={30}
+                      style={{position:"absolute",right:"30px",top:"61px"}}
                     /> */}
                     {authCtx.user.team === "Customer service" ? (
                       <>
