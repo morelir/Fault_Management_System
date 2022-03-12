@@ -96,7 +96,7 @@ const FaultManagement = (props) => {
                     /> */}
                     {authCtx.user.team === "Customer service" ? (
                       <>
-                        <div className="col-sm-8">
+                        <div className="col-sm-9">
                           <NewFaultModel
                             users={users}
                             clients={clients}
