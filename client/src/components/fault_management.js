@@ -11,7 +11,7 @@ import AuthContext from "../store/auth-context";
 import NewRequestModal from "./FaultManagement/NewRequestModal";
 import ModalDialog from "../shared/components/Modals/ModalDialog";
 import { BsFilterRight } from "react-icons/bs";
-import image from "../images/Costumer service.jpg";
+import image from "../images/FMS_title.png";
 import {
   displayDate,
   getTimeDuration,
@@ -71,6 +71,11 @@ const FaultManagement = (props) => {
 
   return (
     <main>
+      {/* <div class="header">
+        <h1>Fault Management</h1>
+        <p>Customer service</p>
+      </div> */}
+      
       {/* className="container-xl" */}
       <div className="container-xl container-max-width">
         {/* className="table-responsive" */}
@@ -87,15 +92,18 @@ const FaultManagement = (props) => {
 
                 {!isLoading && (
                   <>
-                    {/* <img
+                    {authCtx.user.team === "Customer service" ? (
+                      <>
+                        {/*
+                          <img
                       className="col-sm-1"
                       src={image}
                       height={150}
                       width={30}
-                      style={{position:"absolute",right:"30px",top:"61px"}}
-                    /> */}
-                    {authCtx.user.team === "Customer service" ? (
-                      <>
+                      style={{position:"absolute",left:"85px",top:"80px"}}
+                    />
+                          
+                        /> */}
                         <div className="col-sm-9">
                           <NewFaultModel
                             users={users}
