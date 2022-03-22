@@ -120,7 +120,7 @@ const RequestsFilter = (props) => {
           <th colSpan="9">
             <Row>
               <Form.Group as={Col}>
-                <Form.Label>Fault No.</Form.Label>
+                <Form.Label>Request No.</Form.Label>
                 <Form.Control
                   name="number"
                   value={filter.number}
@@ -195,7 +195,7 @@ const RequestsFilter = (props) => {
                 >
                   <option value="" selected></option>
                   <option value={"Low"}>Low</option>
-                  <option value={"Normal"}>Regular</option>
+                  <option value={"Normal"}>Normal</option>
                   <option value={"High"}>High</option>
                 </Form.Control>
               </Form.Group>

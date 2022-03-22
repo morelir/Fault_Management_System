@@ -217,7 +217,7 @@ const FaultsFilter = (props) => {
                 >
                   <option value="" selected></option>
                   <option value={"Low"}>Low</option>
-                  <option value={"Normal"}>Regular</option>
+                  <option value={"Normal"}>Normal</option>
                   <option value={"High"}>High</option>
                 </Form.Control>
               </Form.Group>

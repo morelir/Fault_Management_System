@@ -10,7 +10,8 @@
 
 .modal-header {
   color: white;
-  background: rgba(4, 34, 78, 0.877);
+  background: #212529;
+  /* rgba(4, 34, 78, 0.877) */
   border-radius: 0px;
   display: block;
   text-align: center;

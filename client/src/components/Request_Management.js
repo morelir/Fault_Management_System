@@ -71,7 +71,7 @@ const RequestManagement = (props) => {
           <div className={styles.table_wrapper}>
             <div className={styles.table_title}>
               <div className="row">
-                <div className="col-sm-2">
+                <div className="col-sm-3">
                   {authCtx.user.team === "Stock" ? (
                     <h2>
                       <strong>Component Request List</strong>
@@ -83,8 +83,8 @@ const RequestManagement = (props) => {
                   )}
                 </div>
                 {!isLoading && (
-                  <div className="col-sm-10">
-                    <a className={`btn ${styles.btn}`} style={{marginTop:"30px"}} >
+                  <div className="col-sm-9">
+                    <a className={`btn ${styles.btn}`} >
                       <BsFilterRight
                         onClick={handleOpen}
                         style={{ fontSize: "25px" }}

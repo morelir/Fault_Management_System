@@ -33,6 +33,14 @@ const NavLinks = (props) => {
 
   return (
     <ul className="nav-links">
+      {isLoggedIn && (
+        <li>
+          <div style={{ color: "#88989b" }}>
+            <div style={{textAlign:"center"}}>Hello, {`${authCtx.user.name}`}</div>
+            <div style={{textAlign:"center"}}> {`${authCtx.user.team}`}</div>
+          </div>
+        </li>
+      )}
       <li>
         <NavLink to="/" exact>
           Home

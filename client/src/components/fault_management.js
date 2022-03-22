@@ -75,7 +75,7 @@ const FaultManagement = (props) => {
         <h1>Fault Management</h1>
         <p>Customer service</p>
       </div> */}
-      
+
       {/* className="container-xl" */}
       <div className="container-xl container-max-width">
         {/* className="table-responsive" */}
@@ -94,30 +94,19 @@ const FaultManagement = (props) => {
                   <>
                     {authCtx.user.team === "Customer service" ? (
                       <>
-                        {/*
-                          <img
-                      className="col-sm-1"
-                      src={image}
-                      height={150}
-                      width={30}
-                      style={{position:"absolute",left:"85px",top:"80px"}}
-                    />
-                          
-                        /> */}
-                        <div className="col-sm-9">
+                        <div className="col-sm-10">
+                          <a className="btn" >
+                            <BsFilterRight
+                              onClick={handleOpen}
+                              style={{ fontSize: "25px" }}
+                            />
+                          </a>
                           <NewFaultModel
                             users={users}
                             clients={clients}
                             updateFaults={updateFaults}
                           />
                         </div>
-
-                        <a className="col-sm-1 btn" style={{ marginLeft: "0" }}>
-                          <BsFilterRight
-                            onClick={handleOpen}
-                            style={{ fontSize: "25px" }}
-                          />
-                        </a>
                       </>
                     ) : (
                       <div className="col-sm-10">

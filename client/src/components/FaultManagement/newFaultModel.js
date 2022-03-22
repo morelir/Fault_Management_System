@@ -70,8 +70,10 @@ const NewFaultModel = (props) => {
       return {
         ...prevState,
         number: "",
+        status: "New",
+        team: "Technical service",
+        urgencyLevel: "Normal",
         description: "",
-        team: "",
         formIsValid: false,
       };
     });
@@ -170,7 +172,7 @@ const NewFaultModel = (props) => {
         onClick={handleOpen}
         className={`btn  ${styleBtn.btn}`}
         data-toggle="modal"
-        style={{ fontSize: "18px", borderRadius: "6px", fontWeight: "600" }}
+        style={{ fontSize: "18px", borderRadius: "6px", fontWeight: "600" ,marginRight:"20px" }}
       >
         <i style={{ marginTop: "4px" }} className="material-icons">
           &#xE147;
@@ -184,6 +186,7 @@ const NewFaultModel = (props) => {
         backdrop="static"
         keyboard={false}
         className={styles["modal"]}
+        
       >
         {/* closeButton */}
         <Modal.Header className={styles["modal-header"]}>
@@ -336,7 +339,7 @@ const NewFaultModel = (props) => {
                 >
                   <>
                     <option value={"Low"}>Low</option>
-                    <option value={"Normal"}>Regular</option>
+                    <option value={"Normal"}>Normal</option>
                     <option value={"High"}>High</option>
                   </>
                 </Form.Control>
