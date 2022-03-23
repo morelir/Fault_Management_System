@@ -101,7 +101,7 @@ const Login = (props) => {
         }
       });
   };
-  console.log(styles.invalid);
+  
   return (
     <div className={`${styles["auth"]} ${login.invalidUser && styles.invalid}`}>
       <h1 className={styles["auth-header"]}>Login</h1>
