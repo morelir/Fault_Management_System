@@ -51,11 +51,11 @@ const App = () => {
               component={Login}
               path="/login"
             />
-            <ProtectedRoute
+            {/* <ProtectedRoute
               condition={!authCtx.isLoggedIn}
               component={Registration}
               path="/registration"
-            />
+            /> */}
             <ProtectedRoute
               condition={
                 authCtx.isLoggedIn &&

@@ -132,7 +132,7 @@ const Login = (props) => {
         <br />
         <br />
         <Error Error={login.loginErrors} />
-        Don't have an account? <Link to="/registration">Sign up</Link>
+        {/* Don't have an account? <Link to="/registration">Sign up</Link> */}
       </Form>
     </div>
   );
