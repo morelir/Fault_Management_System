@@ -2,7 +2,8 @@
   margin-top: 10px;
 }
 .responsive button {
-    width: 50%
+    width: 100px;
+    margin-right: 20px;
 }
 .responsive button:first-child{
     margin-bottom: 5px;
@@ -10,13 +11,9 @@
 
 
 
-@media (min-width: 1775px) {
+@media (min-width: 1825px) {
   .responsive {
-    
-    margin-top: 30px;
-    margin-left: 0px;
-    
-    
+    margin-top: 30px;  
   }
   .responsive button {
     width: auto;
