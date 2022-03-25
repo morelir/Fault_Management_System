@@ -65,7 +65,7 @@ const NavLinks = (props) => {
           {(authCtx.user.team === "Stock" ||
             authCtx.user.team === "Purchase") && (
             <li>
-              <NavLink to="/faultManagement" exact>
+              <NavLink to="/requestManagement" exact>
                 Request Management
               </NavLink>
             </li>

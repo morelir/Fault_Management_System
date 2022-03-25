@@ -1,0 +1,25 @@
+.responsive {
+    margin-top: 10px;
+  }
+  .responsive button {
+      width: 50%
+  }
+  .responsive button:first-child{
+      margin-bottom: 5px;
+  }
+  
+  
+  
+  @media (min-width: 2005px) {
+    .responsive {
+      
+      margin-top: 30px;
+      margin-left: 0px;
+      
+      
+    }
+    .responsive button {
+      width: auto;
+    }
+  }
+  

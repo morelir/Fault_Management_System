@@ -9,6 +9,7 @@ import Button from "../../shared/components/FormElements/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { defaultFilter } from "../../utils/functions";
+import styles from "./RequestsFilter.module.css";
 
 const RequestsFilter = (props) => {
   const [filter, setFilter] = useState({
@@ -200,7 +201,7 @@ const RequestsFilter = (props) => {
                 </Form.Control>
               </Form.Group>
 
-              <Form.Group as={Col} style={{ marginTop: "30px" }}>
+              <Form.Group as={Col}  className={styles["responsive"]}>
                 <Button
                   type="submit"
                   disabled={!formIsValid}
@@ -208,7 +209,7 @@ const RequestsFilter = (props) => {
                 >
                   Search <BiSearchAlt />
                 </Button>
-                <Button color="black" onClick={props.resetRequests}>
+                <Button color="black"  onClick={props.resetRequests}>
                   Reset <HiOutlineRefresh />
                 </Button>
               </Form.Group>
