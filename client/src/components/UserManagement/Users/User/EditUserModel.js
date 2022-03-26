@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
+import EditButton from "../../../../shared/components/FormElements/Button";
+import { BiSearchAlt } from "react-icons/bi";
+import {MdModeEdit} from "react-icons/md";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
@@ -93,17 +96,20 @@ const EditUserModal = (props) => {
 
   return (
     <>
-      <a href="#editModal" className="edit" data-toggle="modal">
+      <EditButton type="submit" style={{color:"black",background:"#ffcb00",borderColor:"#ffcb00"}} onClick={handleOpen}>
+        <strong>Edit</strong> <MdModeEdit style={{marginBottom:"5px"}} color="black" />
+      </EditButton>
+      {/* <a href="#editModal" className="edit" data-toggle="modal">
         <i
           className="material-icons"
           onClick={handleOpen}
           data-toggle="tooltip"
           title="Edit"
         >
-          {/* &#xE254; */}
           <span style={{ fontSize: "16px" }}>✏️</span>
         </i>
-      </a>
+      </a> */}
+
       <Modal
         show={show}
         onHide={handleClose}

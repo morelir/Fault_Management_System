@@ -73,6 +73,7 @@ const EditFaultModel = (props) => {
         description: props.fault.description,
         team: props.fault.team,
         formIsValid: false,
+        urgencyLevel: props.fault.urgencyLevel,
         activity: props.fault.activity,
       };
     });
@@ -143,6 +144,7 @@ const EditFaultModel = (props) => {
 
   useEffect(() => {
     const identifier = setTimeout(() => {
+      console.log(fault.formIsValid)
       console.log("checking form validity");
       setFault((prevState) => {
         return {

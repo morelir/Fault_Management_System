@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
+import DeleteButton from "../../../../shared/components/FormElements/Button";
+import { AiFillDelete } from "react-icons/ai";
+import {MdModeEdit} from "react-icons/md";
 import Modal from "react-bootstrap/Modal";
 import Spinner from "react-bootstrap/Spinner";
 import styles from "./UserModal.module.css";
@@ -32,17 +35,21 @@ const DeleteUserModal = (props) => {
 
   return (
     <>
-      <a style={{paddingLeft:"100px"}} href="#deleteModal" data-toggle="modal">
+      <DeleteButton type="submit" style={{color:"black",background:"rgb(255, 60, 0) ",borderColor:"rgb(255, 60, 0)"}} onClick={handleOpen}>
+        <strong>Delete</strong> <AiFillDelete style={{marginBottom:"2px"}} color="black" />
+      </DeleteButton>
+
+      {/* <a style={{paddingLeft:"100px"}} href="#deleteModal" data-toggle="modal">
         <i
           className="material-icons"
           onClick={handleOpen}
           data-toggle="tooltip"
           title="Delete"
         >
-          {/* &#xE872; */}
+          
           <span style={{ fontSize: "16px" }}> ❌</span>
         </i>
-      </a>
+      </a> */}
 
       <Modal
         show={show}

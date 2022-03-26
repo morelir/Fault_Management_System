@@ -232,7 +232,7 @@ const FaultsFilter = (props) => {
                   Search <BiSearchAlt />
                 </Button>
 
-                <Button color="black" onClick={props.resetFaults}>
+                <Button title="faults filter" color="black" onClick={props.resetFaults}>
                   Reset <HiOutlineRefresh />
                 </Button>
               </Form.Group>
