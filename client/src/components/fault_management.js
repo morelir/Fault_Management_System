@@ -95,8 +95,9 @@ const FaultManagement = (props) => {
                     {authCtx.user.team === "Customer service" ? (
                       <>
                         <div className="col-sm-10">
-                          <a className="btn" >
+                          <a className="btn">
                             <BsFilterRight
+                              title="faults filter"
                               onClick={handleOpen}
                               style={{ fontSize: "25px" }}
                             />

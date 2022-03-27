@@ -5,50 +5,22 @@ import useStyles from "./styles";
 import User from "./Users/User";
 import AuthContext from "../../store/auth-context";
 import Axios from "axios";
-import Button from "react-bootstrap/Button";
-import Spinner from "react-bootstrap/Spinner";
-import CreateNewUserModal from "./Users/User/CreateNewUserModal";
 
 const Users = (props) => {
-  const [users, setUsers] = useState([]);
-  //   const patients = useSelector((state) => state.patients);
+  const [users, setUsers] = useState(props.users);
   const classes = useStyles();
   const authCtx = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const getUsers = async () => {
-    try {
-      let response = await Axios.get("/users");
-      console.log(response.data);
-      setUsers(response.data);
-      setIsLoading(false);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+  
   const updateUsers = (users) => {
     setUsers(users);
   };
 
-  useEffect(async () => {
-    await getUsers();
-  }, []);
+  useEffect(()=>{
+    setUsers(props.users);
+  },[props.users])
 
-  return isLoading ? (
-
-    <Spinner
-      as="span"
-      animation="border"
-      size="sm"
-      role="status"
-      aria-hidden="true"
-    />
-      
-  ) : (
-    // <h1 align="center">No users</h1>
+  return ( 
     <>
-      <CreateNewUserModal updateUsers={updateUsers} />
       <Grid
         className={classes.mainContainer}
         container
@@ -74,7 +46,6 @@ const Users = (props) => {
               xs={4}
               sm={2}
               key={user._id}
-              item
             >
               <User user={user} updateUsers={updateUsers} />
             </Grid>

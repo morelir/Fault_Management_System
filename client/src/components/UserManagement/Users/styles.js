@@ -27,7 +27,7 @@ export default makeStyles((theme) => ({
     padding: theme.spacing(2, 0, 0, 0),
   },
   cardActions: {
-        padding: '0 16% 8% 16%',
+        padding: '0 16% 8% 15%',
         display: 'flex',
         justifyContent: 'space-between',
       },

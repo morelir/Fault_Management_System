@@ -35,7 +35,7 @@ const EditFaultModel = (props) => {
     id: props.fault.clientID,
     name: props.fault.clientName,
     surname: props.fault.clientSurname,
-    phone:props.fault.clientPhoneNumber,
+    phone: props.fault.clientPhoneNumber,
     idIsValid: true,
   });
   const [teamMember, setTeamMember] = useState({
@@ -82,13 +82,17 @@ const EditFaultModel = (props) => {
         id: props.fault.clientID,
         name: props.fault.clientName,
         surname: props.fault.clientSurname,
-        phone:props.fault.clientPhoneNumber,
+        phone: props.fault.clientPhoneNumber,
         idIsValid: true,
       };
     });
+    console.log(props.fault.teamMemberID);
     setTeamMember((prevState) => {
       return {
-        id: props.fault.teamMemberID,
+        id:
+          props.fault.teamMemberID == null
+            ? ""
+            : props.fault.teamMemberID.toString(),
         name: props.fault.teamMemberName,
         surname: props.fault.teamMemberSurname,
         idIsValid: props.fault.teamMemberID === null ? false : true,
@@ -112,7 +116,7 @@ const EditFaultModel = (props) => {
       activity: [...props.fault.activity, Activity],
     })
       .then((response) => {
-        props.updateFaults(defaultFilter(response.data,authCtx.user.team));
+        props.updateFaults(defaultFilter(response.data, authCtx.user.team));
         handleClose();
         setSavingForm(false);
       })
@@ -144,7 +148,7 @@ const EditFaultModel = (props) => {
 
   useEffect(() => {
     const identifier = setTimeout(() => {
-      console.log(fault.formIsValid)
+      console.log(fault.formIsValid);
       console.log("checking form validity");
       setFault((prevState) => {
         return {
@@ -258,11 +262,7 @@ const EditFaultModel = (props) => {
                   <strong>Phone</strong>
                 </Form.Label>
                 {client.idIsValid ? (
-                <Form.Control
-                  type="text"
-                  value={client.phone}
-                  readOnly
-                />
+                  <Form.Control type="text" value={client.phone} readOnly />
                 ) : (
                   <Form.Control value="" type="text" readOnly />
                 )}

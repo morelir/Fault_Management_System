@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import EditButton from "../../../../shared/components/FormElements/Button";
-import { BiSearchAlt } from "react-icons/bi";
-import {MdModeEdit} from "react-icons/md";
+import { MdModeEdit } from "react-icons/md";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
@@ -11,11 +10,10 @@ import Spinner from "react-bootstrap/Spinner";
 import styles from "./UserModal.module.css";
 import Axios from "axios";
 import Error from "../../../../shared/components/FormElements/error";
-import { common } from "@material-ui/core/colors";
 
 const EditUserModal = (props) => {
   const reg = /^\d{9}/;
-  const [formIsValid, setFormIsValid] = useState(true);
+  const [formIsValid, setFormIsValid] = useState(false);
   const [savingForm, setSavingForm] = useState(false);
   const [show, setShow] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -37,10 +35,9 @@ const EditUserModal = (props) => {
   };
 
   const resetStates = () => {
-    setFormIsValid(true);
     setUser(() => {
       return {
-        id: props.user.id,
+        id: props.user.id.toString(),
         name: props.user.name,
         surname: props.user.surname,
         email: props.user.email,
@@ -83,7 +80,12 @@ const EditUserModal = (props) => {
           user.name.length > 0 &&
           user.surname.length > 0 &&
           user.email.includes("@") > 0 &&
-          (user.newPassword.length > 3 || user.newPassword.length === 0)
+          (user.newPassword.length > 3 || user.newPassword.length === 0) &&
+          (user.id !== props.user.id.toString() ||
+            user.name !== props.user.name ||
+            user.surname != props.user.surname ||
+            user.email != props.user.email||
+            user.newPassword!="")
         );
       });
     }, 200);
@@ -96,19 +98,15 @@ const EditUserModal = (props) => {
 
   return (
     <>
-      <EditButton type="submit" style={{color:"black",background:"#ffcb00",borderColor:"#ffcb00"}} onClick={handleOpen}>
-        <strong>Edit</strong> <MdModeEdit style={{marginBottom:"5px"}} color="black" />
+      <EditButton
+        title="edit"
+        type="submit"
+        color="yellow"
+        onClick={handleOpen}
+      >
+        <strong>Edit</strong>{" "}
+        <MdModeEdit style={{ marginBottom: "5px" }}  />
       </EditButton>
-      {/* <a href="#editModal" className="edit" data-toggle="modal">
-        <i
-          className="material-icons"
-          onClick={handleOpen}
-          data-toggle="tooltip"
-          title="Edit"
-        >
-          <span style={{ fontSize: "16px" }}>✏️</span>
-        </i>
-      </a> */}
 
       <Modal
         show={show}

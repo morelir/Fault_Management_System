@@ -35,21 +35,9 @@ const DeleteUserModal = (props) => {
 
   return (
     <>
-      <DeleteButton type="submit" style={{color:"black",background:"rgb(255, 60, 0) ",borderColor:"rgb(255, 60, 0)"}} onClick={handleOpen}>
-        <strong>Delete</strong> <AiFillDelete style={{marginBottom:"2px"}} color="black" />
+      <DeleteButton title="delete" type="submit" color="orange" onClick={handleOpen}>
+        <strong>Delete</strong> <AiFillDelete style={{marginBottom:"2px"}}  />
       </DeleteButton>
-
-      {/* <a style={{paddingLeft:"100px"}} href="#deleteModal" data-toggle="modal">
-        <i
-          className="material-icons"
-          onClick={handleOpen}
-          data-toggle="tooltip"
-          title="Delete"
-        >
-          
-          <span style={{ fontSize: "16px" }}> ❌</span>
-        </i>
-      </a> */}
 
       <Modal
         show={show}

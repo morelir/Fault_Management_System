@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
 import Button from "react-bootstrap/Button";
+import CostumButton from "../../../shared/components/FormElements/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Spinner from "react-bootstrap/Spinner";
-import Error from "../../../../shared/components/FormElements/error";
-import MessageModal from "../../../../shared/components/Modals/messageModal";
-import AuthContext from "../../../../store/auth-context";
-import styles from "./UserModal.module.css";
-import styleBtn from "./CreateNewUserModal.module.css";
+import Error from "../../../shared/components/FormElements/error";
+import MessageModal from "../../../shared/components/Modals/messageModal";
+import AuthContext from "../../../store/auth-context";
+import styles from "./CreateNewUserModal.module.css";
 import Axios from "axios";
+import { BsFillPersonPlusFill } from "react-icons/bs";
+import { ImFilter } from "react-icons/im";
+
 
 const CreateNewUserModal = (props) => {
   const reg = /^\d{9}/;
@@ -133,17 +136,37 @@ const CreateNewUserModal = (props) => {
 
   return (
     <>
-      <a
+      {/* <CostumButton
+        style={{ width: "200px", height: "50px" }}
+        title="user filter"
+        color="blue"
+        onClick={handleOpen}
+      >
+        <strong>User Filter</strong>{" "}
+        <ImFilter  style={{ marginBottom: "5px" }} />
+      </CostumButton> */}
+      <CostumButton
+        style={{ width: "200px", height: "50px" }}
+        title="create new user"
+        color="blue"
+        onClick={handleOpen}
+      >
+        <strong>Create New User</strong>{" "}
+        <BsFillPersonPlusFill style={{ marginBottom: "2px" }} />
+      </CostumButton>
+
+      {/* <a
         onClick={handleOpen}
         className={`btn ${styleBtn.btn} `}
         data-toggle="modal"
         style={{ fontSize: "24px", borderRadius: "6px", fontWeight: "600" }}
+        title="create new user"
       >
         <i style={{ marginTop: "4px" }} className="material-icons">
           &#xE147;
         </i>{" "}
-        <span>Create New User</span>
-      </a>
+        <span> Create New User</span>
+      </a> */}
 
       <Modal
         show={show}
@@ -223,27 +246,28 @@ const CreateNewUserModal = (props) => {
                 <Form.Label>
                   <strong>Role</strong>
                 </Form.Label>
-                <Form.Control
-                  type="text"
-                  value={user.role}
-                  as="select"
-                  onChange={(e) => {
-                    setUser((prevState) => {
-                      return {
-                        ...prevState,
-                        role: e.target.value,
-                      };
-                    });
-                  }}
-                >
-                  <>
-                    <option value={"regular"}>Regular</option>
-                    <option value={"team leader"}>Team Leader</option>
-                    <option value={"system administrator"}>
-                      System Administrator
-                    </option>
-                  </>
-                </Form.Control>
+                {authCtx.user.role === "system administrator" ? (
+                  <Form.Control
+                    type="text"
+                    value={user.role}
+                    as="select"
+                    onChange={(e) => {
+                      setUser((prevState) => {
+                        return {
+                          ...prevState,
+                          role: e.target.value,
+                        };
+                      });
+                    }}
+                  >
+                    <>
+                      <option value={"regular"}>Regular</option>
+                      <option value={"team leader"}>Team Leader</option>
+                    </>
+                  </Form.Control>
+                ) : (
+                  <Form.Control type="text" value="Regular" readOnly />
+                )}
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>
@@ -404,7 +428,11 @@ const CreateNewUserModal = (props) => {
         </Form>
       </Modal>
 
-      <MessageModal show={showCreatedMessage} handleClose={handleCloseMassage} header="User has been created!">
+      <MessageModal
+        show={showCreatedMessage}
+        handleClose={handleCloseMassage}
+        header="User has been created!"
+      >
         <Form.Group>
           <Form.Label>
             <h4>

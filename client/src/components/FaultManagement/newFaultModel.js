@@ -173,8 +173,9 @@ const NewFaultModel = (props) => {
         className={`btn  ${styleBtn.btn}`}
         data-toggle="modal"
         style={{ fontSize: "18px", borderRadius: "6px", fontWeight: "600" ,marginRight:"20px" }}
+        title="new fault"
       >
-        <i style={{ marginTop: "4px" }} className="material-icons">
+        <i  style={{ marginTop: "4px" }} className="material-icons">
           &#xE147;
         </i>{" "}
         <span>New Fault</span>

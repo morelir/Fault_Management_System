@@ -226,13 +226,14 @@ const FaultsFilter = (props) => {
               <Form.Group as={Col} className={styles["responsive"]}>
                 <Button
                   type="submit"
+                  title="search"
                   disabled={!formIsValid}
                   onClick={handleSearch}
                 >
                   Search <BiSearchAlt />
                 </Button>
 
-                <Button title="faults filter" color="black" onClick={props.resetFaults}>
+                <Button title="reset" color="black" onClick={props.resetFaults}>
                   Reset <HiOutlineRefresh />
                 </Button>
               </Form.Group>

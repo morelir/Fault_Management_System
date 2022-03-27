@@ -94,16 +94,17 @@ const User = ({ user,updateUsers }) => {
           </Typography>
         ))}
 
-        <EditUserModal user={user} updateUsers={updateUsers}/>
-        <DeleteUserModal _id={user._id} updateUsers={updateUsers}/>
+        
         
       </CardContent>
       <CardActions className={classes.cardActions}>
-        <Button size="small" color="primary" onClick={handleClickOpen}>
-          {/* <DeleteIcon fontSize="small" /> Delete */}
-        </Button>
+        {/* <Button size="small" color="primary" onClick={handleClickOpen}>
+           <DeleteIcon fontSize="small" /> Delete 
+        </Button> */}
+        <EditUserModal user={user} updateUsers={updateUsers}/>
+        <DeleteUserModal _id={user._id} updateUsers={updateUsers}/>
       </CardActions>
-      <Dialog open={open} onClose={handleClose}>
+      {/* <Dialog open={open} onClose={handleClose}>
         <DialogTitle className={classes.dialogTitle} id="alert-dialog-title">
           {"Are you sure you want to delete this user?"}
         </DialogTitle>
@@ -119,7 +120,7 @@ const User = ({ user,updateUsers }) => {
             Yes
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </Card>
   );
 };
