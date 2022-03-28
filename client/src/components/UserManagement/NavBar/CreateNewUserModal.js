@@ -136,15 +136,6 @@ const CreateNewUserModal = (props) => {
 
   return (
     <>
-      {/* <CostumButton
-        style={{ width: "200px", height: "50px" }}
-        title="user filter"
-        color="blue"
-        onClick={handleOpen}
-      >
-        <strong>User Filter</strong>{" "}
-        <ImFilter  style={{ marginBottom: "5px" }} />
-      </CostumButton> */}
       <CostumButton
         style={{ width: "200px", height: "50px" }}
         title="create new user"

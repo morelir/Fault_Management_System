@@ -28,7 +28,7 @@ const NavBar = (props) => {
       
     </Container>
     <Container maxWidth style={{padding:"10px 10px", background: "#fff" }}>
-      <UserFilter isOpen={isOpen} updateUsers={props.updateUsers}/>
+      <UserFilter users={props.users} isOpen={isOpen} updateUsers={props.updateUsers} resetUsers={props.resetUsers}/>
     </Container>
     </>
   );

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { NavLink, Link, useHistory } from "react-router-dom";
 import AuthContext from "../../../store/auth-context";
 import Axios from "axios";
+import {capitalizeFirstLetter} from "../../../utils/functions"
 
 import "./NavLinks.css";
 
@@ -15,29 +16,14 @@ const NavLinks = (props) => {
     // history.replace("/login");
   };
 
-  // let [teams, setTeams] = useState([]);
-  // const getTeams = async () => {
-  //   try {
-  //     let response = await Axios.get(`faultManagement/teams`);
-  //     let _teams = response.data.map((team) => {
-  //       return team.name;
-  //     });
-  //     setTeams(_teams);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-  // useEffect(() => {
-  //   getTeams();
-  // }, []);
 
   return (
     <ul className="nav-links">
       {isLoggedIn && (
         <li>
           <div style={{ color: "#88989b" }}>
-            <div style={{textAlign:"center"}}>Hello, {`${authCtx.user.name}`}</div>
-            <div style={{textAlign:"center"}}> {`${authCtx.user.team}`}</div>
+            <div style={{textAlign:"center"}}>Hello, {capitalizeFirstLetter(authCtx.user.name)}</div>
+            <div style={{textAlign:"center"}}> {`${authCtx.user.role==="system administrator" ? "System Administrator": authCtx.user.team }`}</div>
           </div>
         </li>
       )}

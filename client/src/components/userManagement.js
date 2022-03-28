@@ -6,12 +6,13 @@ import Axios from "axios";
 import Spinner from "react-bootstrap/Spinner";
 
 const UserManagement = (props) => {
+  const [allUsers, setAllUsers] = useState([]);
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const getUsers = async () => {
     try {
       let response = await Axios.get("/users");
-      console.log(response.data);
+      setAllUsers(response.data);
       setUsers(response.data);
       setIsLoading(false);
     } catch (err) {
@@ -25,6 +26,10 @@ const UserManagement = (props) => {
     setUsers(users);
   };
 
+  const resetUsers = () => {
+    setUsers(allUsers);
+  };
+
   return isLoading ? (
     <Spinner
       as="span"
@@ -35,7 +40,7 @@ const UserManagement = (props) => {
     />
   ) : (
     <Grid>
-      <NavBar updateUsers={updateUsers}/>
+      <NavBar users={allUsers} updateUsers={updateUsers} resetUsers={resetUsers}/>
       <Users users={users}/>
     </Grid>
   );

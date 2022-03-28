@@ -132,7 +132,7 @@ export const getTimeDuration = (dateCreatedFormat) => {
     displayTimeDuration += ` ${hours} hours,`;
   }
   let min = Math.floor(difference / (1000 * 60));
-  if ((min > 0 && count < paramsNum) || count == 0) {
+  if ((min > 0 && count < paramsNum) || count === 0) {
     difference =
       (difference / (1000 * 60) - Math.floor(difference / (1000 * 60))) *
       (1000 * 60);
