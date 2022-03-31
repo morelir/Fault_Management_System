@@ -66,7 +66,9 @@ const Login = (props) => {
           };
         });
 
-        const expirationTime = new Date(new Date().getTime() + 3600 * 1000);
+        const expirationTime = new Date(
+          new Date().getTime() + 10 * 3600 * 1000
+        );
         const objUserAndToken = {
           ...response.data.user,
           token: response.data.token,
@@ -101,7 +103,7 @@ const Login = (props) => {
         }
       });
   };
-  
+
   return (
     <div className={`${styles["auth"]} ${login.invalidUser && styles.invalid}`}>
       <h1 className={styles["auth-header"]}>Login</h1>
