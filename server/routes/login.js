@@ -21,12 +21,12 @@ router.post("/", async (req, res) => {
   //נבדוק אם המייל שנשלח בבאדי קיים במסד נתונים
   let user = await UserModel.findOne({ email: req.body.email });
   if (!user) {
-    return res.status(401).json({ msg: "Email or Password not found" });
+    return res.status(401).json({ msg: "Email not found" });
   }
   //נבדוק שהסיסמא שנשלחה מתאימה להצפנה שנמצאת במסד
   let passValid = await bcrypt.compare(req.body.pass, user.pass);
   if (!passValid) {
-    return res.status(401).json({ msg: "Email or Password not found" });
+    return res.status(401).json({ msg: "Password wrong" });
   }
   //נחזיר הודעה שהכל בסדר ונייצר טוקן
   let newToken = genToken(user.id);
