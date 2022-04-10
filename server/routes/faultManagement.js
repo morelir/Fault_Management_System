@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const router = express.Router();
-const { FaultModel, validNewFault,Activity } = require("../models/faultModel");
+const { FaultModel, validNewFault, Activity } = require("../models/faultModel");
 const { UserModel } = require("../models/userModel");
 const { ClientModel } = require("../models/clientModel");
 const { TeamModel } = require("../models/teamModel");
@@ -76,7 +76,7 @@ router.post("/NewRequest", async (req, res) => {
   // }
   try {
     let request = new RequestModel(req.body);
-    await RequestModel.deleteOne({number:request.number});
+    await RequestModel.deleteOne({ number: request.number });
     await request.save(); //שומר את המידע ב db
     res.json({});
   } catch (err) {
@@ -93,20 +93,16 @@ router.put("/clientID", async (req, res) => {
 router.patch("/updateFault", async (req, res) => {
   try {
     let fault = await FaultModel.findOne({ number: req.body.number });
-    req.body.updates.map((update,pos)=>{
-      if(update==="activity")
-        fault[update].push(req.body.values[pos]);
-      else
-        fault[update] = req.body.values[pos];
-    })
+    req.body.updates.map((update, pos) => {
+      if (update === "activity") fault[update].push(req.body.values[pos]);
+      else fault[update] = req.body.values[pos];
+    });
     await fault.save();
     res.json({});
   } catch (err) {
     console.log(err);
   }
 });
-
-
 
 const generateFaultNumber = async () => {
   let data = await FaultModel.findOne({}, "-_id number").sort("-date_created");
@@ -134,7 +130,7 @@ const mergeFaultsAndUsers = async (faults) => {
             ...fault,
             clientName: client.name,
             clientSurname: client.surname,
-            clientPhoneNumber:client.phoneNumber,
+            clientPhoneNumber: client.phoneNumber,
             teamMemberName: teamMember.name,
             teamMemberSurname: teamMember.surname,
           };
@@ -143,7 +139,7 @@ const mergeFaultsAndUsers = async (faults) => {
           ...fault,
           clientName: client.name,
           clientSurname: client.surname,
-          clientPhoneNumber:client.phoneNumber,
+          clientPhoneNumber: client.phoneNumber,
         };
       })
     );
@@ -154,13 +150,11 @@ const mergeFaultsAndUsers = async (faults) => {
   }
 };
 
-
-
 router.put("/closeFault", async (req, res) => {
   try {
     fault = await FaultModel.findOne({ _id: req.body._id });
     fault.status = "Close";
-    fault.activity=[...fault.activity,req.body.activity]
+    fault.activity = [...fault.activity, req.body.activity];
     await fault.save();
     let faults = await FaultModel.find({}).lean();
     data = await mergeFaultsAndUsers(faults);
@@ -175,7 +169,7 @@ router.put("/doneFault", async (req, res) => {
     fault = await FaultModel.findOne({ _id: req.body._id });
     fault.team = "Customer service";
     fault.status = "Done";
-    fault.activity=[...fault.activity,req.body.activity]
+    fault.activity = [...fault.activity, req.body.activity];
     fault.teamMemberID = null;
     await fault.save();
     let faults = await FaultModel.find({}).lean();

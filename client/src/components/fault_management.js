@@ -71,11 +71,6 @@ const FaultManagement = (props) => {
 
   return (
     <main>
-      {/* <div class="header">
-        <h1>Fault Management</h1>
-        <p>Customer service</p>
-      </div> */}
-
       {/* className="container-xl" */}
       <div className="container-xl container-max-width">
         {/* className="table-responsive" */}
@@ -83,7 +78,6 @@ const FaultManagement = (props) => {
           <div className="table-wrapper">
             <div className="table-title">
               <div className="row">
-                {/* style={{position:"absolute",right:"-100px",top:"40px"}} */}
                 <div className="col-sm-2">
                   <h2>
                     <strong>Fault List</strong>
