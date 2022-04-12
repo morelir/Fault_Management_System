@@ -42,8 +42,6 @@ const App = () => {
       <MainNavigation />
       <main>
         <div className="App">
-          <header></header>
-          <h1></h1>
           <Switch>
             <Route exact path="/" component={Home}></Route>
             <ProtectedRoute
@@ -51,16 +49,13 @@ const App = () => {
               component={Login}
               path="/login"
             />
-            {/* <ProtectedRoute
-              condition={!authCtx.isLoggedIn}
-              component={Registration}
-              path="/registration"
-            /> */}
+            
             <ProtectedRoute
               condition={
                 authCtx.isLoggedIn &&
-                (authCtx.user.team === "Customer service" ||
-                  authCtx.user.team === "Technical service")
+                (authCtx.user.team === "Customer service" || 
+                  authCtx.user.team === "Technical service"||
+                  authCtx.user.role === "system administrator")
               }
               component={FaultManagement}
               path="/faultManagement"
@@ -69,7 +64,8 @@ const App = () => {
               condition={
                 authCtx.isLoggedIn &&
                 (authCtx.user.team === "Stock" ||
-                  authCtx.user.team === "Purchase")
+                  authCtx.user.team === "Purchase"||
+                  authCtx.user.role === "system administrator")
               }
               component={RequestManagement}
               path="/requestManagement"

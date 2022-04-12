@@ -1,10 +1,4 @@
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
-} from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 
 const ProtectedRoute = (props) => {
   if (props.condition) {

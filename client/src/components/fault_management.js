@@ -61,6 +61,10 @@ const FaultManagement = (props) => {
     await getData();
   }, []);
 
+  useEffect(() => {
+    setFaults(defaultFilter(allFaults, authCtx.user.team));
+  }, [authCtx]);
+
   const updateFaults = (faults) => {
     setFaults(teamFilter(faults, authCtx.user.team));
   };

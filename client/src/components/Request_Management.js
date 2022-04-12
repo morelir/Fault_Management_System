@@ -54,6 +54,10 @@ const RequestManagement = (props) => {
     await getData();
   }, []);
 
+  useEffect(() => {
+    setRequests(defaultFilter(allRequests, authCtx.user.team));
+  }, [authCtx]);
+
   const updateRequests = (requests) => {
     setRequests(teamFilter(requests, authCtx.user.team));
   };
