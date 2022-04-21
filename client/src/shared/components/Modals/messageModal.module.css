@@ -10,20 +10,20 @@
   
   .modal-header {
       color:white;
-      background: #0e85cacc ;
+      background: #212529;
   
       display:block;
       text-align: center;
       
   }
 
-  .modal-header-fault{
+  /* .modal-header-fault{
     background: #212529;
   }
   .modal-header-request{
     background: rgba(4, 34, 78, 0.877);
   }
-  
+   */
   
   .modal-body {
     padding:0 0.85rem;

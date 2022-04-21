@@ -74,7 +74,7 @@ const NewPurchaseRequestModal = (props) => {
     Activity.data += `-Purchase request handler team: ${request.team}\n\t`;
     Activity.data += `-Purchase request component\\s:\n\t\t`;
     products.map((product) => {
-      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
+      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t\t`;
     });
     return Activity;
   };
@@ -91,7 +91,7 @@ const NewPurchaseRequestModal = (props) => {
     if (request.note !== "") Activity.data += `-Note: ${request.note}\n\t`;
     Activity.data += `-Purchase request component\\s:\n\t\t`;
     products.map((product) => {
-      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
+      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t\t`;
     });
     return Activity;
   };

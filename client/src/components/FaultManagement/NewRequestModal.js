@@ -68,7 +68,7 @@ const NewRequestModal = (props) => {
     Activity.data += `-Request handler team: ${request.team}\n\t`;
     Activity.data += `-Requested component\\s:\n\t\t`;
     products.map((product) => {
-      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
+      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t\t`;
     });
     return Activity;
   };
@@ -88,7 +88,7 @@ const NewRequestModal = (props) => {
       Activity.data+= `-Note: ${request.note}\n\t`
     Activity.data += `-Requested component\\s:\n\t\t`;
     products.map((product) => {
-      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t`;
+      Activity.data += `Serial No.: ${product.serialNumber}\tModel: ${product.name} ${product.type}\n\t\t`;
     });
     return Activity;
   };
@@ -453,7 +453,7 @@ const NewRequestModal = (props) => {
       <MessageModal
         show={showCreatedMessage}
         handleClose={handleCloseMessage}
-        header="Request has created!"
+        header="Component Request has created!"
         type="fault"
       >
         <Form.Group>

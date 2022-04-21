@@ -27,6 +27,18 @@ const RequestsFilter = (props) => {
   });
   const [formIsValid, setFormIsValid] = useState(false);
 
+  const reset = () => {
+    setFilter({
+      number: "",
+      status: "",
+      from_date_created: "",
+      handler_team: "",
+      urgency_level: "",
+    });
+    setTeamMember({ display: "", id: "", idIsValid: true });
+    setFormIsValid(false);
+  };
+
   const handlerID = (e, set, persons, idIsValid, id) => {
     let value = e.target.value;
     if (idIsValid && id.length !== 0) {
@@ -201,7 +213,7 @@ const RequestsFilter = (props) => {
                 </Form.Control>
               </Form.Group>
 
-              <Form.Group as={Col}  className={styles["responsive"]}>
+              <Form.Group as={Col} className={styles["responsive"]}>
                 <Button
                   type="submit"
                   disabled={!formIsValid}
@@ -209,7 +221,13 @@ const RequestsFilter = (props) => {
                 >
                   Search <BiSearchAlt />
                 </Button>
-                <Button color="black"  onClick={props.resetRequests}>
+                <Button
+                  color="black"
+                  onClick={() => {
+                    reset();
+                    props.resetRequests();
+                  }}
+                >
                   Reset <HiOutlineRefresh />
                 </Button>
               </Form.Group>

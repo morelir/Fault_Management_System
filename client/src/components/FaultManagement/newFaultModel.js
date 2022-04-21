@@ -416,6 +416,7 @@ const NewFaultModel = (props) => {
         show={showCreatedMessage}
         handleClose={handleCloseMessage}
         header="Fault has created!"
+        type="fault"
       >
         <Form.Group>
           <Form.Label>

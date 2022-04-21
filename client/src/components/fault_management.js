@@ -38,23 +38,21 @@ const FaultManagement = (props) => {
   const evenPos = (pos) => pos % 2 == 0;
 
   const getData = async () => {
+    let time=Date.now()
     try {
-      let response = await Axios.get("arrays/faults");
-      setAllFaults(response.data);
-      setFaults(defaultFilter(response.data, authCtx.user.team));
-      response = await Axios.get(`arrays/teams`);
-      setTeams(response.data);
-      response = await Axios.get(`arrays/users`);
-      setUsers(response.data);
-      response = await Axios.get(`arrays/clients`);
-      setClients(response.data);
-      response = await Axios.get(`arrays/products`);
-      setProducts(response.data);
+      let [faults,teams,users,clients,products]=await Promise.all([Axios.get("arrays/faults"),Axios.get(`arrays/teams`),Axios.get(`arrays/users`),Axios.get(`arrays/clients`),Axios.get(`arrays/products`)]);
+      setAllFaults(faults.data);
+      setFaults(defaultFilter(faults.data, authCtx.user.team));
+      setTeams(teams.data);
+      setUsers(users.data);
+      setClients(clients.data);
+      setProducts(products.data);
       setIsLoading(false);
       setIsOpen(true);
     } catch (err) {
       console.log(err);
     }
+    console.log(Date.now()-time)
   };
 
   useEffect(async () => {
@@ -62,10 +60,18 @@ const FaultManagement = (props) => {
   }, []);
 
   useEffect(() => {
-    setFaults(defaultFilter(allFaults, authCtx.user.team));
+    if(authCtx.user.role==="system administrator"){
+      setIsLoading(true);
+      getData();
+    }
   }, [authCtx]);
 
   const updateFaults = (faults) => {
+    setAllFaults(faults);
+    setFaults(defaultFilter(faults, authCtx.user.team));
+  };
+
+  const FaultsFiltering = (faults) => {
     setFaults(teamFilter(faults, authCtx.user.team));
   };
 
@@ -127,7 +133,7 @@ const FaultManagement = (props) => {
                 users={users}
                 clients={clients}
                 isOpen={isOpen}
-                updateFaults={updateFaults}
+                updateFaults={FaultsFiltering}
                 resetFaults={resetFaults}
               />
               <thead>

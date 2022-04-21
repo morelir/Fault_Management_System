@@ -30,6 +30,19 @@ const FaultsFilter = (props) => {
   });
   const [formIsValid, setFormIsValid] = useState(false);
 
+  const reset = () => {
+    setFilter({
+      number: "",
+      status: "",
+      from_date_created: "",
+      handler_team: "",
+      urgency_level: "",
+    });
+    setClient({ display: "", id: "", idIsValid: true });
+    setTeamMember({ display: "", id: "", idIsValid: true });
+    setFormIsValid(false);
+  };
+
   const handlerID = (e, set, persons, idIsValid, id) => {
     let value = e.target.value;
     if (idIsValid && id.length !== 0) {
@@ -233,11 +246,17 @@ const FaultsFilter = (props) => {
                   Search <BiSearchAlt />
                 </Button>
 
-                <Button title="reset" color="black" onClick={props.resetFaults}>
+                <Button
+                  title="reset"
+                  color="black"
+                  onClick={() => {
+                    reset();
+                    props.resetFaults();
+                  }}
+                >
                   Reset <HiOutlineRefresh />
                 </Button>
               </Form.Group>
-              
             </Row>
           </th>
         </tr>

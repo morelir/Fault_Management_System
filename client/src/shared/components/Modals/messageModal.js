@@ -16,7 +16,7 @@ const MessageModal = (props) => {
 
   return (
     <Modal show={props.show} className={styles.modal}>
-      <Modal.Header className={`${styles["modal-header"]} ${styles[`modal-header-${props.type}`]} `}>
+      <Modal.Header className={styles["modal-header"]}>
         <Modal.Title>
           <h3>
             <strong>{props.header}</strong>

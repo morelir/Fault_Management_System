@@ -34,20 +34,23 @@ const RequestManagement = (props) => {
   const evenPos = (pos) => pos % 2 == 0;
 
   const getData = async () => {
+    let time = Date.now();
     try {
-      let response = await Axios.get("arrays/requests");
-      let requests = response.data;
-      response = await Axios.get("arrays/purchaseRequests");
-      requests = [...requests, ...response.data];
+      let [components, purchases, users] = await Promise.all([
+        Axios.get("arrays/requests"),
+        Axios.get("arrays/purchaseRequests"),
+        Axios.get(`arrays/users`),
+      ]);
+      let requests = [...components.data, ...purchases.data];
       setAllRequests(requests);
       setRequests(defaultFilter(requests, authCtx.user.team));
-      response = await Axios.get(`arrays/users`);
-      setUsers(response.data);
+      setUsers(users.data);
       setIsLoading(false);
       setIsOpen(true);
     } catch (err) {
       console.log(err);
     }
+    console.log(Date.now() - time);
   };
 
   useEffect(async () => {
@@ -55,8 +58,25 @@ const RequestManagement = (props) => {
   }, []);
 
   useEffect(() => {
-    setRequests(defaultFilter(allRequests, authCtx.user.team));
+    if (authCtx.user.role === "system administrator") {
+      setIsLoading(true);
+      getData();
+    }
   }, [authCtx]);
+
+  const updateRequestsAfterCreating = (requests) => {
+    // let data;
+    // try {
+    //   if (requests[0].team === "Stock")
+    //     data = await Axios.get("arrays/purchaseRequests");
+    //   else data = await Axios.get("arrays/requests");
+    //   setAllRequests([...requests, ...data]);
+    //   setRequests(defaultFilter(requests, authCtx.user.team));
+    // } catch (err) {
+    //   console.log("update requests after creating - error");
+    // }
+    getData();
+  };
 
   const updateRequests = (requests) => {
     setRequests(teamFilter(requests, authCtx.user.team));
@@ -88,7 +108,7 @@ const RequestManagement = (props) => {
                 </div>
                 {!isLoading && (
                   <div className="col-sm-9">
-                    <a className={`btn ${styles.btn}`} >
+                    <a className={`btn ${styles.btn}`}>
                       <BsFilterRight
                         onClick={handleOpen}
                         style={{ fontSize: "25px" }}
@@ -162,7 +182,7 @@ const RequestManagement = (props) => {
                                 <>
                                   <NewPurchaseRequestModal
                                     request={request}
-                                    updateRequests={updateRequests}
+                                    updateRequests={updateRequestsAfterCreating}
                                     team="Purchase"
                                   />
                                   <ModalDialog
@@ -171,7 +191,7 @@ const RequestManagement = (props) => {
                                     authCtx={authCtx}
                                     Activity={requestActivity}
                                     native="/requestManagement/closeRequest"
-                                    update={updateRequests}
+                                    update={updateRequestsAfterCreating}
                                     className="close"
                                     btn_name="Close"
                                     btn_disabled={
@@ -206,7 +226,7 @@ const RequestManagement = (props) => {
                                     authCtx={authCtx}
                                     Activity={closePurchaseRequestActivity}
                                     native="/requestManagement/closePurchaseRequest"
-                                    update={updateRequests}
+                                    update={updateRequestsAfterCreating}
                                     className="close"
                                     btn_name="Close"
                                     icon="lock"

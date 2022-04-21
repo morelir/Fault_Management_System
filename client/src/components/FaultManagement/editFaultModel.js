@@ -148,7 +148,6 @@ const EditFaultModel = (props) => {
 
   useEffect(() => {
     const identifier = setTimeout(() => {
-      console.log(fault.formIsValid);
       console.log("checking form validity");
       setFault((prevState) => {
         return {
