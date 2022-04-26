@@ -15,7 +15,7 @@ const MessageModal = (props) => {
   }, [props.show]);
 
   return (
-    <Modal show={props.show} className={styles.modal}>
+    <Modal onHide={handleClose} show={props.show} className={styles.modal} contentClassName={styles["modal-content"]}>
       <Modal.Header className={styles["modal-header"]}>
         <Modal.Title>
           <h3>

@@ -7,6 +7,14 @@
       max-width: 500px;
   
   }
+
+  .modal-content {
+    /* border-radius: 40px; */
+    border: 5px solid #212529;
+    border-radius: 20px;
+    /* text-align: center; */
+    /* background-color: #f7f7f7; */
+  }
   
   .modal-header {
       color:white;

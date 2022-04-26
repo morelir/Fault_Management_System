@@ -90,7 +90,7 @@ const FaultManagement = (props) => {
               <div className="row">
                 <div className="col-sm-2">
                   <h2>
-                    <strong>Fault List</strong>
+                    <strong>Fault List - {authCtx.user.team}</strong>
                   </h2>
                 </div>
 

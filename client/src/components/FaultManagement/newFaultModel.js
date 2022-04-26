@@ -187,6 +187,7 @@ const NewFaultModel = (props) => {
         backdrop="static"
         keyboard={false}
         className={styles["modal"]}
+        contentClassName={styles["modal-content"]}
         
       >
         {/* closeButton */}
@@ -213,7 +214,7 @@ const NewFaultModel = (props) => {
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Client ID</strong>
+                  <strong>Client ID <span style={{ color: "orange" }}>*</span></strong>
                 </Form.Label>
 
                 <Form.Control
@@ -356,7 +357,7 @@ const NewFaultModel = (props) => {
 
             <Form.Group size="lg" controlId="email" className={styles.textarea}>
               <Form.Label>
-                <strong>Description </strong>
+                <strong>Description <span style={{ color: "orange" }}>*</span></strong>
               </Form.Label>
               <br />
               <Form.Control

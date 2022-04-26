@@ -77,7 +77,7 @@ const NavLinks = (props) => {
               </NavLink>
             </li>
           )}
-          {authCtx.user.role === "team leader" || authCtx.user.role === "system administrator" && (
+          {(authCtx.user.role === "team leader" || authCtx.user.role === "system administrator") && (
             <li>
               <NavLink to="/userManagement" exact>
                 User Management

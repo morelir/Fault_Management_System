@@ -85,6 +85,8 @@ const Login = (props) => {
           response.data.user.team === "Purchase"
         )
           history.replace("/requestManagement");
+        else if(response.data.user.role==="system administrator")
+          history.replace("/userManagement");
         else history.replace("/");
       })
       .catch((err) => {

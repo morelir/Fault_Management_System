@@ -7,7 +7,7 @@ import { CSSTransition } from "react-transition-group";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "../../../shared/components/FormElements/Button";
-import styles from "./UserFilter.module.css"
+import styles from "./UserFilter.module.css";
 
 const UserFilter = (props) => {
   const [filter, setFilter] = useState({
@@ -21,6 +21,18 @@ const UserFilter = (props) => {
   const [formIsValid, setFormIsValid] = useState(false);
   const authCtx = useContext(AuthContext);
 
+  const reset = () => {
+    setFilter({
+      id: "",
+      name: "",
+      surname: "",
+      email: "",
+      team: "",
+      gender: "",
+    });
+    setFormIsValid(false);
+  };
+
   const handleSearch = () => {
     props.updateUsers(
       props.users.filter((item) => {
@@ -30,7 +42,7 @@ const UserFilter = (props) => {
           (filter.surname !== "" ? item.surname === filter.surname : true) &&
           (filter.email !== "" ? item.email === filter.email : true) &&
           (filter.team !== "" ? item.team === filter.team : true) &&
-          (filter.gender !== "" ? item.age === filter.age : true)
+          (filter.gender !== "" ? item.gender === filter.gender : true)
         );
       })
     );
@@ -161,7 +173,14 @@ const UserFilter = (props) => {
               Search <BiSearchAlt />
             </Button>
 
-            <Button title="reset" color="black" onClick={props.resetUsers}>
+            <Button
+              title="reset"
+              color="black"
+              onClick={() => {
+                reset();
+                props.resetUsers();
+              }}
+            >
               Reset <HiOutlineRefresh />
             </Button>
           </Form.Group>

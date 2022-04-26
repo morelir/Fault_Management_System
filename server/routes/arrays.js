@@ -9,7 +9,6 @@ const { ClientModel } = require("../models/clientModel");
 const { TeamModel } = require("../models/teamModel");
 const { ProductModel } = require("../models/productModel");
 
-
 router.get("/faults", async (req, res) => {
   faults = await FaultModel.find().lean();
   let data = await mergeFaultsAndUsers(faults);
@@ -48,6 +47,28 @@ router.get("/products", async (req, res) => {
   res.json(products);
 });
 
+// router.get("/delete", (req, res) => {
+//   const myPromise1 = new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       resolve('abcabc');
+//     }, 300);
+//   });
+//   const myPromise2 = new Promise((resolve, reject) => {
+//     resolve("foo");
+//   });
+//   TeamModel.deleteMany({ age: { $gte: 52 } }).then((res) => {
+//     console.log(res);
+//   });
+//   myPromise1.then(async(res) => {
+//     console.log(res);
+//   });
+//   myPromise2.then((res) => {
+//     console.log(res);
+//   });
+//   console.log("casca")
+//   res.json({ msg: "success" });
+// });
+
 const mergeFaultsAndUsers = async (faults) => {
   try {
     let data = await Promise.all(
@@ -65,7 +86,7 @@ const mergeFaultsAndUsers = async (faults) => {
             ...fault,
             clientName: client.name,
             clientSurname: client.surname,
-            clientPhoneNumber:client.phoneNumber,
+            clientPhoneNumber: client.phoneNumber,
             teamMemberName: teamMember.name,
             teamMemberSurname: teamMember.surname,
           };
@@ -74,7 +95,7 @@ const mergeFaultsAndUsers = async (faults) => {
           ...fault,
           clientName: client.name,
           clientSurname: client.surname,
-          clientPhoneNumber:client.phoneNumber,
+          clientPhoneNumber: client.phoneNumber,
         };
       })
     );

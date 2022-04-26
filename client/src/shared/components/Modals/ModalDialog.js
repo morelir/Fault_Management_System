@@ -56,6 +56,7 @@ const ModalDialog = (props) => {
         backdrop="static"
         keyboard={false}
         className={styles["modal"]}
+        contentClassName={styles["modal-content"]}
       >
 
         <Modal.Header className={`${styles["modal-header"]} ${styles[`modal-header-${props.type}`]} `}>

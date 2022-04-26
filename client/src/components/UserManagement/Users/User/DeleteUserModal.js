@@ -45,6 +45,7 @@ const DeleteUserModal = (props) => {
         backdrop="static"
         keyboard={false}
         className={styles["modal"]}
+        contentClassName={styles["modal-content"]}
       >
         {/* closeButton */}
         <Modal.Header className={styles["modal-header"]}>

@@ -203,6 +203,7 @@ const NewRequestModal = (props) => {
         backdrop="static"
         keyboard={false}
         className={styles["modal"]}
+        contentClassName={styles["modal-content"]}
       >
         {/* closeButton */}
         <Modal.Header className={styles["modal-header"]}>
@@ -302,15 +303,15 @@ const NewRequestModal = (props) => {
                   type="text"
                   value={serial}
                   onChange={serial_handler}
-                  style={{ width: "196px" }}
+                  style={{ width: "193px" }}
                 ></Form.Control>
               </Form.Group>
               <Form.Group as={Col} style={{ marginRight: "50px" }}>
                 <Form.Label>
-                  <strong>model</strong>
+                  <strong>Model</strong>
                 </Form.Label>
                 <Form.Control
-                  style={{ width: "196px" }}
+                  style={{ width: "194px" }}
                   type="text"
                   value={model}
                   readOnly

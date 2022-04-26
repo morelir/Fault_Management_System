@@ -233,6 +233,7 @@ const Order = (props) => {
         backdrop="static"
         keyboard={false}
         className={styles["modal"]}
+        contentClassName={styles["modal-content"]}
       >
         {/* closeButton */}
         <Modal.Header className={styles["modal-header"]}>
@@ -254,7 +255,7 @@ const Order = (props) => {
                   as="select"
                   value={serial}
                   onChange={serial_handler}
-                  style={{ width: "196px" }}
+                  style={{ width: "194px" }}
                 >
                   <option value="none" selected hidden>
                     Select Serial No.
@@ -273,7 +274,7 @@ const Order = (props) => {
                   <strong>model</strong>
                 </Form.Label>
                 <Form.Control
-                  style={{ width: "196px" }}
+                  style={{ width: "194px" }}
                   type="text"
                   value={model}
                   readOnly

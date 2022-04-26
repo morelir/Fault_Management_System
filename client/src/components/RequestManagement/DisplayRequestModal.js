@@ -181,6 +181,7 @@ const DisplayRequestModal = (props) => {
         keyboard={false}
         className={styles["modal"]}
         dialogClassName={styles["modal-dialog"]}
+        contentClassName={styles["modal-content"]}
       >
         {/* closeButton */}
         <Modal.Header className={styles["modal-header"]}>
