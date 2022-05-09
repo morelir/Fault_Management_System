@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid, withWidth } from "@material-ui/core";
 import Users from "./UserManagement/Users";
 import NavBar from "./UserManagement/NavBar";
 import Axios from "axios";
@@ -39,7 +39,7 @@ const UserManagement = (props) => {
       aria-hidden="true"
     />
   ) : (
-    <Grid>
+    <Grid style={{minWidth:"1400px"}}>
       <NavBar users={allUsers} updateUsers={updateUsers} resetUsers={resetUsers}/>
       <Users users={users}/>
     </Grid>

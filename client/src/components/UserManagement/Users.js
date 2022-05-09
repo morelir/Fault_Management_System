@@ -4,7 +4,6 @@ import { Grid } from "@material-ui/core";
 import useStyles from "./styles";
 import User from "./Users/User";
 import AuthContext from "../../store/auth-context";
-import Axios from "axios";
 
 const Users = (props) => {
   const [users, setUsers] = useState(props.users);
@@ -43,8 +42,8 @@ const Users = (props) => {
             <Grid
               style={{ paddingRight: "70px" }}
               item
-              xs={4}
-              sm={2}
+              
+              sm={3}
               key={user._id}
             >
               <User user={user} updateUsers={updateUsers} />

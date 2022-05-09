@@ -180,7 +180,7 @@ const CreateNewUserModal = (props) => {
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>ID</strong>
+                  <strong>ID<span style={{ color: "orange" }}> *</span></strong>
                 </Form.Label>
                 <Form.Control
                   type="text"
@@ -198,7 +198,7 @@ const CreateNewUserModal = (props) => {
 
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Name</strong>
+                  <strong>Name<span style={{ color: "orange" }}> *</span></strong>
                 </Form.Label>
                 <Form.Control
                   type="text"
@@ -216,7 +216,7 @@ const CreateNewUserModal = (props) => {
 
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Surname</strong>
+                  <strong>Surname<span style={{ color: "orange" }}> *</span></strong>
                 </Form.Label>
                 <Form.Control
                   type="text"
@@ -327,7 +327,7 @@ const CreateNewUserModal = (props) => {
 
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Email</strong>
+                  <strong>Email<span style={{ color: "orange" }}> *</span></strong>
                 </Form.Label>
                 <Form.Control
                   type="text"
@@ -347,7 +347,7 @@ const CreateNewUserModal = (props) => {
             <Row className="mb-3">
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Password</strong>
+                  <strong>Password<span style={{ color: "orange" }}> *</span></strong>
                 </Form.Label>
                 <Form.Control
                   type="password"
@@ -364,7 +364,7 @@ const CreateNewUserModal = (props) => {
               </Form.Group>
               <Form.Group as={Col}>
                 <Form.Label>
-                  <strong>Confirm Password</strong>
+                  <strong>Confirm Password<span style={{ color: "orange" }}> *</span></strong>
                 </Form.Label>
                 <Form.Control
                   type="password"
