@@ -11,6 +11,15 @@ Web application for fault management system that provides a centeral place where
 
 </br>
 
+## ***Video***
+
+</br>
+
+https://user-images.githubusercontent.com/58606266/179739450-cccd98e7-a563-4ea6-9047-3facbe0808e0.mp4
+
+
+</br>
+
 ## ***Screenshots***
 
 </br>
