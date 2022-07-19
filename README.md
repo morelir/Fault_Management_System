@@ -1,5 +1,14 @@
+<h1 style="color:yellow;" align="center">Fault Management System</h2>
 
-![headers](https://user-images.githubusercontent.com/58606266/178727442-16fc1b20-7194-498c-9a3c-d4fe5887b8ec.PNG)
+---
+
+<h2>About</h3>
+
+---
+
+<p>Web application for fault management system that provides a centeral place where businesses can store client's fault data and track client interactions.</p>
+
+
 
 
 ![customer service drawio](https://user-images.githubusercontent.com/58606266/178726590-e7029fc2-04b9-43ad-b9d5-f8f4b069231e.png)
