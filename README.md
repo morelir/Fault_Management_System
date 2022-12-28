@@ -37,4 +37,7 @@ https://user-images.githubusercontent.com/58606266/179739450-cccd98e7-a563-4ea6-
 ![user management drawio](https://user-images.githubusercontent.com/58606266/179734172-d9ca3820-440a-4482-a8f5-0f8bb3a0a501.png)
 
 ## Technologies
-![Technologies](https://user-images.githubusercontent.com/58606266/179725061-1459a74d-aa69-4b06-bd86-5a9f65f9c5e2.PNG)
+- React.js 
+- Node.js
+- Express.js
+- MongoDB
