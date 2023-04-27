@@ -43,8 +43,8 @@ https://user-images.githubusercontent.com/58606266/179739450-cccd98e7-a563-4ea6-
 -  After downloading the source code from git repository, Open a terminal(Windows Command Prompt or PowerShell).
 -  Navigate to source code folder and run the following commands:
 
-    - `npm install` (Install the project dependencies by running the following command)
-    - `npm start`   (Start the development server by running the following command)
+    - `npm install` (Install the project dependencies)
+    - `npm start`   (Start the development server)
     
  </br>
 
