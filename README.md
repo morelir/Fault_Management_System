@@ -7,7 +7,7 @@
 ![פוסטר 2](https://user-images.githubusercontent.com/58606266/179733211-cbfcb413-2774-4fe1-9381-a4448343a86f.PNG)
 
 ## ***About***
-Web application for fault management system that provides a central place where businesses can store client's fault data, track client interactions, and share this information with colleagues (CRM to companies). 
+As part of the Final Year Project for my degree in Software Engineering, my team member and I created a web application for fault management system. The app provides a central place where businesses can store client's fault data, track client interactions, and share this information with colleagues. (CRM to companies). 
 
 </br>
 
